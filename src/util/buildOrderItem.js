@@ -58,7 +58,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
         }
         if (is_valid) {
           console.log("offer valid");
-          if(acceptedOffer.amount.amount!==price){
+          if(activeBids.acceptedOffer.amount.amount!==price){
             throw new ReactionError("invalid", `Provided price for the "${chosenVariant.title}" item does not match current published price`);
           }
         
