@@ -38,7 +38,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
 
   if (finalPrice !== price) {
     let accountId =context.userId;
-    
+    let is_valid=false;
   let decodeProductId = decodeOpaqueId(productId).id;
   let decodeVariantId = decodeOpaqueId(productVariantId).id;
     if(context.userId){
