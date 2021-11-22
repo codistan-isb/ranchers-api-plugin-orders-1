@@ -10,7 +10,8 @@ import ReactionError from "@reactioncommerce/reaction-error";
  * @returns {Promise<Object>} An order item, matching the schema needed for insertion in the Orders collection
  */
 export default async function buildOrderItem(context, { currencyCode, inputItem, cart }) {
-  const { queries,Bids } = context;
+  const { queries,collections } = context;
+  const { Bids } = collections;
   const {
     addedAt,
     price,
