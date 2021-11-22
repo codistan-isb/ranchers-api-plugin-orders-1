@@ -1,6 +1,8 @@
 import accounting from "accounting-js";
 import Random from "@reactioncommerce/random";
 import ReactionError from "@reactioncommerce/reaction-error";
+import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
+
 /**
  * @summary Builds an order item
  * @param {Object} context an object containing the per-request state
@@ -36,6 +38,9 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
 
   if (finalPrice !== price) {
     let accountId =context.userId;
+    
+  let decodeProductId = decodeOpaqueId(productId).id;
+  let decodeVariantId = decodeOpaqueId(productVariantId).id;
     if(context.userId){
       console.log('user Id',context.userId);
       let activeBids = await Bids.findOne({
