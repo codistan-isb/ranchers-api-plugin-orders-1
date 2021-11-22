@@ -1,7 +1,6 @@
 import accounting from "accounting-js";
 import Random from "@reactioncommerce/random";
 import ReactionError from "@reactioncommerce/reaction-error";
-
 /**
  * @summary Builds an order item
  * @param {Object} context an object containing the per-request state
@@ -11,7 +10,7 @@ import ReactionError from "@reactioncommerce/reaction-error";
  * @returns {Promise<Object>} An order item, matching the schema needed for insertion in the Orders collection
  */
 export default async function buildOrderItem(context, { currencyCode, inputItem, cart }) {
-  const { queries } = context;
+  const { queries,Bids } = context;
   const {
     addedAt,
     price,
@@ -35,7 +34,38 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
   }
 
   if (finalPrice !== price) {
-    throw new ReactionError("invalid", `Provided price for the "${chosenVariant.title}" item does not match current published price`);
+    if(context.userId){
+      console.log('user Id',context.userId);
+      let activeBids = await Bids.findOne({
+        createdBy: accountId,
+        productId: decodeProductId,
+        variantId: decodeVariantId
+      });
+      if(activeBids.acceptedOffer){
+        console.log("offer accepted");
+        var d1 = new Date();
+        var d2 = new Date(activeBids.acceptedOffer.validTill);
+        console.log(d1.getTime() <= d2.getTime());
+        if (d1.getTime() <= d2.getTime()) {
+          is_valid = true;
+        }
+        if (is_valid) {
+          console.log("offer valid");
+          if(acceptedOffer.amount.amount!==price){
+            throw new ReactionError("invalid", `Provided price for the "${chosenVariant.title}" item does not match current published price`);
+          }
+        
+
+        } else {
+          throw new ReactionError("invalid", `Provided price for the "${chosenVariant.title}" item is expired`);
+
+        }
+      }
+    }
+    else{
+      throw new ReactionError("invalid", `Provided price for the "${chosenVariant.title}" item does not match current published price`);
+
+    }
   }
 
   const inventoryInfo = await context.queries.inventoryForProductConfiguration(context, {
