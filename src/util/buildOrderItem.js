@@ -35,6 +35,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
   }
 
   if (finalPrice !== price) {
+    let accountId =context.userId;
     if(context.userId){
       console.log('user Id',context.userId);
       let activeBids = await Bids.findOne({
