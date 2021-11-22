@@ -14,7 +14,7 @@ import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
 export default async function buildOrderItem(context, { currencyCode, inputItem, cart }) {
   const { queries,collections } = context;
   const { Bids } = collections;
-  const {
+  let {
     addedAt,
     price,
     productConfiguration,
@@ -29,7 +29,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
   } = await queries.findProductAndVariant(context, productId, productVariantId);
 
   const variantPriceInfo = await queries.getVariantPrice(context, chosenVariant, currencyCode);
-  const finalPrice = (variantPriceInfo || {}).price;
+  let finalPrice = (variantPriceInfo || {}).price;
 
   // Handle null or undefined price returned. Don't allow sale.
   if (!finalPrice && finalPrice !== 0) {
