@@ -48,7 +48,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
         productId: decodeProductId,
         variantId: decodeVariantId
       });
-      if(activeBids.acceptedOffer){
+      if(activeBids&&activeBids.acceptedOffer){
         console.log("offer accepted");
         var d1 = new Date();
         var d2 = new Date(activeBids.acceptedOffer.validTill);
@@ -89,7 +89,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
   });
 
   if (!inventoryInfo.canBackorder && (quantity > inventoryInfo.inventoryAvailableToSell)) {
-    throw new ReactionError("invalid-order-quantity", `Quantity ordered is more than available inventory for  "${chosenVariant.title}"`);
+    throw new ReactionError("invalid-order-quantity", `Sorry, "${chosenVariant.title}" is out of stock now.`);
   }
 
   // Until we do a more complete attributes revamp, we'll do our best to fudge attributes here.
