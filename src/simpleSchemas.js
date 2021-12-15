@@ -257,6 +257,9 @@ export const CommonOrderItem = new SimpleSchema({
   "variantTitle": {
     type: String,
     optional: true
+  },
+  "sellerId": {
+    type: String
   }
 });
 
