@@ -24,7 +24,7 @@ export default  function ordersStartup(context) {
     status: "unread",
     to: productPurchased?.uploadedBy?.userId,
     type: "newOrder",
-    url: `/en/profile/address`})
+    url: `/en/profile/address?activeProfile=seller`})
   
   });
 }
