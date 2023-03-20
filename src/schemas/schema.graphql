@@ -2,10 +2,10 @@ extend type Query {
   "Get an order by its ID"
   orderById(
     "The order ID"
-    id: ID!,
+    id: ID!
 
     "The shop that owns the order"
-    shopId: ID!,
+    shopId: ID!
 
     "A valid anonymous access token for this order. Required if the order is not linked with an account."
     token: String
@@ -17,25 +17,25 @@ extend type Query {
     filters: OrderFilterInput
 
     "Provide a list of shop IDs from which you want to get orders from"
-    shopIds: [ID],
+    shopIds: [ID]
 
     "Return only results that come after this cursor. Use this with `first` to specify the number of results to return."
-    after: ConnectionCursor,
+    after: ConnectionCursor
 
     "Return only results that come before this cursor. Use this with `last` to specify the number of results to return."
-    before: ConnectionCursor,
+    before: ConnectionCursor
 
     "Return at most this many results. This parameter may be used with either `after` or `offset` parameters."
-    first: ConnectionLimitInt,
+    first: ConnectionLimitInt
 
     "Return at most this many results. This parameter may be used with the `before` parameter."
-    last: ConnectionLimitInt,
+    last: ConnectionLimitInt
 
     "Return only results that come after the Nth result. This parameter may be used with the `first` parameter."
-    offset: Int,
+    offset: Int
 
     "Return results sorted in this order"
-    sortOrder: SortOrder = desc,
+    sortOrder: SortOrder = desc
 
     "By default, orders are sorted by when they were created, newest first. Set this to sort by one of the other allowed fields"
     sortBy: OrdersSortByField = createdAt
@@ -44,31 +44,31 @@ extend type Query {
   "Get all orders for a single account, optionally limited to certain shop IDs and certain orderStatus"
   ordersByAccountId(
     "Limit to orders placed by this account"
-    accountId: ID!,
+    accountId: ID!
 
     "Limit to orders with one of these statuses"
-    orderStatus: [String],
+    orderStatus: [String]
 
     "Limit to orders owned by one of these shops"
-    shopIds: [ID]!,
+    shopIds: [ID]!
 
     "Return only results that come after this cursor. Use this with `first` to specify the number of results to return."
-    after: ConnectionCursor,
+    after: ConnectionCursor
 
     "Return only results that come before this cursor. Use this with `last` to specify the number of results to return."
-    before: ConnectionCursor,
+    before: ConnectionCursor
 
     "Return at most this many results. This parameter may be used with either `after` or `offset` parameters."
-    first: ConnectionLimitInt,
+    first: ConnectionLimitInt
 
     "Return at most this many results. This parameter may be used with the `before` parameter."
-    last: ConnectionLimitInt,
+    last: ConnectionLimitInt
 
     "Return only results that come after the Nth result. This parameter may be used with the `first` parameter."
-    offset: Int,
+    offset: Int
 
     "Return results sorted in this order"
-    sortOrder: SortOrder = desc,
+    sortOrder: SortOrder = desc
 
     "By default, orders are sorted by when they were created, newest first. Set this to sort by one of the other allowed fields"
     sortBy: OrdersByAccountIdSortByField = createdAt
@@ -77,10 +77,10 @@ extend type Query {
   "Get an order by its reference ID (the ID shown to customers)"
   orderByReferenceId(
     "The order reference ID (the ID shown to customers)"
-    id: ID!,
+    id: ID!
 
     "The shop that owns the order"
-    shopId: ID!,
+    shopId: ID!
 
     "A valid anonymous access token for this order. Required if the order is not linked with an account."
     token: String
@@ -89,10 +89,10 @@ extend type Query {
   "Get refunds applied to an order by order ID"
   refunds(
     "The order ID"
-    orderId: ID!,
+    orderId: ID!
 
     "The shop that owns the order"
-    shopId: ID!,
+    shopId: ID!
 
     "A valid anonymous access token for this order. Required if the order is not linked with an account."
     token: String
@@ -101,13 +101,13 @@ extend type Query {
   "Get refunds applied to a specific payment by payment ID"
   refundsByPaymentId(
     "The order ID"
-    orderId: ID!,
+    orderId: ID!
 
     "The ID of one of the payments made for this order"
-    paymentId: ID!,
+    paymentId: ID!
 
     "The shop that owns the order"
-    shopId: ID!,
+    shopId: ID!
 
     "A valid anonymous access token for this order. Required if the order is not linked with an account."
     token: String
@@ -139,10 +139,7 @@ extend type Mutation {
   ): CancelOrderItemPayload!
 
   "Use this mutation to create a refund on a payment method used to make the order"
-  createRefund(
-    "Mutation input"
-    input: CreateRefundInput!
-  ): CreateRefundPayload!
+  createRefund("Mutation input" input: CreateRefundInput!): CreateRefundPayload!
 
   """
   Use this mutation to move one or more items between existing order fulfillment groups.
@@ -156,10 +153,7 @@ extend type Mutation {
   Use this mutation to place an order, providing information necessary to pay for it.
   The order will be placed only if authorization is successful for all submitted payments.
   """
-  placeOrder(
-    "Mutation input"
-    input: PlaceOrderInput!
-  ): PlaceOrderPayload!
+  placeOrder("Mutation input" input: PlaceOrderInput!): PlaceOrderPayload!
 
   """
   Use this mutation to reduce the quantity of one item of an order and create
@@ -175,10 +169,7 @@ extend type Mutation {
   """
   Use this mutation to update order details after the order has been placed.
   """
-  updateOrder(
-    "Mutation input"
-    input: UpdateOrderInput!
-  ): UpdateOrderPayload!
+  updateOrder("Mutation input" input: UpdateOrderInput!): UpdateOrderPayload!
 
   """
   Use this mutation to update an order fulfillment group status and tracking information.
@@ -240,7 +231,6 @@ type OrderConnection {
   "The total number of nodes that match your query"
   totalCount: Int!
 }
-
 
 """
 Wraps a list of `Order`s, providing pagination cursors and information.
@@ -359,7 +349,8 @@ type OrderItem implements Node {
   "The order item ID"
   _id: ID!
 
-  """"
+  """
+  "
   The date and time at which this item was first added to the associated cart.
   If an item is added, removed, and then added again, this will reflect the most recent addition.
   However, if an item is added twice, the quantity will increase but this date will remain
@@ -403,22 +394,22 @@ type OrderItem implements Node {
   "The list of tags that have been applied to this product"
   productTags(
     "Return only results that come after this cursor. Use this with `first` to specify the number of results to return."
-    after: ConnectionCursor,
+    after: ConnectionCursor
 
     "Return only results that come before this cursor. Use this with `last` to specify the number of results to return."
-    before: ConnectionCursor,
+    before: ConnectionCursor
 
     "Return at most this many results. This parameter may be used with either `after` or `offset` parameters."
-    first: ConnectionLimitInt,
+    first: ConnectionLimitInt
 
     "Return at most this many results. This parameter may be used with the `before` parameter."
-    last: ConnectionLimitInt,
+    last: ConnectionLimitInt
 
     "Return only results that come after the Nth result. This parameter may be used with the `first` parameter."
-    offset: Int,
+    offset: Int
 
     "Return results sorted in this order"
-    sortOrder: SortOrder = asc,
+    sortOrder: SortOrder = asc
 
     "By default, tags are sorted by ID. Set this to sort by one of the other allowed fields"
     sortBy: TagSortByField = _id
@@ -483,22 +474,22 @@ type OrderFulfillmentGroup implements Node {
   "The items that are part of this fulfillment group"
   items(
     "Return only results that come after this cursor. Use this with `first` to specify the number of results to return."
-    after: ConnectionCursor,
+    after: ConnectionCursor
 
     "Return only results that come before this cursor. Use this with `last` to specify the number of results to return."
-    before: ConnectionCursor,
+    before: ConnectionCursor
 
     "Return at most this many results. This parameter may be used with either `after` or `offset` parameters."
-    first: ConnectionLimitInt,
+    first: ConnectionLimitInt
 
     "Return at most this many results. This parameter may be used with the `before` parameter."
-    last: ConnectionLimitInt,
+    last: ConnectionLimitInt
 
     "Return only results that come after the Nth result. This parameter may be used with the `first` parameter."
-    offset: Int,
+    offset: Int
 
     "Return results sorted in this order"
-    sortOrder: SortOrder = desc,
+    sortOrder: SortOrder = desc
 
     "By default, order items are sorted by when they were added to the order, newest first. Set this to sort by one of the other allowed fields"
     sortBy: OrderFulfillmentGroupItemsSortByField = addedAt
@@ -599,7 +590,9 @@ type Order implements Node {
   "The date and time at which this order was last updated"
   updatedAt: DateTime!
 }
-
+extend enum PaymentMethodName {
+  COD
+}
 "A note about an order"
 type OrderNote {
   "The account who wrote this note"
