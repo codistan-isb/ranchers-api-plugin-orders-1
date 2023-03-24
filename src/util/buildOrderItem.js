@@ -13,7 +13,7 @@ import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
  */
 export default async function buildOrderItem(context, { currencyCode, inputItem, cart }) {
   const { queries, collections } = context;
-  const { Bids } = collections;
+  // const { Bids } = collections;
   let {
     addedAt,
     price,
@@ -44,37 +44,37 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
 
     if (context.userId) {
       console.log('user Id', context.userId);
-      if (Bids !== undefined || Bids !== null || Bids !== '') {
-        let activeBids = await Bids.findOne({
-          createdBy: accountId,
-          productId: decodeProductId,
-          variantId: decodeVariantId
-        });
-        if (activeBids && activeBids.acceptedOffer) {
-          console.log("offer accepted");
-          var d1 = new Date();
-          var d2 = new Date(activeBids.acceptedOffer.validTill);
-          console.log(d1.getTime() <= d2.getTime());
-          if (d1.getTime() <= d2.getTime()) {
-            is_valid = true;
-          }
-          if (is_valid) {
-            console.log("offer valid");
-            if (activeBids.acceptedOffer.amount.amount !== price) {
-              throw new ReactionError("invalid", `Provided price for the "${chosenVariant.title}" item does not match current published price`);
-            } else {
-              price = activeBids.acceptedOffer.amount.amount;
-              finalPrice = activeBids.acceptedOffer.amount.amount;
+      // if (Bids !== undefined || Bids !== null || Bids !== '') {
+      //   let activeBids = await Bids.findOne({
+      //     createdBy: accountId,
+      //     productId: decodeProductId,
+      //     variantId: decodeVariantId
+      //   });
+      //   if (activeBids && activeBids.acceptedOffer) {
+      //     console.log("offer accepted");
+      //     var d1 = new Date();
+      //     var d2 = new Date(activeBids.acceptedOffer.validTill);
+      //     console.log(d1.getTime() <= d2.getTime());
+      //     if (d1.getTime() <= d2.getTime()) {
+      //       is_valid = true;
+      //     }
+      //     if (is_valid) {
+      //       console.log("offer valid");
+      //       if (activeBids.acceptedOffer.amount.amount !== price) {
+      //         throw new ReactionError("invalid", `Provided price for the "${chosenVariant.title}" item does not match current published price`);
+      //       } else {
+      //         price = activeBids.acceptedOffer.amount.amount;
+      //         finalPrice = activeBids.acceptedOffer.amount.amount;
 
-            }
+      //       }
 
 
-          } else {
-            throw new ReactionError("invalid", `Provided price for the "${chosenVariant.title}" item is expired`);
+      //     } else {
+      //       throw new ReactionError("invalid", `Provided price for the "${chosenVariant.title}" item is expired`);
 
-          }
-        }
-      }
+      //     }
+      //   }
+      // }
 
     }
     else {
