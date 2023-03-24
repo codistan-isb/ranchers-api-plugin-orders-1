@@ -13,6 +13,8 @@ import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
  */
 export default async function buildOrderItem(context, { currencyCode, inputItem, cart }) {
   const { queries, collections } = context;
+  const accountId = context.userId;
+  console.log(context.userId)
   // const { Bids } = collections;
   let {
     addedAt,
@@ -123,7 +125,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
     },
     productId: chosenProduct.productId,
     productSlug: chosenProduct.slug,
-    sellerId: chosenVariant.uploadedBy.userId,
+    sellerId: chosenVariant.uploadedBy?.context.userId,
     productType: chosenProduct.type,
     productTagIds: chosenProduct.tagIds,
     productVendor: chosenProduct.vendor,
