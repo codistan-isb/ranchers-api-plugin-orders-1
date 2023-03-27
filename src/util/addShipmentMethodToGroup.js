@@ -40,12 +40,13 @@ export default async function addShipmentMethodToGroup(context, {
   // We are passing commonOrder in here, but we need the finalGroup.shipmentMethod data inside of final order, which doesn't get set until after this
   // but we need the data from this in order to set it
   const rates = await queries.getFulfillmentMethodsWithQuotes(commonOrder, context);
-  // const errorResult = rates.find((option) => option.requestStatus === "error");
-  // if (errorResult) {
-  //   throw new ReactionError("invalid", errorResult.message);
-  // }
+  const errorResult = rates.find((option) => option.requestStatus === "error");
+  if (errorResult) {
+    throw new ReactionError("invalid", errorResult.message);
+  }
 
   const selectedFulfillmentMethod = rates.find((rate) => selectedFulfillmentMethodId === rate.method?._id);
+  console.log(selectedFulfillmentMethod)
   if (!selectedFulfillmentMethod) {
     throw new ReactionError("invalid", "The selected fulfillment method is no longer available." +
       " Fetch updated fulfillment options and try creating the order again with a valid method.");
