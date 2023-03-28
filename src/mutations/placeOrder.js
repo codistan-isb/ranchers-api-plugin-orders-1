@@ -124,7 +124,8 @@ export default async function placeOrder(context, input) {
     email,
     fulfillmentGroups,
     ordererPreferredLanguage,
-    shopId
+    shopId,
+    branchID
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } = context;
   const { Orders, Cart } = collections;
@@ -176,7 +177,8 @@ export default async function placeOrder(context, input) {
       discountTotal,
       inputGroup,
       orderId,
-      cart
+      cart,
+      branchID
     });
 
     // We save off the first shipping address found, for passing to payment services. They use this
@@ -223,6 +225,7 @@ export default async function placeOrder(context, input) {
     payments,
     shipping: finalFulfillmentGroups,
     shopId,
+    branchID,
     surcharges: orderSurcharges,
     totalItemQuantity: finalFulfillmentGroups.reduce((sum, group) => sum + group.totalItemQuantity, 0),
     updatedAt: now,

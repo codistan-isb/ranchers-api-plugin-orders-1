@@ -18,7 +18,7 @@ extend type Query {
 
     "Provide a list of shop IDs from which you want to get orders from"
     shopIds: [ID]
-
+    branchID: String
     "Return only results that come after this cursor. Use this with `first` to specify the number of results to return."
     after: ConnectionCursor
 
@@ -742,6 +742,7 @@ input OrderInput {
   order, and those shop IDs may or may not match this one.
   """
   shopId: String!
+  branchID: String
 }
 
 "Input for adding order payments"
@@ -837,6 +838,7 @@ input PlaceOrderInput {
   method where the `amount` field is `null` will be charged the remainder due.
   """
   payments: [PaymentInput]
+  branchID: String
 }
 
 "Input for the moveOrderItems mutation"
@@ -957,6 +959,7 @@ type PlaceOrderPayload {
 
   "If you are not logged in, this will be a token that can be used for future requests"
   token: String
+  branchID: String
 }
 
 "Response payload for the splitOrderItem mutation"

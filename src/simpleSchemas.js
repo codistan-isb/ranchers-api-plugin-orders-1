@@ -247,6 +247,10 @@ export const CommonOrderItem = new SimpleSchema({
     min: 0
   },
   "shopId": String,
+  "branchID": {
+    type: String,
+    optional: true
+  },
   "subtotal": Money,
   "taxCode": {
     type: String,
@@ -352,6 +356,10 @@ export const CommonOrder = new SimpleSchema({
     optional: true
   },
   shopId: String,
+  branchID: {
+    type: String,
+    optional: true
+  },
   sourceType: {
     type: String,
     allowedValues: ["cart", "order"]
@@ -367,7 +375,7 @@ export const orderItemInputSchema = new SimpleSchema({
     type: Date,
     optional: true
   },
-  
+
   "price": Number,
   "productConfiguration": Object,
   "productConfiguration.productId": String,
@@ -391,6 +399,10 @@ export const orderFulfillmentGroupInputSchema = new SimpleSchema({
   "items.$": orderItemInputSchema,
   "selectedFulfillmentMethodId": String,
   "shopId": String,
+  "branchID": {
+    type: String,
+    optional: true
+  },
   "totalPrice": {
     type: Number,
     optional: true
@@ -436,7 +448,11 @@ export const orderInputSchema = new SimpleSchema({
     type: String,
     optional: true
   },
-  "shopId": String
+  "shopId": String,
+  "branchID": {
+    type: String,
+    optional: true
+  },
 });
 
 export const paymentInputSchema = new SimpleSchema({
@@ -510,6 +526,10 @@ const ExportHistory = new SimpleSchema({
   },
   shopId: {
     type: String
+  },
+  branchID: {
+    type: String,
+    optional: true
   }
 });
 
@@ -691,8 +711,12 @@ export const OrderItem = new SimpleSchema({
     optional: true
   },
   "attributes.$": OrderItemAttribute,
-  "sellerId":{type:String,optional:true},
+  "sellerId": { type: String, optional: true },
   "cancelReason": {
+    type: String,
+    optional: true
+  },
+  "branchID": {
     type: String,
     optional: true
   },
@@ -747,6 +771,11 @@ export const OrderItem = new SimpleSchema({
     min: 0
   },
   "shopId": String,
+  "branchID": {
+    type: String,
+    optional: true
+  },
+
   "subtotal": Number,
   "title": String,
   "updatedAt": Date,
@@ -845,6 +874,10 @@ export const OrderFulfillmentGroup = new SimpleSchema({
     optional: true
   },
   "shopId": String,
+  "branchID": {
+    type: String,
+    optional: true
+  },
   "totalItemQuantity": {
     type: SimpleSchema.Integer,
     min: 1
@@ -979,6 +1012,10 @@ export const Payment = new SimpleSchema({
     optional: true
   },
   "shopId": String,
+  "branchID": {
+    type: String,
+    optional: true
+  },
   "status": String,
   "transactionId": String,
   "transactions": {
@@ -1094,6 +1131,10 @@ export const Order = new SimpleSchema({
   },
   "shipping": [OrderFulfillmentGroup],
   "shopId": String,
+  "branchID": {
+    type: String,
+    optional: true
+  },
   "surcharges": {
     type: Array,
     optional: true
