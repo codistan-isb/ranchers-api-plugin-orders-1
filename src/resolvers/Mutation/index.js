@@ -15,5 +15,5 @@ export default {
   placeOrder,
   splitOrderItem,
   updateOrder,
-  updateOrderFulfillmentGroup
+  updateOrderFulfillmentGroup,
 };

@@ -112,6 +112,7 @@ extend type Query {
     "A valid anonymous access token for this order. Required if the order is not linked with an account."
     token: String
   ): [Refund]
+  # getBranchOwnerReport(branchID: String, orderStatus: String): [Order]
 }
 
 extend type Mutation {

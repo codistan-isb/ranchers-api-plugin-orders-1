@@ -17,5 +17,6 @@ export default {
   sendOrderEmail,
   splitOrderItem,
   updateOrder,
-  updateOrderFulfillmentGroup
+  updateOrderFulfillmentGroup,
+
 };
