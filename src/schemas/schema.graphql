@@ -47,7 +47,7 @@ extend type Query {
     accountId: ID!
 
     "Limit to orders with one of these statuses"
-    orderStatus: [String]
+    OrderStatus: [OrderStatusValue]
 
     "Limit to orders owned by one of these shops"
     shopIds: [ID]!
@@ -742,6 +742,9 @@ input OrderInput {
   order, and those shop IDs may or may not match this one.
   """
   shopId: String!
+
+  # "Notes about the order. This will always return an array but it may be empty"
+  #   notes: [OrderNote]!
   branchID: String
 }
 
@@ -838,6 +841,7 @@ input PlaceOrderInput {
   method where the `amount` field is `null` will be charged the remainder due.
   """
   payments: [PaymentInput]
+
   branchID: String
 }
 
