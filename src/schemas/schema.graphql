@@ -607,7 +607,16 @@ type OrderNote {
   "The date and time at which this note was last updated"
   updatedAt: DateTime!
 }
+input OrderNoteInput {
+  "The content of the note"
+  content: String!
 
+  "The date and time at which this note was created"
+  createdAt: DateTime!
+
+  "The date and time at which this note was last updated"
+  updatedAt: DateTime!
+}
 "A refund of a payment on an order"
 type Refund implements Node {
   "The refund ID"
@@ -843,6 +852,8 @@ input PlaceOrderInput {
   payments: [PaymentInput]
 
   branchID: String
+
+  notes: [OrderNoteInput]!
 }
 
 "Input for the moveOrderItems mutation"
@@ -1017,20 +1028,20 @@ enum OrderPaymentStatus {
   created
 }
 
-"Order status"
-enum OrderStatus {
-  "Canceled order"
-  canceled
+# "Order status"
+# enum OrderStatus {
+#   "Canceled order"
+#   canceled
 
-  "A completed order"
-  completed
+#   "A completed order"
+#   completed
 
-  "A new order that needs processing"
-  new
+#   "A new order that needs processing"
+#   new
 
-  "An order that is being processed"
-  processing
-}
+#   "An order that is being processed"
+#   processing
+# }
 
 "Input for the createdAt database field"
 input CreatedAtInput {
@@ -1056,5 +1067,5 @@ input OrderFilterInput {
   searchField: String
 
   "The order's status to filter by"
-  status: OrderStatus
+  status: OrderStatusValue
 }

@@ -1,7 +1,7 @@
 {
   "name": "@shoaibfarooq3/ranchers-api-plugin-orders",
   "description": "Orders plugin for the Reaction API",
-  "version": "6.0.2",
+  "version": "6.0.5",
   "main": "index.js",
   "type": "module",
   "engines": {
