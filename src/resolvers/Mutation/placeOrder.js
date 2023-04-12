@@ -20,7 +20,7 @@ import {
  */
 export default async function placeOrder(parentResult, { input }, context) {
   console.log(input)
-  const { clientMutationId = null, order, payments, branchID } = input;
+  const { clientMutationId = null, order, payments, branchID, notes } = input;
   const { cartId: opaqueCartId, fulfillmentGroups, shopId: opaqueShopId } = order;
 
   const cartId = opaqueCartId ? decodeCartOpaqueId(opaqueCartId) : null;
@@ -39,10 +39,11 @@ export default async function placeOrder(parentResult, { input }, context) {
       cartId,
       fulfillmentGroups: transformedFulfillmentGroups,
       shopId,
-      branchID
+      branchID,
+
     },
     payments,
-    branchID
+    branchID, notes
   });
   console.log("order", order)
   return {
