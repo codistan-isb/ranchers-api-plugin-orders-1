@@ -43,13 +43,15 @@ export default async function placeOrder(parentResult, { input }, context) {
 
     },
     payments,
-    branchID, notes
+    branchID,
+    notes
   });
   console.log("order", order)
   return {
     clientMutationId,
     orders,
     token,
-    branchID
+    branchID,
+    notes
   };
 }
