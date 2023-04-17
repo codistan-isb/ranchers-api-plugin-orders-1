@@ -7,7 +7,17 @@ const withoutCodeCountries = ["AO", "AG", "AW", "BS", "BZ", "BJ", "BW",
   "MS", "NR", "AN", "NU", "KP", "PA", "QA", "RW", "KN", "LC",
   "ST", "SA", "SC", "SL", "SB", "SO", "SR", "SY", "TZ", "TL",
   "TK", "TO", "TT", "TV", "UG", "AE", "VU", "YE", "ZW"];
-
+export const notesInputSchema = new SimpleSchema({
+  "createdAt": {
+    type: Date,
+    optional: true
+  },
+  "updatedAt": {
+    type: Date,
+    optional: true
+  },
+  "content": String
+})
 /**
  * @name Metafield
  * @memberof Schemas
@@ -314,6 +324,7 @@ const CommonOrderTotals = new SimpleSchema({
   }
 });
 
+
 /**
  * @type {SimpleSchema}
  * @summary The CommonOrder schema describes an order for a single shop, containing only
@@ -395,17 +406,7 @@ export const orderItemInputSchema = new SimpleSchema({
     min: 1
   }
 });
-export const notesInputSchema = new SimpleSchema({
-  "createdAt": {
-    type: Date,
-    optional: true
-  },
-  "updatedAt": {
-    type: Date,
-    optional: true
-  },
-  "content": String
-})
+
 export const orderFulfillmentGroupInputSchema = new SimpleSchema({
   "data": {
     type: Object,
