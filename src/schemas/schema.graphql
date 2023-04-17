@@ -977,8 +977,6 @@ type PlaceOrderPayload {
   token: String
 
   branchID: String
-
-  # notes: [OrderNoteInput]
 }
 
 "Response payload for the splitOrderItem mutation"
