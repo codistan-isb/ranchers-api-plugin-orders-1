@@ -40,7 +40,7 @@ export default async function placeOrder(parentResult, { input }, context) {
       fulfillmentGroups: transformedFulfillmentGroups,
       shopId,
       branchID,
-
+      notes
     },
     payments,
     branchID,

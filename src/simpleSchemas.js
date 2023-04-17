@@ -251,6 +251,11 @@ export const CommonOrderItem = new SimpleSchema({
     type: String,
     optional: true
   },
+  "notes": {
+    type: Array,
+    minCount: 1
+  },
+  "notes.$": notesInputSchema,
   "subtotal": Money,
   "taxCode": {
     type: String,
@@ -360,6 +365,11 @@ export const CommonOrder = new SimpleSchema({
     type: String,
     optional: true
   },
+  "notes": {
+    type: Array,
+    minCount: 1
+  },
+  "notes.$": notesInputSchema,
   sourceType: {
     type: String,
     allowedValues: ["cart", "order"]
@@ -385,7 +395,17 @@ export const orderItemInputSchema = new SimpleSchema({
     min: 1
   }
 });
-
+export const notesInputSchema = new SimpleSchema({
+  "createdAt": {
+    type: Date,
+    optional: true
+  },
+  "updatedAt": {
+    type: Date,
+    optional: true
+  },
+  "content": String
+})
 export const orderFulfillmentGroupInputSchema = new SimpleSchema({
   "data": {
     type: Object,
@@ -403,6 +423,11 @@ export const orderFulfillmentGroupInputSchema = new SimpleSchema({
     type: String,
     optional: true
   },
+  "notes": {
+    type: Array,
+    minCount: 1
+  },
+  "notes.$": notesInputSchema,
   "totalPrice": {
     type: Number,
     optional: true
@@ -453,6 +478,11 @@ export const orderInputSchema = new SimpleSchema({
     type: String,
     optional: true
   },
+  "notes": {
+    type: Array,
+    minCount: 1
+  },
+  "notes.$": notesInputSchema,
 });
 
 export const paymentInputSchema = new SimpleSchema({
@@ -530,7 +560,12 @@ const ExportHistory = new SimpleSchema({
   branchID: {
     type: String,
     optional: true
-  }
+  },
+  "notes": {
+    type: Array,
+    minCount: 1
+  },
+  "notes.$": notesInputSchema,
 });
 
 /**
@@ -720,6 +755,11 @@ export const OrderItem = new SimpleSchema({
     type: String,
     optional: true
   },
+  "notes": {
+    type: Array,
+    minCount: 1
+  },
+  "notes.$": notesInputSchema,
   "createdAt": Date,
   "documents": {
     type: Array,
@@ -775,7 +815,11 @@ export const OrderItem = new SimpleSchema({
     type: String,
     optional: true
   },
-
+  "notes": {
+    type: Array,
+    minCount: 1
+  },
+  "notes.$": notesInputSchema,
   "subtotal": Number,
   "title": String,
   "updatedAt": Date,
@@ -878,6 +922,11 @@ export const OrderFulfillmentGroup = new SimpleSchema({
     type: String,
     optional: true
   },
+  "notes": {
+    type: Array,
+    minCount: 1
+  },
+  "notes.$": notesInputSchema,
   "totalItemQuantity": {
     type: SimpleSchema.Integer,
     min: 1
@@ -1016,6 +1065,11 @@ export const Payment = new SimpleSchema({
     type: String,
     optional: true
   },
+  "notes": {
+    type: Array,
+    minCount: 1
+  },
+  "notes.$": notesInputSchema,
   "status": String,
   "transactionId": String,
   "transactions": {
@@ -1135,6 +1189,11 @@ export const Order = new SimpleSchema({
     type: String,
     optional: true
   },
+  "notes": {
+    type: Array,
+    minCount: 1
+  },
+  "notes.$": notesInputSchema,
   "surcharges": {
     type: Array,
     optional: true
