@@ -263,7 +263,7 @@ export const CommonOrderItem = new SimpleSchema({
   },
   "notes": {
     type: Array,
-    minCount: 1
+    minCount: 0
   },
   "notes.$": notesInputSchema,
   "subtotal": Money,
