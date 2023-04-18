@@ -1,5 +1,7 @@
 import SimpleSchema from "simpl-schema";
 
+
+
 const withoutCodeCountries = ["AO", "AG", "AW", "BS", "BZ", "BJ", "BW",
   "BF", "BI", "CM", "CF", "KM", "CG", "CD", "CK", "CI", "DJ",
   "DM", "GQ", "ER", "FJ", "TF", "GM", "GH", "GD", "GN", "GY",
@@ -7,17 +9,7 @@ const withoutCodeCountries = ["AO", "AG", "AW", "BS", "BZ", "BJ", "BW",
   "MS", "NR", "AN", "NU", "KP", "PA", "QA", "RW", "KN", "LC",
   "ST", "SA", "SC", "SL", "SB", "SO", "SR", "SY", "TZ", "TL",
   "TK", "TO", "TT", "TV", "UG", "AE", "VU", "YE", "ZW"];
-export const notesInputSchema = new SimpleSchema({
-  "createdAt": {
-    type: Date,
-    optional: true
-  },
-  "updatedAt": {
-    type: Date,
-    optional: true
-  },
-  "content": String
-})
+
 /**
  * @name Metafield
  * @memberof Schemas
@@ -57,6 +49,18 @@ const Metafield = new SimpleSchema({
     optional: true
   }
 });
+
+export const notesInputSchema = new SimpleSchema({
+  "createdAt": {
+    type: Date,
+    optional: true
+  },
+  "updatedAt": {
+    type: Date,
+    optional: true
+  },
+  "content": String
+})
 
 /**
  * @name OrderAddress
@@ -263,7 +267,7 @@ export const CommonOrderItem = new SimpleSchema({
   },
   "notes": {
     type: Array,
-    minCount: 0
+    minCount: 1
   },
   "notes.$": notesInputSchema,
   "subtotal": Money,
@@ -323,7 +327,6 @@ const CommonOrderTotals = new SimpleSchema({
     optional: true
   }
 });
-
 
 /**
  * @type {SimpleSchema}

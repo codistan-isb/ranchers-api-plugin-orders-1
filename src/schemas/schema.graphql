@@ -129,7 +129,6 @@ extend type Mutation {
   Use this mutation to cancel one item of an order, either for the full ordered quantity
   or for a partial quantity. If partial, the item will be split into two items and the
   original item will have a lower quantity and will be canceled.
-
   If this results in all items in a fulfillment group being canceled, the group will also
   be canceled. If this results in all fulfillment groups being canceled, the full order will
   also be canceled.
@@ -210,7 +209,6 @@ enum OrdersSortByField {
 
 """
 Wraps a list of `Order`s, providing pagination cursors and information.
-
 For information about what Relay-compatible connections are and how to use them, see the following articles:
 - [Relay Connection Documentation](https://facebook.github.io/relay/docs/en/graphql-server-specification.html#connections)
 - [Relay Connection Specification](https://facebook.github.io/relay/graphql/connections.htm)
@@ -235,7 +233,6 @@ type OrderConnection {
 
 """
 Wraps a list of `Order`s, providing pagination cursors and information.
-
 For information about what Relay-compatible connections are and how to use them, see the following articles:
 - [Relay Connection Documentation](https://facebook.github.io/relay/docs/en/graphql-server-specification.html#connections)
 - [Relay Connection Specification](https://facebook.github.io/relay/graphql/connections.htm)
@@ -278,7 +275,6 @@ type OrdersByAccountIdEdge implements NodeEdge {
 
 """
 Wraps a list of `OrderItem`s, providing pagination cursors and information.
-
 For information about what Relay-compatible connections are and how to use them, see the following articles:
 - [Relay Connection Documentation](https://facebook.github.io/relay/docs/en/graphql-server-specification.html#connections)
 - [Relay Connection Specification](https://facebook.github.io/relay/graphql/connections.htm)
@@ -977,6 +973,8 @@ type PlaceOrderPayload {
   token: String
 
   branchID: String
+
+  # notes: [OrderNoteInput]
 }
 
 "Response payload for the splitOrderItem mutation"
