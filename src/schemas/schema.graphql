@@ -555,7 +555,7 @@ type Order implements Node {
   fulfillmentGroups: [OrderFulfillmentGroup]!
 
   "Notes about the order. This will always return an array but it may be empty"
-  notes: [OrderNote]!
+  notes: [OrderNotePayload]
 
   """
   Payments that collectively have paid or will pay for the total amount due for this order.
@@ -590,21 +590,31 @@ type Order implements Node {
 extend enum PaymentMethodName {
   COD
 }
-"A note about an order"
-type OrderNote {
-  "The account who wrote this note"
-  account: Account!
+# "A note about an order"
+# type OrderNote {
+#   "The account who wrote this note"
+#   account: Account!
 
+#   "The content of the note"
+#   content: String!
+
+#   "The date and time at which this note was created"
+#   createdAt: DateTime!
+
+#   "The date and time at which this note was last updated"
+#   updatedAt: DateTime!
+# }
+input OrderNoteInput {
   "The content of the note"
-  content: String!
+  content: String
 
   "The date and time at which this note was created"
-  createdAt: DateTime!
+  createdAt: DateTime
 
   "The date and time at which this note was last updated"
-  updatedAt: DateTime!
+  updatedAt: DateTime
 }
-input OrderNoteInput {
+type OrderNotePayload {
   "The content of the note"
   content: String
 
@@ -750,7 +760,8 @@ input OrderInput {
   shopId: String!
 
   # "Notes about the order. This will always return an array but it may be empty"
-  notes: [OrderNoteInput]
+  # notes: [OrderNoteInput]
+
   branchID: String
 }
 
