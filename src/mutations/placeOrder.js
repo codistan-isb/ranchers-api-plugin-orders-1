@@ -116,7 +116,7 @@ async function createPayments({
  * @returns {Promise<Object>} Object with `order` property containing the created order
  */
 export default async function placeOrder(context, input) {
-  // const prepTime = 0
+  const prepTime = 0
   const today = new Date().toISOString().substr(0, 10);
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
@@ -152,7 +152,10 @@ export default async function placeOrder(context, input) {
   // else {
   //   prepTime = 20
   // }
-  const prepTime = branchData.prepTime;
+  if (branchData) {
+    prepTime = branchData.prepTime
+  }
+
   console.log("fulfillmentGroups Data :- ", fulfillmentGroups[0].data.shippingAddress)
   const deliveryTimeCalculationResponse = await deliveryTimeCalculation(branchData, fulfillmentGroups[0].data.shippingAddress);
   const deliveryTime = deliveryTimeCalculationResponse + (prepTime || 20);

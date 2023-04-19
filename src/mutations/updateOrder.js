@@ -71,10 +71,10 @@ export default async function updateOrder(context, input) {
 
   }
   if (status === 'ready') {
-    modifier.$set["deliveryTime"] = 0;
+    modifier.$set["prepTime"] = 0;
   }
   modifier.$push = {
-    "deliveryTime": 0
+    "prepTime": 0
   };
 
   // Skip updating if we have no updates to make

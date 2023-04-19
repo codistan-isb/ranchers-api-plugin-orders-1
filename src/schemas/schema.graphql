@@ -992,7 +992,7 @@ type PlaceOrderPayload {
   "If you are not logged in, this will be a token that can be used for future requests"
   token: String
 
-  # branchID: String!
+  branchID: String
 
   kitchenOrderID: String
   # notes: [OrderNoteInput]
