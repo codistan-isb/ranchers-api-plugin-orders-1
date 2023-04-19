@@ -277,7 +277,6 @@ export default async function placeOrder(context, input) {
     delete dbToken.token;
     order.anonymousAccessTokens = [dbToken];
   }
-
   let referenceId;
   const createReferenceIdFunctions = getFunctionsOfType("createOrderReferenceId");
   if (!createReferenceIdFunctions || createReferenceIdFunctions.length === 0) {

@@ -23,7 +23,7 @@ export default {
   summary: (node, _, context) => orderSummary(context, node),
   totalItemQuantity,
   kitchenOrderID: (node) => {
-    console.log("node:- ", node)
+    // console.log("node:- ", node)
     return node.kitchenOrderID
   },
   deliveryTime: (node) => node.deliveryTime
