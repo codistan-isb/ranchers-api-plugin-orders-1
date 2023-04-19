@@ -19,8 +19,8 @@ export default {
   payments: (node, _, context) => payments(context, node),
   refunds: (node, _, context) => refunds(context, node),
   shop: resolveShopFromShopId,
-  status: (node) => node.workflow.status,
-  OrderStatus: (node) => node.workflow.status,
+  status: (node) => node.workflow?.status || {},
+  OrderStatus: (node) => node.workflow?.status || {},
   summary: (node, _, context) => orderSummary(context, node),
   totalItemQuantity,
   kitchenOrderID: (node) => {
