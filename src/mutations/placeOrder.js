@@ -1,4 +1,7 @@
+
 import _ from "lodash";
+import ObjectID from "mongodb";
+
 import SimpleSchema from "simpl-schema";
 import Logger from "@reactioncommerce/logger";
 import Random from "@reactioncommerce/random";
@@ -7,6 +10,8 @@ import getAnonymousAccessToken from "@reactioncommerce/api-utils/getAnonymousAcc
 import buildOrderFulfillmentGroupFromInput from "../util/buildOrderFulfillmentGroupFromInput.js";
 import verifyPaymentsMatchOrderTotal from "../util/verifyPaymentsMatchOrderTotal.js";
 import { Order as OrderSchema, orderInputSchema, Payment as PaymentSchema, paymentInputSchema } from "../simpleSchemas.js";
+import deliveryTimeCalculation from "../util/deliveryTimeCalculation.js";
+import generateKitchenOrderID from "../util/generateKitchenOrderID.js";
 
 const inputSchema = new SimpleSchema({
   "order": orderInputSchema,
@@ -112,9 +117,9 @@ async function createPayments({
  * @returns {Promise<Object>} Object with `order` property containing the created order
  */
 export default async function placeOrder(context, input) {
+  const today = new Date().toISOString().substr(0, 10);
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
-
   const { order: orderInput, payments: paymentsInput } = cleanedInput;
   const {
     billingAddress,
@@ -129,8 +134,22 @@ export default async function placeOrder(context, input) {
     notes
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } = context;
-  const { Orders, Cart } = collections;
+  const { Orders, Cart, BranchData } = collections;
+  // const query = { todayDate: today, branchID };
+  // const query = { todayDate: { $eq: today }, branchID: { $eq: branchID } };
+  const query = { todayDate: { $eq: today }, branchID: { $eq: branchID }, kitchenOrderID: { $exists: true } };
+  const generatedID = await generateKitchenOrderID(query, Orders, branchID);
+  console.log("Generated ID :- ", generatedID)
+  const kitchenOrderID = generatedID;
+  const todayDate = today;
+  console.log("todayDate:- ", todayDate)
+  // const _id = branchID
+  // // const branchData = await BranchData.findOne({ _id: branchID });
+  // const branchData = await BranchData.findOne({ _id: ObjectID.ObjectId(branchID) });
 
+  // console.log("branch Data :- ", branchData)
+  // console.log("fulfillmentGroups Data :- ", fulfillmentGroups[0].data.shippingAddress)
+  // const deliveryTimeCalculationResponse = await deliveryTimeCalculation(branchData, fulfillmentGroups[0].data.shippingAddress);
   const shop = await context.queries.shopById(context, shopId);
   if (!shop) throw new ReactionError("not-found", "Shop not found");
 
@@ -213,7 +232,7 @@ export default async function placeOrder(context, input) {
   const fullToken = accountId ? null : getAnonymousAccessToken();
 
   const now = new Date();
-
+  // const deliveryTimeCalculation= ""
   const order = {
     _id: orderId,
     accountId,
@@ -235,7 +254,9 @@ export default async function placeOrder(context, input) {
     workflow: {
       status: "new",
       workflow: ["new"]
-    }
+    },
+    kitchenOrderID,
+    todayDate
   };
 
   if (fullToken) {

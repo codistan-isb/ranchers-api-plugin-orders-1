@@ -20,6 +20,11 @@ export default {
   refunds: (node, _, context) => refunds(context, node),
   shop: resolveShopFromShopId,
   status: (node) => node.workflow.status,
+  OrderStatus: (node) => node.workflow.status,
   summary: (node, _, context) => orderSummary(context, node),
-  totalItemQuantity
+  totalItemQuantity,
+  kitchenOrderID: (node) => {
+    console.log("node:- ", node)
+    return node.kitchenOrderID
+  },
 };

@@ -1,8 +1,9 @@
+import generateKitchenOrderID from "../../util/generateKitchenOrderID.js";
 import {
   decodeCartOpaqueId,
   decodeFulfillmentMethodOpaqueId,
   decodeOrderItemsOpaqueIds,
-  decodeShopOpaqueId
+  decodeShopOpaqueId,
 } from "../../xforms/id.js";
 
 /**
@@ -19,18 +20,31 @@ import {
  * @returns {Promise<Object>} PlaceOrderPayload
  */
 export default async function placeOrder(parentResult, { input }, context) {
-  console.log(input)
+  // console.log("input:- ", input)
+  const today = new Date().toISOString().substr(0, 10);
   const { clientMutationId = null, order, payments, branchID, notes } = input;
-  const { cartId: opaqueCartId, fulfillmentGroups, shopId: opaqueShopId } = order;
+  const {
+    cartId: opaqueCartId,
+    fulfillmentGroups,
+    shopId: opaqueShopId,
+  } = order;
+  // const { Orders } = context.collections;
+  // const query = { todayDate: today, branchID };
 
+  // const generatedID = await generateKitchenOrderID(query, Orders);
+  // console.log("Generated ID :- ", generatedID)
+  // const kitchenOrderID = generatedID;
+  // const todayDate = today;
   const cartId = opaqueCartId ? decodeCartOpaqueId(opaqueCartId) : null;
   const shopId = decodeShopOpaqueId(opaqueShopId);
 
   const transformedFulfillmentGroups = fulfillmentGroups.map((group) => ({
     ...group,
     items: decodeOrderItemsOpaqueIds(group.items),
-    selectedFulfillmentMethodId: decodeFulfillmentMethodOpaqueId(group.selectedFulfillmentMethodId),
-    shopId: decodeShopOpaqueId(group.shopId)
+    selectedFulfillmentMethodId: decodeFulfillmentMethodOpaqueId(
+      group.selectedFulfillmentMethodId
+    ),
+    shopId: decodeShopOpaqueId(group.shopId),
   }));
 
   const { orders, token } = await context.mutations.placeOrder(context, {
@@ -40,18 +54,18 @@ export default async function placeOrder(parentResult, { input }, context) {
       fulfillmentGroups: transformedFulfillmentGroups,
       shopId,
       branchID,
-      notes
+      notes,
     },
     payments,
     branchID,
-    notes
+    notes,
   });
-  console.log("order", order)
+  console.log("order:- ", order);
   return {
     clientMutationId,
     orders,
     token,
     branchID,
-    notes
+    notes,
   };
 }

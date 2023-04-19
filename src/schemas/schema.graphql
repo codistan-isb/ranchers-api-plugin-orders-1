@@ -35,6 +35,8 @@ extend type Query {
     "Return only results that come after the Nth result. This parameter may be used with the `first` parameter."
     offset: Int
 
+    kitchenOrderID: String
+
     "Return results sorted in this order"
     sortOrder: SortOrder = desc
 
@@ -586,6 +588,8 @@ type Order implements Node {
 
   "The date and time at which this order was last updated"
   updatedAt: DateTime!
+
+  kitchenOrderID: String
 }
 extend enum PaymentMethodName {
   COD
@@ -762,7 +766,9 @@ input OrderInput {
   # "Notes about the order. This will always return an array but it may be empty"
   # notes: [OrderNoteInput]
 
-  branchID: String
+  # kitchenOrderID: String
+
+  # todayDate: String
 }
 
 "Input for adding order payments"
@@ -859,11 +865,13 @@ input PlaceOrderInput {
   """
   payments: [PaymentInput]
 
-  branchID: String
+  branchID: String!
 
   notes: [OrderNoteInput]
 }
-
+extend enum OrderStatusValue {
+  new
+}
 "Input for the moveOrderItems mutation"
 input MoveOrderItemsInput {
   "An optional string identifying the mutation call, which will be returned in the response payload"
@@ -983,8 +991,9 @@ type PlaceOrderPayload {
   "If you are not logged in, this will be a token that can be used for future requests"
   token: String
 
-  branchID: String
+  branchID: String!
 
+  kitchenOrderID: String
   # notes: [OrderNoteInput]
 }
 
@@ -1038,21 +1047,6 @@ enum OrderPaymentStatus {
   "A payment intent has been created"
   created
 }
-
-# "Order status"
-# enum OrderStatus {
-#   "Canceled order"
-#   canceled
-
-#   "A completed order"
-#   completed
-
-#   "A new order that needs processing"
-#   new
-
-#   "An order that is being processed"
-#   processing
-# }
 
 "Input for the createdAt database field"
 input CreatedAtInput {

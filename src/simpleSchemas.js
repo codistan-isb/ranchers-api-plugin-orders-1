@@ -883,6 +883,10 @@ export const OrderItem = new SimpleSchema({
     optional: true,
   },
   "notes.$": notesInputSchema,
+  kitchenOrderID: {
+    type: String,
+    optional: true,
+  },
   subtotal: Number,
   title: String,
   updatedAt: Date,
@@ -1228,11 +1232,7 @@ export const Order = new SimpleSchema({
     optional: true,
   },
   "history.$": History,
-  notes: {
-    type: Array,
-    optional: true,
-  },
-  "notes.$": notesInputSchema,
+
   ordererPreferredLanguage: {
     type: String,
     optional: true,
@@ -1247,6 +1247,14 @@ export const Order = new SimpleSchema({
   },
   shipping: [OrderFulfillmentGroup],
   shopId: String,
+  kitchenOrderID: {
+    type: String,
+    optional: true,
+  },
+  todayDate: {
+    type: String,
+    optional: true,
+  },
   branchID: {
     type: String,
     optional: true,
