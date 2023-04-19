@@ -590,6 +590,8 @@ type Order implements Node {
   updatedAt: DateTime!
 
   kitchenOrderID: String
+
+  deliveryTime: Int
 }
 extend enum PaymentMethodName {
   COD

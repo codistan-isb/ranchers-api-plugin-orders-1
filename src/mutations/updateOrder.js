@@ -68,7 +68,14 @@ export default async function updateOrder(context, input) {
     modifier.$push = {
       "workflow.workflow": status
     };
+
   }
+  if (status === 'ready') {
+    modifier.$set["deliveryTime"] = 0;
+  }
+  modifier.$push = {
+    "deliveryTime": 0
+  };
 
   // Skip updating if we have no updates to make
   if (Object.keys(modifier.$set).length === 1) return { order };

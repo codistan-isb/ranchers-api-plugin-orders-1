@@ -887,6 +887,10 @@ export const OrderItem = new SimpleSchema({
     type: String,
     optional: true,
   },
+  deliveryTime: {
+    type: Number,
+    optional: true,
+  },
   subtotal: Number,
   title: String,
   updatedAt: Date,
@@ -1249,6 +1253,10 @@ export const Order = new SimpleSchema({
   shopId: String,
   kitchenOrderID: {
     type: String,
+    optional: true,
+  },
+  deliveryTime: {
+    type: Number,
     optional: true,
   },
   todayDate: {
