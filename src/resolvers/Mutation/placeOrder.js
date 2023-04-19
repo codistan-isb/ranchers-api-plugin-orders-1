@@ -53,7 +53,7 @@ export default async function placeOrder(parentResult, { input }, context) {
       cartId,
       fulfillmentGroups: transformedFulfillmentGroups,
       shopId,
-      branchID,
+
       notes,
     },
     payments,
@@ -65,7 +65,6 @@ export default async function placeOrder(parentResult, { input }, context) {
     clientMutationId,
     orders,
     token,
-    branchID,
     notes,
   };
 }
