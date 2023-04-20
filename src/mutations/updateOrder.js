@@ -70,18 +70,18 @@ export default async function updateOrder(context, input) {
     };
 
   }
+
+
+  // Skip updating if we have no updates to make
+  if (Object.keys(modifier.$set).length === 1) return { order };
+
+  OrderSchema.validate(modifier, { modifier: true });
   if (status === 'ready') {
     modifier.$set["prepTime"] = 0;
   }
   modifier.$push = {
     "prepTime": 0
   };
-
-  // Skip updating if we have no updates to make
-  if (Object.keys(modifier.$set).length === 1) return { order };
-
-  OrderSchema.validate(modifier, { modifier: true });
-
   const { modifiedCount, value: updatedOrder } = await Orders.findOneAndUpdate(
     { _id: orderId },
     modifier,
