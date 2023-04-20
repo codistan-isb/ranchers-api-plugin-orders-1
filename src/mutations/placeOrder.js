@@ -120,7 +120,7 @@ export default async function placeOrder(context, input) {
   const today = new Date().toISOString().substr(0, 10);
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
-  const { order: orderInput, payments: paymentsInput } = cleanedInput;
+  const { order: orderInput, payments: paymentsInput,    branchID,notes  } = cleanedInput;
   const {
     billingAddress,
     cartId,
@@ -129,9 +129,8 @@ export default async function placeOrder(context, input) {
     email,
     fulfillmentGroups,
     ordererPreferredLanguage,
-    shopId,
-    branchID,
-    notes
+    shopId
+    
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } = context;
   const { Orders, Cart, BranchData } = collections;
