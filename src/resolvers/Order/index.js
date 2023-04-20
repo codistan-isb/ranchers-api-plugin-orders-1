@@ -26,5 +26,6 @@ export default {
     // console.log("node:- ", node)
     return node.kitchenOrderID
   },
+  branchID:(node)=> node.branchID,
   deliveryTime: (node) => node.deliveryTime+node.prepTime
 };
