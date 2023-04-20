@@ -584,7 +584,9 @@ type Order implements Node {
 
   "Total quantity of all items in the order"
   totalItemQuantity: Int!
-
+  
+  branchID:ID
+  
   "The date and time at which this order was last updated"
   updatedAt: DateTime!
 
