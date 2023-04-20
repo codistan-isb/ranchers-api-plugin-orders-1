@@ -1192,6 +1192,14 @@ export const Order = new SimpleSchema({
     type: Array,
     optional: true,
   },
+  prepTime:{
+    type:Number,
+    optional:true,
+  },
+  deliveryTime:{
+    type:Number,
+    optional:true,
+  },
   "anonymousAccessTokens.$": AnonymousAccessToken,
   // Although billing address is typically needed only by the payment plugin,
   // some tax services require it to calculate taxes for digital items. Thus
