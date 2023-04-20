@@ -26,5 +26,5 @@ export default {
     // console.log("node:- ", node)
     return node.kitchenOrderID
   },
-  deliveryTime: (node) => node.deliveryTime
+  deliveryTime: (node) => node.deliveryTime+node.prepTime
 };

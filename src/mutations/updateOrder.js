@@ -76,12 +76,10 @@ export default async function updateOrder(context, input) {
   if (Object.keys(modifier.$set).length === 1) return { order };
 
   OrderSchema.validate(modifier, { modifier: true });
-  if (status === 'ready') {
+  if (status === 'ready'||status === 'completed') {
     modifier.$set["prepTime"] = 0;
   }
-  modifier.$push = {
-    "prepTime": 0
-  };
+  
   const { modifiedCount, value: updatedOrder } = await Orders.findOneAndUpdate(
     { _id: orderId },
     modifier,
