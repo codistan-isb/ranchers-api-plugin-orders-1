@@ -159,7 +159,8 @@ export default async function placeOrder(context, input) {
 
   console.log("fulfillmentGroups Data :- ", fulfillmentGroups[0].data.shippingAddress)
   const deliveryTimeCalculationResponse = await deliveryTimeCalculation(branchData, fulfillmentGroups[0].data.shippingAddress);
-  const deliveryTime = deliveryTimeCalculationResponse + (prepTime || 20);
+  const deliveryTime = deliveryTimeCalculationResponse ;
+  prepTime=(prepTime || 20);
   console.log("deliveryTime:- ", deliveryTime)
 
   const shop = await context.queries.shopById(context, shopId);
@@ -269,6 +270,7 @@ export default async function placeOrder(context, input) {
     },
     kitchenOrderID,
     todayDate,
+    prepTime,
     deliveryTime
   };
 
