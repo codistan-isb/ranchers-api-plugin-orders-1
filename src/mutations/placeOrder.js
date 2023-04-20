@@ -116,7 +116,7 @@ async function createPayments({
  * @returns {Promise<Object>} Object with `order` property containing the created order
  */
 export default async function placeOrder(context, input) {
-  const prepTime = 0
+  let prepTime = 0
   const today = new Date().toISOString().substr(0, 10);
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
