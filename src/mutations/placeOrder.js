@@ -120,7 +120,9 @@ export default async function placeOrder(context, input) {
   const today = new Date().toISOString().substr(0, 10);
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
-  const { order: orderInput, payments: paymentsInput,    branchID,notes  } = cleanedInput;
+  const { order: orderInput, payments: paymentsInput } = cleanedInput;
+  console.log("placeOrderInput",input)
+  const {branchID,notes}=input;
   const {
     billingAddress,
     cartId,
@@ -316,6 +318,7 @@ export default async function placeOrder(context, input) {
 
   // Validate and save
   OrderSchema.validate(order);
+  console.log("Order input ",order)
   await Orders.insertOne(order);
 
   await appEvents.emit("afterOrderCreate", { createdBy: userId, order });
