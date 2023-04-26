@@ -872,9 +872,9 @@ input PlaceOrderInput {
 
   notes: [OrderNoteInput]
 }
-extend enum OrderStatusValue {
-  new
-}
+# extend enum OrderStatusValue {
+#   new
+# }
 "Input for the moveOrderItems mutation"
 input MoveOrderItemsInput {
   "An optional string identifying the mutation call, which will be returned in the response payload"
