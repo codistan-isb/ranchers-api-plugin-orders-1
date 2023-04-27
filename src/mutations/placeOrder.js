@@ -121,7 +121,7 @@ export default async function placeOrder(context, input) {
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
   const { order: orderInput, payments: paymentsInput } = cleanedInput;
-  console.log("placeOrderInput", input)
+  // console.log("placeOrderInput", input)
   const { branchID, notes } = input;
   const {
     billingAddress,
@@ -140,11 +140,11 @@ export default async function placeOrder(context, input) {
   // const query = { todayDate: { $eq: today }, branchID: { $eq: branchID } };
   const query = { todayDate: { $eq: today }, branchID: { $eq: branchID }, kitchenOrderID: { $exists: true } };
   const generatedID = await generateKitchenOrderID(query, Orders, branchID);
-  console.log("Generated ID :- ", generatedID)
+  // console.log("Generated ID :- ", generatedID)
   const kitchenOrderID = generatedID;
   const todayDate = today;
-  console.log("todayDate:- ", todayDate);
-  console.log(branchID)
+  // console.log("todayDate:- ", todayDate);
+  // console.log(branchID)
   const branchData = await BranchData.findOne({ _id: ObjectID.ObjectId(branchID) });
   // if (branchData) {
   //   console.log("branch Data :- ", branchData.prepTime)
@@ -157,13 +157,13 @@ export default async function placeOrder(context, input) {
     prepTime = branchData.prepTime
   }
 
-  console.log("fulfillmentGroups Data :- ", fulfillmentGroups[0].data.shippingAddress)
+  // console.log("fulfillmentGroups Data :- ", fulfillmentGroups[0].data.shippingAddress)
   const deliveryTimeCalculationResponse = await deliveryTimeCalculation(branchData, fulfillmentGroups[0].data.shippingAddress);
-  console.log(deliveryTimeCalculationResponse)
+  // console.log(deliveryTimeCalculationResponse)
   // deliveryTimeCalculationResponse ;
   const deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
   prepTime = (prepTime || 20);
-  console.log("deliveryTime:- ", deliveryTime)
+  // console.log("deliveryTime:- ", deliveryTime)
 
   const shop = await context.queries.shopById(context, shopId);
   if (!shop) throw new ReactionError("not-found", "Shop not found");
@@ -322,7 +322,7 @@ export default async function placeOrder(context, input) {
 
   // Validate and save
   OrderSchema.validate(order);
-  console.log("Order input ", order)
+  // console.log("Order input ", order)
   await Orders.insertOne(order);
 
   await appEvents.emit("afterOrderCreate", { createdBy: userId, order });

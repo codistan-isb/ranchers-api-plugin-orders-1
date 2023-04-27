@@ -46,7 +46,7 @@ export default async function addShipmentMethodToGroup(context, {
   }
 
   const selectedFulfillmentMethod = rates.find((rate) => selectedFulfillmentMethodId === rate.method?._id);
-  console.log(selectedFulfillmentMethod)
+  // console.log(selectedFulfillmentMethod)
   if (!selectedFulfillmentMethod) {
     throw new ReactionError("invalid", "The selected fulfillment method is no longer available." +
       " Fetch updated fulfillment options and try creating the order again with a valid method.");

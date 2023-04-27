@@ -32,14 +32,14 @@ export default async function createNotification(context, args) {
     url: url?url:"/this/is/url",
   };
   let NotificationsAdded = await Notifications.insertOne(insert_obj);
-  console.log("NotificationsAdded.insertedId",NotificationsAdded.insertedId);
+  // console.log("NotificationsAdded.insertedId",NotificationsAdded.insertedId);
   
   if (NotificationsAdded.insertedId) {
 
     let nptif_res= await Notifications.findOne({ _id: NotificationsAdded.insertedId });
     pubSub.publish(`notifications-${to}`, { notifications: nptif_res});
 
-    console.log(nptif_res)
+    // console.log(nptif_res)
     return await nptif_res
   } else {
     throw new Error("Something went wrong");

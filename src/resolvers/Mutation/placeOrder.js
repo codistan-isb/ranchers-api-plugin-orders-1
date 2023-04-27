@@ -60,7 +60,7 @@ export default async function placeOrder(parentResult, { input }, context) {
     branchID,
     notes,
   });
-  console.log("order:- ", order);
+  // console.log("order:- ", order);
   return {
     clientMutationId,
     orders,

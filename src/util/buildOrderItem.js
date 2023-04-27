@@ -14,7 +14,7 @@ import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
 export default async function buildOrderItem(context, { currencyCode, inputItem, cart }) {
   const { queries, collections } = context;
   const accountId = context.userId;
-  console.log(context.userId)
+  // console.log(context.userId)
   // const { Bids } = collections;
   let {
     addedAt,
@@ -45,7 +45,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
     let decodeVariantId = decodeOpaqueId(productVariantId).id;
 
     if (context.userId) {
-      console.log('user Id', context.userId);
+      // console.log('user Id', context.userId);
       // if (Bids !== undefined || Bids !== null || Bids !== '') {
       //   let activeBids = await Bids.findOne({
       //     createdBy: accountId,
