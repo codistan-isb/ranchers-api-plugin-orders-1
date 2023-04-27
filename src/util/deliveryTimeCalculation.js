@@ -14,8 +14,8 @@ export default async function deliveryTimeCalculation(
     // const apiKey = 'AIzaSyDsK8_E12WZ1Wixbh30QPJxc10JJb4ukFI';
     console.log(deliveryAddress);
     console.log(branchAddress)
-    // const origin = branchAddress.Latitude + "," + branchAddress.Longitude;
-    const origin = "Askari Blvd, Askari 14, Rawalpindi, Punjab 47311, Pakistan"
+    const origin = branchAddress.Latitude + "," + branchAddress.Longitude;
+    // const origin = "Askari Blvd, Askari 14, Rawalpindi, Punjab 47311, Pakistan"
     const units = 'imperial';
     // const mode = 'bicycling';
     // "33.6404186,73.0636572"
