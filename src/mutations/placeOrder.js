@@ -160,7 +160,8 @@ export default async function placeOrder(context, input) {
   console.log("fulfillmentGroups Data :- ", fulfillmentGroups[0].data.shippingAddress)
   const deliveryTimeCalculationResponse = await deliveryTimeCalculation(branchData, fulfillmentGroups[0].data.shippingAddress);
   console.log(deliveryTimeCalculationResponse)
-  const deliveryTime = deliveryTimeCalculationResponse;
+  // deliveryTimeCalculationResponse ;
+  const deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
   prepTime = (prepTime || 20);
   console.log("deliveryTime:- ", deliveryTime)
 
