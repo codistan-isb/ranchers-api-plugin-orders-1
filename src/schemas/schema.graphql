@@ -117,6 +117,10 @@ extend type Query {
 }
 
 extend type Mutation {
+
+# addBranchNotestoOrder()
+
+
   """
   Use this mutation to add a new order fulfillment group to an order. It must have at least one
   item. Items may be provided or moved from another existing group or both.
@@ -1077,3 +1081,4 @@ input OrderFilterInput {
   "The order's status to filter by"
   status: OrderStatusValue
 }
+

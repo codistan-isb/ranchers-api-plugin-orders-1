@@ -121,8 +121,8 @@ export default async function placeOrder(context, input) {
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
   const { order: orderInput, payments: paymentsInput } = cleanedInput;
-  console.log("placeOrderInput",input)
-  const {branchID,notes}=input;
+  console.log("placeOrderInput", input)
+  const { branchID, notes } = input;
   const {
     billingAddress,
     cartId,
@@ -132,7 +132,7 @@ export default async function placeOrder(context, input) {
     fulfillmentGroups,
     ordererPreferredLanguage,
     shopId
-    
+
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } = context;
   const { Orders, Cart, BranchData } = collections;
@@ -159,8 +159,9 @@ export default async function placeOrder(context, input) {
 
   console.log("fulfillmentGroups Data :- ", fulfillmentGroups[0].data.shippingAddress)
   const deliveryTimeCalculationResponse = await deliveryTimeCalculation(branchData, fulfillmentGroups[0].data.shippingAddress);
-  const deliveryTime = deliveryTimeCalculationResponse ;
-  prepTime=(prepTime || 20);
+  console.log(deliveryTimeCalculationResponse)
+  const deliveryTime = deliveryTimeCalculationResponse;
+  prepTime = (prepTime || 20);
   console.log("deliveryTime:- ", deliveryTime)
 
   const shop = await context.queries.shopById(context, shopId);
@@ -320,7 +321,7 @@ export default async function placeOrder(context, input) {
 
   // Validate and save
   OrderSchema.validate(order);
-  console.log("Order input ",order)
+  console.log("Order input ", order)
   await Orders.insertOne(order);
 
   await appEvents.emit("afterOrderCreate", { createdBy: userId, order });
