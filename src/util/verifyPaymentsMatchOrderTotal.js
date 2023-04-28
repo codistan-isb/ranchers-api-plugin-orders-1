@@ -12,8 +12,10 @@ import ReactionError from "@reactioncommerce/reaction-error";
  */
 export default function verifyPaymentsMatchOrderTotal(paymentsInput, orderTotal, taxPercentage) {
   // console.log("taxPercentage", taxPercentage)
-  var taxAmount = orderTotal * 0.18;
-  orderTotal = orderTotal + taxAmount;
+  if (taxPercentage) {
+    var taxAmount = orderTotal * taxPercentage;
+    orderTotal = orderTotal + taxAmount;
+  }
   const paymentTotal = paymentsInput.reduce((sum, paymentInput) => sum + paymentInput.amount, 0);
   // console.log("paymentTotal ", paymentTotal)
   // In order to prevent mismatch due to rounding, we convert these to strings before comparing. What we really
