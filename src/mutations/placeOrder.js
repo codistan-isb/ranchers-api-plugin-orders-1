@@ -43,14 +43,19 @@ async function createPayments({
   orderTotal,
   paymentsInput,
   shippingAddress,
-  shop
+  shop,
+  taxPercentage
 }) {
+
+
+  // console.log(taxPercentage)
+
   // Determining which payment methods are enabled for the shop
   const availablePaymentMethods = shop.availablePaymentMethods || [];
 
   // Verify that total of payment inputs equals total due. We need to be sure
   // to do this before creating any payment authorizations
-  verifyPaymentsMatchOrderTotal(paymentsInput || [], orderTotal);
+  verifyPaymentsMatchOrderTotal(paymentsInput || [], orderTotal, taxPercentage);
 
   // Create authorized payments for each
   const paymentPromises = (paymentsInput || []).map(async (paymentInput) => {
@@ -116,7 +121,8 @@ async function createPayments({
  * @returns {Promise<Object>} Object with `order` property containing the created order
  */
 export default async function placeOrder(context, input) {
-  let prepTime = 0
+  let prepTime = 0;
+  let taxID = "";
   const today = new Date().toISOString().substr(0, 10);
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
@@ -135,35 +141,31 @@ export default async function placeOrder(context, input) {
 
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } = context;
-  const { Orders, Cart, BranchData } = collections;
+  const { TaxRate, Orders, Cart, BranchData } = collections;
   // const query = { todayDate: today, branchID };
   // const query = { todayDate: { $eq: today }, branchID: { $eq: branchID } };
   const query = { todayDate: { $eq: today }, branchID: { $eq: branchID }, kitchenOrderID: { $exists: true } };
   const generatedID = await generateKitchenOrderID(query, Orders, branchID);
-  // console.log("Generated ID :- ", generatedID)
   const kitchenOrderID = generatedID;
   const todayDate = today;
-  // console.log("todayDate:- ", todayDate);
-  // console.log(branchID)
   const branchData = await BranchData.findOne({ _id: ObjectID.ObjectId(branchID) });
-  // if (branchData) {
-  //   console.log("branch Data :- ", branchData.prepTime)
-  //   prepTime = branchData.prepTime;
-  // }
-  // else {
-  //   prepTime = 20
-  // }
   if (branchData) {
-    prepTime = branchData.prepTime
+    prepTime = branchData.prepTime;
+    taxID = branchData.taxID
   }
-
-  // console.log("fulfillmentGroups Data :- ", fulfillmentGroups[0].data.shippingAddress)
+  // console.log(branchData)
   const deliveryTimeCalculationResponse = await deliveryTimeCalculation(branchData, fulfillmentGroups[0].data.shippingAddress);
   // console.log(deliveryTimeCalculationResponse)
   // deliveryTimeCalculationResponse ;
   const deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
+  // const deliveryTime = 35;
   prepTime = (prepTime || 20);
-  // console.log("deliveryTime:- ", deliveryTime)
+  // console.log("deliveryTime:- ", typeof (deliveryTime))
+  // Tax Calculation
+  // console.log("tax ID ", taxID)
+  const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
+  // console.log(taxData.Cash)
+  const taxPercentage = taxData.Cash;
 
   const shop = await context.queries.shopById(context, shopId);
   if (!shop) throw new ReactionError("not-found", "Shop not found");
@@ -227,7 +229,6 @@ export default async function placeOrder(context, input) {
 
     // Add the group total to the order total
     orderTotal += group.invoice.total;
-
     return group;
   }));
 
@@ -240,7 +241,8 @@ export default async function placeOrder(context, input) {
     orderTotal,
     paymentsInput,
     shippingAddress: shippingAddressForPayments,
-    shop
+    shop,
+    taxPercentage
   });
 
   // Create anonymousAccessToken if no account ID
