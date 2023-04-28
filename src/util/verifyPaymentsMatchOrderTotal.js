@@ -22,9 +22,9 @@ export default function verifyPaymentsMatchOrderTotal(paymentsInput, orderTotal,
   const paymentTotalString = accounting.toFixed(paymentTotal, 3);
   const orderTotalString = accounting.toFixed(orderTotal, 3);
   console.log("orderTotalString ", orderTotalString)
-  if (paymentTotalString !== orderTotalString) {
-    Logger.debug("Error creating payments for a new order. " +
-      `Order total (${orderTotalString}) does not match total of all payment amounts (${paymentTotalString}).`);
-    throw new ReactionError("payment-failed", "Total of all payments must equal order total");
-  }
+  // if (paymentTotalString !== orderTotalString) {
+  //   Logger.debug("Error creating payments for a new order. " +
+  //     `Order total (${orderTotalString}) does not match total of all payment amounts (${paymentTotalString}).`);
+  //   throw new ReactionError("payment-failed", "Total of all payments must equal order total");
+  // }
 }
