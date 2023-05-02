@@ -115,12 +115,17 @@ extend type Query {
     token: String
   ): [Refund]
 }
-
+# type updateOrderTimePayload {
+#   deliveryTime: String
+# }
 extend type Mutation {
-
-# addBranchNotestoOrder()
-
-
+  updateOrderTime(
+    riderID: String!
+    orderID: String!
+    Latitude: String!
+    Longitude: String!
+  ): String
+  
   """
   Use this mutation to add a new order fulfillment group to an order. It must have at least one
   item. Items may be provided or moved from another existing group or both.
@@ -184,7 +189,6 @@ extend type Mutation {
     input: UpdateOrderFulfillmentGroupInput!
   ): UpdateOrderFulfillmentGroupPayload!
 }
-
 "Allowed values for the `OrderFulfillmentGroupItems` sortBy parameter"
 enum OrderFulfillmentGroupItemsSortByField {
   "Sort by the item ID"
@@ -588,15 +592,15 @@ type Order implements Node {
 
   "Total quantity of all items in the order"
   totalItemQuantity: Int!
-  
-  branchID:ID
-  
+
+  branchID: ID
+
   "The date and time at which this order was last updated"
   updatedAt: DateTime!
 
   kitchenOrderID: String
 
-  deliveryTime: Int
+  deliveryTime: Float
 }
 extend enum PaymentMethodName {
   COD
@@ -1081,4 +1085,3 @@ input OrderFilterInput {
   "The order's status to filter by"
   status: OrderStatusValue
 }
-

@@ -6,7 +6,7 @@ import placeOrder from "./placeOrder.js";
 import splitOrderItem from "./splitOrderItem.js";
 import updateOrder from "./updateOrder.js";
 import updateOrderFulfillmentGroup from "./updateOrderFulfillmentGroup.js";
-
+import updateOrderTime from "./updateOrderTime.js";
 export default {
   addOrderFulfillmentGroup,
   cancelOrderItem,
@@ -16,4 +16,5 @@ export default {
   splitOrderItem,
   updateOrder,
   updateOrderFulfillmentGroup,
+  updateOrderTime,
 };
