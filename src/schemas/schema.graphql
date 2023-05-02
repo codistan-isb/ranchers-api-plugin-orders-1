@@ -600,7 +600,7 @@ type Order implements Node {
 
   kitchenOrderID: String
 
-  deliveryTime: Float
+  deliveryTime: String
 }
 extend enum PaymentMethodName {
   COD

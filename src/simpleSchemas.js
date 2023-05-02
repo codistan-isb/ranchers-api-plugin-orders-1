@@ -888,7 +888,7 @@ export const OrderItem = new SimpleSchema({
     optional: true,
   },
   deliveryTime: {
-    type: Number,
+    type: String,
     optional: true,
   },
   subtotal: Number,
@@ -1197,7 +1197,7 @@ export const Order = new SimpleSchema({
     optional:true,
   },
   deliveryTime:{
-    type:Number,
+    type:String,
     optional:true,
   },
   "anonymousAccessTokens.$": AnonymousAccessToken,
@@ -1264,7 +1264,7 @@ export const Order = new SimpleSchema({
     optional: true,
   },
   deliveryTime: {
-    type: Number,
+    type: String,
     optional: true,
   },
   todayDate: {
