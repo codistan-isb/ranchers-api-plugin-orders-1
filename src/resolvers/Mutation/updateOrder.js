@@ -1,3 +1,4 @@
+import sendOrderEmail from "../../util/sendOrderEmail.js";
 import { decodeOrderOpaqueId } from "../../xforms/id.js";
 
 /**
@@ -23,14 +24,18 @@ export default async function updateOrder(parentResult, { input }, context) {
     orderId,
     status
   } = input;
-
+  console.log("input ", input)
   const { order } = await context.mutations.updateOrder(context, {
     customFields,
     email,
     orderId: decodeOrderOpaqueId(orderId),
     status
   });
-
+  // console.log("Order Resp ", order)
+  if (status === 'confirmed') {
+    // Send email to notify customer of a refund
+    sendOrderEmail(context, order, "confirmed");
+  }
   return {
     clientMutationId,
     order

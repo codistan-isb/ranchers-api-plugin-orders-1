@@ -23,7 +23,7 @@ export default function verifyPaymentsMatchOrderTotal(paymentsInput, orderTotal,
   // No currencies have greater than 3 decimal places, so we'll use 3.
   const paymentTotalString = accounting.toFixed(paymentTotal, 3);
   const orderTotalString = accounting.toFixed(orderTotal, 3);
-  console.log("orderTotalString ", orderTotalString)
+  // console.log("orderTotalString ", orderTotalString)
   // if (paymentTotalString !== orderTotalString) {
   //   Logger.debug("Error creating payments for a new order. " +
   //     `Order total (${orderTotalString}) does not match total of all payment amounts (${paymentTotalString}).`);

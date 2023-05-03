@@ -14,7 +14,7 @@ export default async function sendOrderEmail(context, order, action) {
     Logger.info("No order email found. No email sent.");
     return false;
   }
-
+  // console.log("Email action: ", action)
   const dataForEmail = {};
   const getDataForOrderEmailFns = context.getFunctionsOfType("getDataForOrderEmail");
   for (const getDataForOrderEmailFn of getDataForOrderEmailFns) {

@@ -138,7 +138,6 @@ export default async function placeOrder(context, input) {
     fulfillmentGroups,
     ordererPreferredLanguage,
     shopId
-
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } = context;
   const { TaxRate, Orders, Cart, BranchData } = collections;

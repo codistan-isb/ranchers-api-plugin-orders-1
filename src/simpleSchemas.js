@@ -888,7 +888,7 @@ export const OrderItem = new SimpleSchema({
     optional: true,
   },
   deliveryTime: {
-    type: String,
+    type: Number,
     optional: true,
   },
   subtotal: Number,
@@ -1192,13 +1192,13 @@ export const Order = new SimpleSchema({
     type: Array,
     optional: true,
   },
-  prepTime:{
-    type:Number,
-    optional:true,
+  prepTime: {
+    type: Number,
+    optional: true,
   },
-  deliveryTime:{
-    type:String,
-    optional:true,
+  deliveryTime: {
+    type: Number,
+    optional: true,
   },
   "anonymousAccessTokens.$": AnonymousAccessToken,
   // Although billing address is typically needed only by the payment plugin,
@@ -1264,7 +1264,7 @@ export const Order = new SimpleSchema({
     optional: true,
   },
   deliveryTime: {
-    type: String,
+    type: Number,
     optional: true,
   },
   todayDate: {

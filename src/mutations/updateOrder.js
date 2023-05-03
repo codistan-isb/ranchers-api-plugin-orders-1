@@ -1,6 +1,7 @@
 import SimpleSchema from "simpl-schema";
 import ReactionError from "@reactioncommerce/reaction-error";
 import { Order as OrderSchema } from "../simpleSchemas.js";
+import sendOrderEmail from "./sendOrderEmail.js";
 
 const inputSchema = new SimpleSchema({
   customFields: {
@@ -58,6 +59,10 @@ export default async function updateOrder(context, input) {
       updatedAt: new Date()
     }
   };
+  if (status === 'confirmed') {
+
+    modifier.$set.confirmationTime = new Date()
+  }
 
   if (email) modifier.$set.email = email;
 
@@ -76,17 +81,24 @@ export default async function updateOrder(context, input) {
   if (Object.keys(modifier.$set).length === 1) return { order };
 
   OrderSchema.validate(modifier, { modifier: true });
-  if (status === 'ready'||status === 'completed') {
+  if (status === 'ready' || status === 'completed') {
     modifier.$set["prepTime"] = 0;
   }
-  
+
   const { modifiedCount, value: updatedOrder } = await Orders.findOneAndUpdate(
     { _id: orderId },
     modifier,
     { returnOriginal: false }
   );
+  // console.log(modifiedCount)
+  // console.log(updatedOrder)
+  // console.log(status)
   if (modifiedCount === 0 || !updatedOrder) throw new ReactionError("server-error", "Unable to update order");
-
+  // if (modifiedCount === 1 && status === 'confirmed') {
+  //   console.log("confirmed");
+  //   // Send email to notify customer of a refund
+  //   sendOrderEmail(context, updatedOrder, "confirmed");
+  // }
   await appEvents.emit("afterOrderUpdate", {
     order: updatedOrder,
     updatedBy: userId
