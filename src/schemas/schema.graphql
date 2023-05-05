@@ -601,6 +601,10 @@ type Order implements Node {
   kitchenOrderID: String
 
   deliveryTime: Float
+
+  Latitude: Float
+
+  Longitude: Float
 }
 extend enum PaymentMethodName {
   COD
@@ -879,6 +883,10 @@ input PlaceOrderInput {
   branchID: String!
 
   notes: [OrderNoteInput]
+
+  Latitude: Float
+
+  Longitude: Float
 }
 # extend enum OrderStatusValue {
 #   new
@@ -1005,6 +1013,10 @@ type PlaceOrderPayload {
   branchID: String
 
   kitchenOrderID: String
+
+  Latitude: Float
+
+  Longitude: Float
   # notes: [OrderNoteInput]
 }
 

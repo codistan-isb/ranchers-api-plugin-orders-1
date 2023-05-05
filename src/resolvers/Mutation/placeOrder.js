@@ -22,19 +22,12 @@ import {
 export default async function placeOrder(parentResult, { input }, context) {
   // console.log("input:- ", input)
   const today = new Date().toISOString().substr(0, 10);
-  const { clientMutationId = null, order, payments, branchID, notes } = input;
+  const { clientMutationId = null, order, payments, branchID, notes, Latitude, Longitude } = input;
   const {
     cartId: opaqueCartId,
     fulfillmentGroups,
     shopId: opaqueShopId,
   } = order;
-  // const { Orders } = context.collections;
-  // const query = { todayDate: today, branchID };
-
-  // const generatedID = await generateKitchenOrderID(query, Orders);
-  // console.log("Generated ID :- ", generatedID)
-  // const kitchenOrderID = generatedID;
-  // const todayDate = today;
   const cartId = opaqueCartId ? decodeCartOpaqueId(opaqueCartId) : null;
   const shopId = decodeShopOpaqueId(opaqueShopId);
 
@@ -53,12 +46,13 @@ export default async function placeOrder(parentResult, { input }, context) {
       cartId,
       fulfillmentGroups: transformedFulfillmentGroups,
       shopId,
-
       notes,
     },
     payments,
     branchID,
     notes,
+    Latitude,
+    Longitude
   });
   // console.log("order:- ", order);
   return {

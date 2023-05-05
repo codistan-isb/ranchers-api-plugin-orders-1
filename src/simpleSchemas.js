@@ -324,6 +324,14 @@ export const CommonOrderItem = new SimpleSchema({
     type: String,
     optional: true,
   },
+  Longitude: {
+    type: Number,
+    optional: true,
+  },
+  Latitude: {
+    type: Number,
+    optional: true,
+  },
   notes: {
     type: Array,
     optional: true,
@@ -438,6 +446,14 @@ export const CommonOrder = new SimpleSchema({
     type: String,
     optional: true,
   },
+  Longitude: {
+    type: Number,
+    optional: true,
+  },
+  Latitude: {
+    type: Number,
+    optional: true,
+  },
   notes: {
     type: Array,
     optional: true,
@@ -484,6 +500,14 @@ export const orderFulfillmentGroupInputSchema = new SimpleSchema({
   shopId: String,
   branchID: {
     type: String,
+    optional: true,
+  },
+  Longitude: {
+    type: Number,
+    optional: true,
+  },
+  Latitude: {
+    type: Number,
     optional: true,
   },
   notes: {
@@ -539,6 +563,14 @@ export const orderInputSchema = new SimpleSchema({
   shopId: String,
   branchID: {
     type: String,
+    optional: true,
+  },
+  Longitude: {
+    type: Number,
+    optional: true,
+  },
+  Latitude: {
+    type: Number,
     optional: true,
   },
   notes: {
@@ -622,6 +654,14 @@ const ExportHistory = new SimpleSchema({
   },
   branchID: {
     type: String,
+    optional: true,
+  },
+  Longitude: {
+    type: Number,
+    optional: true,
+  },
+  Latitude: {
+    type: Number,
     optional: true,
   },
   notes: {
@@ -818,6 +858,14 @@ export const OrderItem = new SimpleSchema({
     type: String,
     optional: true,
   },
+  Longitude: {
+    type: Number,
+    optional: true,
+  },
+  Latitude: {
+    type: Number,
+    optional: true,
+  },
   notes: {
     type: Array,
     optional: true,
@@ -993,6 +1041,14 @@ export const OrderFulfillmentGroup = new SimpleSchema({
     type: String,
     optional: true,
   },
+  Longitude: {
+    type: Number,
+    optional: true,
+  },
+  Latitude: {
+    type: Number,
+    optional: true,
+  },
   notes: {
     type: Array,
     optional: true,
@@ -1135,6 +1191,14 @@ export const Payment = new SimpleSchema({
     type: String,
     optional: true,
   },
+  Longitude: {
+    type: Number,
+    optional: true,
+  },
+  Latitude: {
+    type: Number,
+    optional: true,
+  },
   notes: {
     type: Array,
     optional: true,
@@ -1273,6 +1337,14 @@ export const Order = new SimpleSchema({
   },
   branchID: {
     type: String,
+    optional: true,
+  },
+  Longitude: {
+    type: Number,
+    optional: true,
+  },
+  Latitude: {
+    type: Number,
     optional: true,
   },
   notes: {

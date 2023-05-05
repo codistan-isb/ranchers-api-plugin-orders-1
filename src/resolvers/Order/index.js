@@ -9,6 +9,7 @@ import totalItemQuantity from "./totalItemQuantity.js";
 import billingName from "./billingName.js";
 
 export default {
+
   _id: (node) => encodeOrderOpaqueId(node._id),
   account: resolveAccountFromAccountId,
   billingName: (node) => billingName(node),
@@ -19,13 +20,21 @@ export default {
   payments: (node, _, context) => payments(context, node),
   refunds: (node, _, context) => refunds(context, node),
   shop: resolveShopFromShopId,
-  status: (node) => node.workflow?.status || "",
+  status: (node) => {
+    console.log("Status Node ", node)
+    return node.workflow?.status || ""
+  },
   summary: (node, _, context) => orderSummary(context, node),
   totalItemQuantity,
   kitchenOrderID: (node) => {
     // console.log("node:- ", node)
     return node.kitchenOrderID
   },
-  branchID:(node)=> node.branchID,
-  deliveryTime: (node) => node.deliveryTime+node.prepTime
+  branchID: (node) => node.branchID,
+  deliveryTime: (node) => node.deliveryTime + node.prepTime,
+  Latitude: (node) => {
+    console.log("Lat node: ", node)
+    return node.Latitude
+  },
+  Longitude: (node) => node.Longitude,
 };

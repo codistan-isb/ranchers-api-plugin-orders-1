@@ -128,7 +128,7 @@ export default async function placeOrder(context, input) {
   inputSchema.validate(cleanedInput);
   const { order: orderInput, payments: paymentsInput } = cleanedInput;
   // console.log("placeOrderInput", input)
-  const { branchID, notes } = input;
+  const { branchID, notes, Latitude, Longitude } = input;
   const {
     billingAddress,
     cartId,
@@ -181,7 +181,6 @@ export default async function placeOrder(context, input) {
     }
   }
 
-
   // We are mixing concerns a bit here for now. This is for backwards compatibility with current
   // discount codes feature. We are planning to revamp discounts soon, but until then, we'll look up
   // any discounts on the related cart here.
@@ -215,7 +214,9 @@ export default async function placeOrder(context, input) {
       orderId,
       cart,
       branchID,
-      notes
+      notes,
+      Latitude,
+      Longitude
     });
 
     // We save off the first shipping address found, for passing to payment services. They use this
@@ -274,7 +275,9 @@ export default async function placeOrder(context, input) {
     kitchenOrderID,
     todayDate,
     prepTime,
-    deliveryTime
+    deliveryTime,
+    Latitude,
+    Longitude
   };
 
   if (fullToken) {
