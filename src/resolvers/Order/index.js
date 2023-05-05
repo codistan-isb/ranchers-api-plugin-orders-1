@@ -21,7 +21,7 @@ export default {
   refunds: (node, _, context) => refunds(context, node),
   shop: resolveShopFromShopId,
   status: (node) => {
-    console.log("Status Node ", node)
+    // console.log("Status Node ", node)
     return node.workflow?.status || ""
   },
   summary: (node, _, context) => orderSummary(context, node),
@@ -33,7 +33,7 @@ export default {
   branchID: (node) => node.branchID,
   deliveryTime: (node) => node.deliveryTime + node.prepTime,
   Latitude: (node) => {
-    console.log("Lat node: ", node)
+    // console.log("Lat node: ", node)
     return node.Latitude
   },
   Longitude: (node) => node.Longitude,
