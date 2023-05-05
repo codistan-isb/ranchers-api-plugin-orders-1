@@ -19,9 +19,12 @@ function xformOrderPayment(payment) {
     processor,
     riskLevel,
     status,
-    transactionId
+    transactionId,
+    tax,
+    totalAmount,
+    finalAmount
   } = payment;
-
+  console.log("Order payment return ", payment)
   return {
     _id,
     amount: {
@@ -45,7 +48,10 @@ function xformOrderPayment(payment) {
     processor,
     riskLevel,
     status,
-    transactionId
+    transactionId,
+    tax,
+    totalAmount,
+    finalAmount
   };
 }
 

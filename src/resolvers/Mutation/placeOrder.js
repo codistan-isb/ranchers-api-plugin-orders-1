@@ -39,7 +39,6 @@ export default async function placeOrder(parentResult, { input }, context) {
     ),
     shopId: decodeShopOpaqueId(group.shopId),
   }));
-
   const { orders, token } = await context.mutations.placeOrder(context, {
     order: {
       ...order,
@@ -54,7 +53,8 @@ export default async function placeOrder(parentResult, { input }, context) {
     Latitude,
     Longitude
   });
-  // console.log("order:- ", order);
+  console.log("Order Placed ", orders);
+  console.log("Order Placed payments ", orders[0].payments);
   return {
     clientMutationId,
     orders,

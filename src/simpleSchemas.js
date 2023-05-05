@@ -593,6 +593,19 @@ export const paymentInputSchema = new SimpleSchema({
     blackbox: true,
   },
   method: String,
+
+  tax: {
+    type: Number,
+    optional: true,
+  },
+  totalAmount: {
+    type: Number,
+    optional: true,
+  },
+  finalAmount: {
+    type: Number,
+    optional: true,
+  },
 });
 
 /**
@@ -1212,6 +1225,18 @@ export const Payment = new SimpleSchema({
   "transactions.$": {
     type: Object,
     blackbox: true,
+  },
+  tax: {
+    type: Number,
+    optional: true,
+  },
+  totalAmount: {
+    type: Number,
+    optional: true,
+  },
+  finalAmount: {
+    type: Number,
+    optional: true,
   },
 });
 

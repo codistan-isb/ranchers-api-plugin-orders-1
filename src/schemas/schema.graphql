@@ -197,7 +197,13 @@ enum OrderFulfillmentGroupItemsSortByField {
   "Sort by the date and time when the item was added to the order"
   addedAt
 }
+extend type Payment implements Node {
+  tax: Float
 
+  totalAmount: Float
+
+  finalAmount: Float
+}
 "The fields by which you are allowed to sort any query that returns a `OrdersByAccountIdConnection`"
 enum OrdersByAccountIdSortByField {
   "Sort by the order ID"
@@ -808,6 +814,12 @@ input PaymentInput {
 
   "The name of the payment method to use for this payment"
   method: PaymentMethodName!
+
+  tax: Float
+
+  totalAmount: Float
+
+  finalAmount: Float
 }
 
 "Input for the addOrderFulfillmentGroup mutation"
