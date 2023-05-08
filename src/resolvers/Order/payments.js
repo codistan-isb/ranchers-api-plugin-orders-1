@@ -24,7 +24,7 @@ function xformOrderPayment(payment) {
     totalAmount,
     finalAmount
   } = payment;
-  console.log("Order payment return ", payment)
+  // console.log("Order payment return ", payment)
   return {
     _id,
     amount: {
