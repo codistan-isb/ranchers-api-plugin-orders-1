@@ -611,6 +611,16 @@ type Order implements Node {
   Latitude: Float
 
   Longitude: Float
+
+  taxInfo: taxInfoPayload
+}
+
+type taxInfoPayload{
+   tax: Float
+
+  totalAmount: Float
+
+  finalAmount: Float
 }
 extend enum PaymentMethodName {
   COD

@@ -7,6 +7,7 @@ import payments from "./payments.js";
 import refunds from "./refunds.js";
 import totalItemQuantity from "./totalItemQuantity.js";
 import billingName from "./billingName.js";
+import taxInfo from "./taxInfo.js";
 
 export default {
 
@@ -37,4 +38,5 @@ export default {
     return node.Latitude
   },
   Longitude: (node) => node.Longitude,
+  taxInfo: (node) => taxInfo(node)
 };
