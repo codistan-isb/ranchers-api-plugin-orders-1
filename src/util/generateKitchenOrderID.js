@@ -3,7 +3,7 @@ const require = createRequire(import.meta.url);
 const crypto = require("crypto");
 
 export default async function generateKitchenOrderID(query, Orders, branchID) {
-    const prefix = 'Order # ';
+    const prefix = 'Order ';
     const count = await Orders.countDocuments(query);
     // console.log("count:- ", count);
     if (count > 0) {
@@ -17,11 +17,11 @@ export default async function generateKitchenOrderID(query, Orders, branchID) {
         // console.log("lastDocument.kitchenOrderID:- ", lastDocument.kitchenOrderID);
         // console.log("lastId:- ", lastId);
         const nextId = lastId + 1;
-        const newID = `Order # ${nextId}`;
+        const newID = `Order ${nextId}`;
         // console.log("New ID:- ", newID);
         return newID
     } else {
-        const newID = "Order # 1";
+        const newID = "Order 1";
         // console.log("Else New ID:- ", newID);
         return newID;
     }

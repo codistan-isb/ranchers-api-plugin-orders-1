@@ -109,7 +109,7 @@ async function createPayments({
         }, // optional, object, blackbox
       }
     );
-    console.log("Payment : ", payment)
+    // console.log("Payment : ", payment)
     const paymentWithCurrency = {
       ...payment,
       // This is from previous support for exchange rates, which was removed in v3.0.0
@@ -146,11 +146,12 @@ async function createPayments({
 export default async function placeOrder(context, input) {
   let prepTime = 0;
   let taxID = "";
+  let deliveryTime = 0.0
   const today = new Date().toISOString().substr(0, 10);
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
   const { order: orderInput, payments: paymentsInput } = cleanedInput;
-  console.log("placeOrderInput", paymentsInput);
+  // console.log("placeOrderInput", paymentsInput);
   const { branchID, notes, Latitude, Longitude } = input;
   const {
     billingAddress,
@@ -189,10 +190,20 @@ export default async function placeOrder(context, input) {
   );
   // console.log(deliveryTimeCalculationResponse)
   // deliveryTimeCalculationResponse ;
-  const deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
+  if (deliveryTimeCalculationResponse) {
+    deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
+  }
+  else {
+    deliveryTime = 25.00
+  }
+
+  // console.log(" Test Delivery Time ", deliveryTimeCalculationResponse / 60);
   // const deliveryTime = 35;
   prepTime = prepTime || 20;
-  // console.log("deliveryTime:- ", typeof (deliveryTime))
+  // console.log("deliveryTime:- ", deliveryTime);
+  // if (!deliveryTime) {
+  //   deliveryTime = 20
+  // }
   // Tax Calculation
   // console.log("tax ID ", taxID)
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });

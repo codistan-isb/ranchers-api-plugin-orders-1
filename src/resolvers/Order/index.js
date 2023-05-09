@@ -10,7 +10,6 @@ import billingName from "./billingName.js";
 import taxInfo from "./taxInfo.js";
 
 export default {
-
   _id: (node) => encodeOrderOpaqueId(node._id),
   account: resolveAccountFromAccountId,
   billingName: (node) => billingName(node),

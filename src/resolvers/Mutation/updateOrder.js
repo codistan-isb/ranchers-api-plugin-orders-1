@@ -24,7 +24,7 @@ export default async function updateOrder(parentResult, { input }, context) {
     orderId,
     status
   } = input;
-  console.log("input ", input)
+  // console.log("input ", input)
   const { order } = await context.mutations.updateOrder(context, {
     customFields,
     email,

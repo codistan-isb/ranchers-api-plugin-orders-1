@@ -615,8 +615,8 @@ type Order implements Node {
   taxInfo: taxInfoPayload
 }
 
-type taxInfoPayload{
-   tax: Float
+type taxInfoPayload {
+  tax: Float
 
   totalAmount: Float
 

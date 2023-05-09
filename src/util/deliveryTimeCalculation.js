@@ -40,10 +40,10 @@ export default async function deliveryTimeCalculation(
         })
         .catch(error => console.error('Error fetching API:- ', error));
     // console.log("APIResp :- ", APIResp)
-    if (APIResp !== undefined || APIResp !== null) {
+    if (APIResp !== undefined || APIResp !== null || APIResp !== NaN) {
         return APIResp;
     }
     else {
-        return 25;
+        return 25.00;
     }
 }

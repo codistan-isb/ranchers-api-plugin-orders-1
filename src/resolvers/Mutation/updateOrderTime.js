@@ -38,7 +38,7 @@ export default async function updateOrderTime(
             return duration;
         })
         .catch(error => console.error('Error fetching API:- ', error));
-    console.log("APIResp ", APIResp);
+    // console.log("APIResp ", APIResp);
     if (APIResp) {
         const deliveryTime = Math.ceil(APIResp / 60);
         // console.log("deliveryTime ", deliveryTime);

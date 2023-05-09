@@ -53,8 +53,8 @@ export default async function placeOrder(parentResult, { input }, context) {
     Latitude,
     Longitude
   });
-  console.log("Order Placed ", orders);
-  console.log("Order Placed payments ", orders[0].payments);
+  // console.log("Order Placed ", orders);
+  // console.log("Order Placed payments ", orders[0].payments);
   return {
     clientMutationId,
     orders,

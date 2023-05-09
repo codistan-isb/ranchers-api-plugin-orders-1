@@ -351,6 +351,10 @@ export const CommonOrderItem = new SimpleSchema({
   sellerId: {
     type: String,
   },
+  deliveryTime: {
+    type: Number,
+    optional: true,
+  },
 });
 
 const CommonOrderFulfillmentPrices = new SimpleSchema({
@@ -467,6 +471,10 @@ export const CommonOrder = new SimpleSchema({
     type: CommonOrderTotals,
     optional: true,
   },
+  deliveryTime: {
+    type: Number,
+    optional: true,
+  },
 });
 
 export const orderItemInputSchema = new SimpleSchema({
@@ -523,6 +531,10 @@ export const orderFulfillmentGroupInputSchema = new SimpleSchema({
     type: String,
     allowedValues: ["shipping"],
   },
+  deliveryTime: {
+    type: Number,
+    optional: true,
+  },
 });
 
 // Exported for unit tests
@@ -578,6 +590,10 @@ export const orderInputSchema = new SimpleSchema({
     optional: true,
   },
   "notes.$": notesInputSchema,
+  deliveryTime: {
+    type: Number,
+    optional: true,
+  },
 });
 
 export const paymentInputSchema = new SimpleSchema({
@@ -682,6 +698,10 @@ const ExportHistory = new SimpleSchema({
     optional: true,
   },
   "notes.$": notesInputSchema,
+  deliveryTime: {
+    type: Number,
+    optional: true,
+  },
 });
 
 /**
@@ -754,6 +774,10 @@ export const OrderInvoice = new SimpleSchema({
   total: {
     type: Number,
     min: 0,
+  },
+  deliveryTime: {
+    type: Number,
+    optional: true,
   },
 });
 
@@ -1088,6 +1112,10 @@ export const OrderFulfillmentGroup = new SimpleSchema({
     optional: true,
   },
   workflow: Workflow,
+  deliveryTime: {
+    type: Number,
+    optional: true,
+  },
 });
 
 /**
@@ -1235,6 +1263,10 @@ export const Payment = new SimpleSchema({
     optional: true,
   },
   finalAmount: {
+    type: Number,
+    optional: true,
+  },
+  deliveryTime: {
     type: Number,
     optional: true,
   },
