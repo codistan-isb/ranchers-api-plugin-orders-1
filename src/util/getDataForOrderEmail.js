@@ -174,21 +174,17 @@ export default async function getDataForOrderEmailDefault(context, { order }) {
       address: billingAddressForEmail,
       payments: (order.payments || []).map((payment) => ({
         displayName: payment.displayName,
-        displayAmount: formatMoney(payment.amount * userCurrencyExchangeRate, userCurrency)
+        displayAmount: payment.amount,
       })),
-      subtotal: formatMoney(subtotal * userCurrencyExchangeRate, userCurrency),
-      shipping: formatMoney(shippingCost * userCurrencyExchangeRate, userCurrency),
-      taxes: formatMoney(taxes * userCurrencyExchangeRate, userCurrency),
-      discounts: formatMoney(discounts * userCurrencyExchangeRate, userCurrency),
-      refunds: formatMoney(refundTotal * userCurrencyExchangeRate, userCurrency),
-      total: formatMoney(
-        (subtotal + shippingCost + taxes - discounts) * userCurrencyExchangeRate,
-        userCurrency
-      ),
-      adjustedTotal: formatMoney(
-        (amount - refundTotal) * userCurrencyExchangeRate,
-        userCurrency
-      )
+      subtotal: subtotal,
+      shipping: shippingCost,
+      taxes: taxes,
+      discounts: discounts,
+      refunds: refundTotal,
+      total:
+        (subtotal + shippingCost + taxes - discounts) ,
+      adjustedTotal:
+        (amount - refundTotal)
     },
     combinedItems,
     contactEmail: shop.emails[0].address,
