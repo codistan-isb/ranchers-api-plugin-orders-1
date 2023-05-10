@@ -113,12 +113,12 @@ export default async function getDataForOrderEmailDefault(context, { order }) {
       price: {
         ...item.price,
         // Add displayAmount to match user currency settings
-        displayAmount: formatMoney(item.price.amount * userCurrencyExchangeRate, userCurrency)
+        displayAmount: item.price.amount
       },
       subtotal: {
         ...item.subtotal,
         // Add displayAmount to match user currency settings
-        displayAmount: formatMoney(item.subtotal.amount * userCurrencyExchangeRate, userCurrency)
+        displayAmount: item.subtotal.amount,
       },
       // These next two are for backward compatibility with existing email templates.
       // New templates should use `imageURLs` instead.
