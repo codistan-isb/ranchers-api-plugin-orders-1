@@ -1,7 +1,7 @@
 {
   "name": "@husamaz1994/api-plugin-orders",
   "description": "Orders plugin for the Reaction API",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "main": "index.js",
   "type": "module",
   "engines": {
