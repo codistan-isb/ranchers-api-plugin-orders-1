@@ -529,7 +529,7 @@ export const orderFulfillmentGroupInputSchema = new SimpleSchema({
   },
   type: {
     type: String,
-    allowedValues: ["shipping"],
+    allowedValues: ["shipping", "digital", "pickup"],
   },
   deliveryTime: {
     type: Number,
@@ -1105,7 +1105,7 @@ export const OrderFulfillmentGroup = new SimpleSchema({
   },
   type: {
     type: String,
-    allowedValues: ["shipping"],
+    allowedValues: ["shipping", "digital", "pickup"],
   },
   updatedAt: {
     type: Date,

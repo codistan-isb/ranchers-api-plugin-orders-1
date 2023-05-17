@@ -174,7 +174,9 @@ export default async function placeOrder(context, input) {
     kitchenOrderID: { $exists: true },
   };
   const generatedID = await generateKitchenOrderID(query, Orders, branchID);
+  console.log("generatedID ", generatedID)
   const kitchenOrderID = generatedID;
+  console.log("kitchenOrderID ", kitchenOrderID)
   const todayDate = today;
   const branchData = await BranchData.findOne({
     _id: ObjectID.ObjectId(branchID),
@@ -183,19 +185,26 @@ export default async function placeOrder(context, input) {
     prepTime = branchData.prepTime;
     taxID = branchData.taxID;
   }
-  // console.log(branchData)
-  const deliveryTimeCalculationResponse = await deliveryTimeCalculation(
-    branchData,
-    fulfillmentGroups[0].data.shippingAddress
-  );
-  // console.log(deliveryTimeCalculationResponse)
-  // deliveryTimeCalculationResponse ;
-  if (deliveryTimeCalculationResponse) {
-    deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
+  // console.log("branchID ", branchID)
+  // console.log("branchData ", branchData)
+  if (branchData) {
+    const deliveryTimeCalculationResponse = await deliveryTimeCalculation(
+      branchData,
+      fulfillmentGroups[0].data.shippingAddress
+    );
+    // console.log(deliveryTimeCalculationResponse)
+    // deliveryTimeCalculationResponse ;
+    if (deliveryTimeCalculationResponse) {
+      deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
+    }
+    else {
+      deliveryTime = 25.00
+    }
   }
   else {
     deliveryTime = 25.00
   }
+
 
   // console.log(" Test Delivery Time ", deliveryTimeCalculationResponse / 60);
   // const deliveryTime = 35;
