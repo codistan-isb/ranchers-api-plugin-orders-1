@@ -6,7 +6,7 @@ export default async function generateKitchenOrderID(query, Orders, branchID) {
     const prefix = 'Order ';
     // console.log(query)
     const count = await Orders.countDocuments(query);
-    console.log("count:- ", count);
+    // console.log("count:- ", count);
     let newKichtenID = 0;
     if (count > 0) {
         // const options = { sort: { kitchenOrderID: -1 } };
@@ -17,11 +17,11 @@ export default async function generateKitchenOrderID(query, Orders, branchID) {
         // if (!isNaN(lastId)) {
         //     kitchenOrderID = lastId + 1;
         // }
-        console.log("count ", count);
+        // console.log("count ", count);
         // console.log("lastId:- ", lastId);
         newKichtenID = count + 1;
         const newID = `Order ${newKichtenID}`;
-        console.log("New ID:- ", newID);
+        // console.log("New ID:- ", newID);
         return newID
     } else {
         const newID = "Order 1";

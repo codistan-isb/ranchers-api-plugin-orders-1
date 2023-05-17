@@ -174,9 +174,9 @@ export default async function placeOrder(context, input) {
     kitchenOrderID: { $exists: true },
   };
   const generatedID = await generateKitchenOrderID(query, Orders, branchID);
-  console.log("generatedID ", generatedID);
+  // console.log("generatedID ", generatedID);
   const kitchenOrderID = generatedID;
-  console.log("kitchenOrderID ", kitchenOrderID);
+  // console.log("kitchenOrderID ", kitchenOrderID);
   const todayDate = today;
   const branchData = await BranchData.findOne({
     _id: ObjectID.ObjectId(branchID),
@@ -211,7 +211,7 @@ export default async function placeOrder(context, input) {
   //   deliveryTime = 20
   // }
   // Tax Calculation
-  // console.log("tax ID ", taxID)
+  console.log("tax ID ", taxID)
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
   // console.log(taxData.Cash)
   const taxPercentage = taxData.Cash;
@@ -403,31 +403,31 @@ export default async function placeOrder(context, input) {
   // console.log("Order input ", order)
   await Orders.insertOne(order);
 
-  const message = "Your order has been placed";
-  const appType = "customer";
-  const id = userId;
-  const orderID = orderId;
-  const paymentIntentClientSecret =
-    await context.mutations.oneSignalCreateNotification(context, {
-      message,
-      id,
-      appType,
-      userId,
-      orderID,
-    });
-  console.log("context Mutation: ", paymentIntentClientSecret);
+  // const message = "Your order has been placed";
+  // const appType = "customer";
+  // const id = userId;
+  // const orderID = orderId;
+  // const paymentIntentClientSecret =
+  //   await context.mutations.oneSignalCreateNotification(context, {
+  //     message,
+  //     id,
+  //     appType,
+  //     userId,
+  //     orderID,
+  //   });
+  // console.log("context Mutation: ", paymentIntentClientSecret);
 
-  const message1 = "New Order is placed";
-  const appType1 = "admin";
-  const id1 = userId;
-  const paymentIntentClientSecret1 =
-    await context.mutations.oneSignalCreateNotification(context, {
-      message1,
-      id1,
-      appType1,
-      userId,
-    });
-  console.log("context Mutation: ", paymentIntentClientSecret1);
+  // const message1 = "New Order is placed";
+  // const appType1 = "admin";
+  // const id1 = userId;
+  // const paymentIntentClientSecret1 =
+  //   await context.mutations.oneSignalCreateNotification(context, {
+  //     message1,
+  //     id1,
+  //     appType1,
+  //     userId,
+  //   });
+  // console.log("context Mutation: ", paymentIntentClientSecret1);
 
   await appEvents.emit("afterOrderCreate", { createdBy: userId, order });
 
