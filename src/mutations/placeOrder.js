@@ -406,14 +406,14 @@ export default async function placeOrder(context, input) {
   const message = "Your order has been placed";
   const appType = "customer";
   const id = userId;
-  const orderID = orderId
+  const orderID = orderId;
   const paymentIntentClientSecret =
     await context.mutations.oneSignalCreateNotification(context, {
       message,
       id,
       appType,
-      orderID,
       userId,
+      orderID,
     });
   console.log("context Mutation: ", paymentIntentClientSecret);
 
