@@ -44,7 +44,7 @@ export default async function updateOrder(context, input) {
   // First verify that this order actually exists
   const order = await Orders.findOne({ _id: orderId });
   if (!order) throw new ReactionError("not-found", "Order not found");
-
+  console.log("Update Order : ", order.accountId)
   // At this point, this mutation only updates the workflow status, which should not be allowed
   // for the order creator. In the future, if this mutation does more, we should revisit these
   // permissions to see if order owner should be allowed.
@@ -60,7 +60,6 @@ export default async function updateOrder(context, input) {
     }
   };
   if (status === 'confirmed') {
-
     modifier.$set.confirmationTime = new Date()
   }
 
@@ -90,15 +89,29 @@ export default async function updateOrder(context, input) {
     modifier,
     { returnOriginal: false }
   );
+  const message = `Your order is ${status}`;
+  const appTypecustomer = 'customer';
+  const Customerid = order.accountId;
+  const CustomeruserId = order.accountId;
+  const CustomerOrderID = order._id
+  const paymentIntentClientSecret =
+    await context.mutations.oneSignalCreateNotification(context, {
+      message,
+      id: Customerid,
+      appType: appTypecustomer,
+      userId: CustomeruserId,
+      OrderID: CustomerOrderID
+    });
+  console.log("context Mutation: ", paymentIntentClientSecret);
   // console.log(modifiedCount)
   // console.log(updatedOrder)
   // console.log(status)
   if (modifiedCount === 0 || !updatedOrder) throw new ReactionError("server-error", "Unable to update order");
-  // if (modifiedCount === 1 && status === 'confirmed') {
-  //   console.log("confirmed");
-  //   // Send email to notify customer of a refund
-  //   sendOrderEmail(context, updatedOrder, "confirmed");
-  // }
+  if (modifiedCount === 1 && status === 'confirmed') {
+    console.log("confirmed");
+    // Send email to notify customer of a refund
+    sendOrderEmail(context, updatedOrder, "confirmed");
+  }
   await appEvents.emit("afterOrderUpdate", {
     order: updatedOrder,
     updatedBy: userId
