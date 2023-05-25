@@ -211,7 +211,7 @@ export default async function placeOrder(context, input) {
   //   deliveryTime = 20
   // }
   // Tax Calculation
-  console.log("tax ID ", taxID)
+  // console.log("tax ID ", taxID)
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
   // console.log(taxData.Cash)
   const taxPercentage = taxData.Cash;
@@ -415,7 +415,7 @@ export default async function placeOrder(context, input) {
       userId,
       orderID,
     });
-  console.log("context Mutation: ", paymentIntentClientSecret);
+  // console.log("context Mutation: ", paymentIntentClientSecret);
 
   const message1 = "New Order is placed";
   const appType1 = "admin";
@@ -427,7 +427,7 @@ export default async function placeOrder(context, input) {
       appType: appType1,
       userId: userId,
     });
-  console.log("context Mutation: ", paymentIntentClientSecret1);
+  // console.log("context Mutation: ", paymentIntentClientSecret1);
 
   await appEvents.emit("afterOrderCreate", { createdBy: userId, order });
 

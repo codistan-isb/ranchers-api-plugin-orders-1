@@ -34,7 +34,7 @@ export default async function updateOrderTime(
         .then(data => {
             const duration = data?.rows[0]?.elements[0]?.duration?.value;
             // console.log("Duration is :- ", duration)
-            console.log(`The duration between ${origin} and ${destination} is ${duration} seconds.`);
+            // console.log(`The duration between ${origin} and ${destination} is ${duration} seconds.`);
             return duration;
         })
         .catch(error => console.error('Error fetching API:- ', error));
