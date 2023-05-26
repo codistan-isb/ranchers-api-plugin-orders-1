@@ -31,7 +31,7 @@ export default {
     return node.kitchenOrderID
   },
   branchID: (node) => node.branchID,
-  deliveryTime: (node) => node.deliveryTime + node.prepTime,
+  deliveryTime: (node) => node.deliveryTime + node.prepTime || node.deliveryTime + 20.0,
   Latitude: (node) => {
     // console.log("Lat node: ", node)
     return node.Latitude
