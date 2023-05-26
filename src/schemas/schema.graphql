@@ -343,7 +343,8 @@ type OrderSummary {
 }
 
 extend type uploadedBy {
-billingAddress:Address  
+billingAddress:Address 
+email:String
 }
 """
 A single item in an order. The item contains information about a purchase.

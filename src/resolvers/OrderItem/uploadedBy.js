@@ -16,10 +16,15 @@ export default async function uploadedBy(parent, connectionArgs, context, info) 
   const { Accounts } = collections;
   
   const sellerInfo= await Accounts.findOne({"_id":parent.sellerId});
+  if(sellerInfo){
   const response = {
     storeName:sellerInfo?.storeName,
     name:sellerInfo?.profile?.name,
+    email:sellerInfo?.emails[0]?.address,
     billingAddress:{...sellerInfo?.billing,address1:sellerInfo?.billing?.address}
     }
-  return response;
+  return response;}
+  else {
+    return null;
+  }
 }
