@@ -342,10 +342,17 @@ type OrderSummary {
   total: Money!
 }
 
+extend type uploadedBy {
+billingAddress:Address  
+}
 """
 A single item in an order. The item contains information about a purchase.
 """
 type OrderItem implements Node {
+
+  "Seller Info"
+  uploadedBy :uploadedBy
+
   "The order item ID"
   _id: ID!
 
