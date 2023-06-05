@@ -33,7 +33,8 @@ export default async function sendOrderEmail(context, input) {
   inputSchema.validate(input);
   // console.log(input)
   const { action, dataForEmail, fromShop, language, to } = input;
-
+  console.log("2", action);
+  console.log("dataForEmail.order.workflow.status", dataForEmail.order.workflow.status)
   // Compile email
   let templateName;
 
@@ -45,18 +46,21 @@ export default async function sendOrderEmail(context, input) {
     templateName = "orders/itemRefund";
   } else if (action === "confirmed") {
     templateName = "orders/confirmed";
-  } else {
+  } else if (action === "new") {
+    templateName = "orders/new";
+  }
+  else {
     templateName = `orders/${dataForEmail.order.workflow.status}`;
   }
   // console.log(templateName)
-  // const Emailresp = await context.mutations.sendEmail(context, {
-  //   data: dataForEmail,
-  //   fromShop,
-  //   templateName,
-  //   language,
-  //   to
-  // })
-  // console.log(Emailresp)
+  const Emailresp = await context.mutations.sendEmail(context, {
+    data: dataForEmail,
+    fromShop,
+    templateName,
+    language,
+    to
+  })
+  console.log(Emailresp)
   await context.mutations.sendEmail(context, {
     data: dataForEmail,
     fromShop,

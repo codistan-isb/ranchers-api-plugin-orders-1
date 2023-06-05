@@ -9,6 +9,8 @@ import Logger from "@reactioncommerce/logger";
  */
 export default async function sendOrderEmail(context, order, action) {
   // anonymous account orders without emails.
+  // console.log("order ", order)
+  // console.log("action ", action)
   const to = order.email;
   if (!to) {
     Logger.info("No order email found. No email sent.");

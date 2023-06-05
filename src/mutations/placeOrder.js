@@ -7,6 +7,8 @@ import ReactionError from "@reactioncommerce/reaction-error";
 import getAnonymousAccessToken from "@reactioncommerce/api-utils/getAnonymousAccessToken.js";
 import buildOrderFulfillmentGroupFromInput from "../util/buildOrderFulfillmentGroupFromInput.js";
 import verifyPaymentsMatchOrderTotal from "../util/verifyPaymentsMatchOrderTotal.js";
+import sendOrderEmail from "../util/sendOrderEmail.js";
+
 import {
   Order as OrderSchema,
   orderInputSchema,
@@ -402,6 +404,7 @@ export default async function placeOrder(context, input) {
   OrderSchema.validate(order);
   // console.log("Order input ", order)
   await Orders.insertOne(order);
+  sendOrderEmail(context, order, "new");
 
   const message = "Your order has been placed";
   const appType = "customer";
