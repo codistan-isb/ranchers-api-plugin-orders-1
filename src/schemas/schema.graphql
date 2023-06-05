@@ -1,4 +1,14 @@
+input getOrderShippingByAddressInput {
+ address:String
+      city:String
+      zipCode:String
+}
 extend type Query {
+
+  getOrderShippingByAddress(
+    input:getOrderShippingByAddressInput
+  ):ID
+
   "Get an order by its ID"
   orderById(
     "The order ID"
@@ -535,6 +545,10 @@ type OrderFulfillmentGroup implements Node {
 
 "An order"
 type Order implements Node {
+  parentOrder:ID
+  
+  sellerInfo:uploadedBy
+
   "The Order ID"
   _id: ID!
 

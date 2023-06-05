@@ -1,4 +1,5 @@
 import _ from "lodash";
+import accounting from "accounting-js";
 import SimpleSchema from "simpl-schema";
 import Logger from "@reactioncommerce/logger";
 import Random from "@reactioncommerce/random";
@@ -103,7 +104,67 @@ async function createPayments({
 
   return payments;
 }
+async function createChildOrders(context, order) {
+  
+  const {  collections } = context;
+  const { Orders, Cart } = collections;
+  const parentFulfillmentGroup = order?.shipping?.[0]
 
+  const orderItems = order?.shipping?.[0]?.items;
+  let sellerOrders = {};
+  orderItems?.map(order => {
+
+    if (sellerOrders[order.sellerId]) {
+
+      let sellerOrder = sellerOrders[order.sellerId];
+      sellerOrder.push(order)
+      sellerOrders[order.sellerId] = sellerOrder
+    } else {
+      let sellerOrder = [order];
+      sellerOrders[order.sellerId] = sellerOrder
+    }
+  })
+  Object.keys(sellerOrders).map(async (key) => {
+    
+    
+    const childItem = sellerOrders[key];
+    const itemTotal = +accounting.toFixed(childItem.reduce((sum, item) => (sum + item.subtotal), 0), 3);
+
+    // Fulfillment
+    const shippingTotal = parentFulfillmentGroup.shipmentMethod.rate || 0;
+    const handlingTotal = parentFulfillmentGroup.shipmentMethod.handling || 0;
+    const fulfillmentTotal = shippingTotal + handlingTotal;
+  
+    // Totals
+    // To avoid rounding errors, be sure to keep this calculation the same between here and
+    // `buildOrderInputFromCart.js` in the client code.
+    const total = +accounting.toFixed(Math.max(0, itemTotal + fulfillmentTotal), 3);
+  
+    const childInvoice={...parentFulfillmentGroup.invoice,subtotal:itemTotal,total}
+    let fulfillmentObj = {
+      ...parentFulfillmentGroup,
+      _id: Random.id(),
+      items: childItem,
+      itemIds: childItem.map(item => item._id),
+      totalItemQuantity:childItem.reduce((sum, item) => sum + item.quantity, 0),
+      invoice:childInvoice
+
+    }
+    const childFulfillmentGroup=[fulfillmentObj]
+    const childOrder={
+      ...order,
+      _id: Random.id(),
+      referenceId:Random.id(),
+      shipping:childFulfillmentGroup,
+      totalItemQuantity: childFulfillmentGroup.reduce((sum, group) => sum + group.totalItemQuantity, 0),
+
+    }
+    OrderSchema.validate(childOrder);
+    await Orders.insertOne({...childOrder,parentId:order._id});
+
+  })
+
+}
 /**
  * @method placeOrder
  * @summary Places an order, authorizing all payments first
@@ -232,6 +293,7 @@ export default async function placeOrder(context, input) {
     }
   };
 
+
   if (fullToken) {
     const dbToken = { ...fullToken };
     // don't store the raw token in db, only the hash
@@ -276,7 +338,7 @@ export default async function placeOrder(context, input) {
   } else {
     order.customFields = customFieldsFromClient;
   }
-
+  createChildOrders(context, order);
   // Validate and save
   OrderSchema.validate(order);
   await Orders.insertOne(order);
