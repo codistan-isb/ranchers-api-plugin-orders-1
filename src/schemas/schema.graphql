@@ -1,13 +1,14 @@
 input getOrderShippingByAddressInput {
- address:String
-      city:String
+ address:String!
+      city:String!
       zipCode:String
+      amount:Int!
 }
 extend type Query {
 
   getOrderShippingByAddress(
     input:getOrderShippingByAddressInput
-  ):ID
+  ):FlatRateFulfillmentMethod
 
   "Get an order by its ID"
   orderById(
