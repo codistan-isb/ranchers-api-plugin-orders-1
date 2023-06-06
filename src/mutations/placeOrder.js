@@ -338,7 +338,7 @@ export default async function placeOrder(context, input) {
   } else {
     order.customFields = customFieldsFromClient;
   }
-  createChildOrders(context, order);
+  // createChildOrders(context, order);
   // Validate and save
   OrderSchema.validate(order);
   await Orders.insertOne(order);
