@@ -136,6 +136,20 @@ extend type Mutation {
   ): AddOrderFulfillmentGroupPayload!
 
   """
+  Use this mutation to update one item of an order, either for the full ordered quantity
+  or for a partial quantity. If partial, the item will be split into two items and the
+  original item will have a lower quantity and will be updated.
+
+  If this results in all items in a fulfillment group being updated, the group will also
+  be updated. If this results in all fulfillment groups being updated, the full order will
+  also be updated.
+  """
+  updateOrderItem(
+    "Mutation input"
+    input: UpdateOrderItemInput!
+  ): UpdateOrderItemPayload!
+
+  """
   Use this mutation to cancel one item of an order, either for the full ordered quantity
   or for a partial quantity. If partial, the item will be split into two items and the
   original item will have a lower quantity and will be canceled.
@@ -806,6 +820,28 @@ input AddOrderFulfillmentGroupInput {
   orderId: ID!
 }
 
+"Input for the updateOrderItem mutation"
+input UpdateOrderItemInput {
+  
+  status: String
+
+  "An optional string identifying the mutation call, which will be returned in the response payload"
+  clientMutationId: String
+
+  "ID of the item order you want to update"
+  itemId: ID!
+
+  "ID of the order that has the item you want to update"
+  orderId: ID!
+
+  """
+  An optional free text reason for updation, which may be shown to operators
+  or to the user who placed the order.
+  """
+  reason: String
+}
+
+
 "Input for the cancelOrderItem mutation"
 input CancelOrderItemInput {
   "Quantity to cancel. Must be equal to or less than the item quantity."
@@ -942,6 +978,16 @@ type AddOrderFulfillmentGroupPayload {
   "The updated order"
   order: Order!
 }
+
+"Response payload for the updateOrderItem mutation"
+type UpdateOrderItemPayload {
+  "The same string you sent with the mutation params, for matching mutation calls with their responses"
+  clientMutationId: String
+
+  "The updated order"
+  order: Order!
+}
+
 
 "Response payload for the cancelOrderItem mutation"
 type CancelOrderItemPayload {

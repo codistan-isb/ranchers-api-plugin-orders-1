@@ -5,6 +5,7 @@ import moveOrderItems from "./moveOrderItems.js";
 import placeOrder from "./placeOrder.js";
 import splitOrderItem from "./splitOrderItem.js";
 import updateOrder from "./updateOrder.js";
+import updateOrderItem from "./updateOrderItem.js";
 import updateOrderFulfillmentGroup from "./updateOrderFulfillmentGroup.js";
 
 export default {
@@ -15,5 +16,6 @@ export default {
   placeOrder,
   splitOrderItem,
   updateOrder,
-  updateOrderFulfillmentGroup
+  updateOrderFulfillmentGroup,
+  updateOrderItem
 };
