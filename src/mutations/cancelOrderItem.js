@@ -50,7 +50,7 @@ export default async function cancelOrderItem(context, input) {
 
   const { accountId, appEvents, collections, userId } = context;
   const { Orders } = collections;
-
+  let sellerId=null;
   // First verify that this order actually exists
   const order = await Orders.findOne({ _id: orderId });
   if (!order) throw new ReactionError("not-found", "Order not found");
@@ -105,6 +105,7 @@ export default async function cancelOrderItem(context, input) {
         cancelReason: reason,
         quantity: cancelQuantity
       };
+      sellerId = updatedItem.sellerId;
 
       // Update the subtotal since it is related to the quantity
       updatedItem.subtotal = item.price.amount * cancelQuantity;
@@ -182,6 +183,15 @@ export default async function cancelOrderItem(context, input) {
   await appEvents.emit("afterOrderUpdate", {
     order: updatedOrder,
     updatedBy: userId
+  });
+
+  
+  await appEvents.emit("afterOrderStatusUpdate", {
+    order: updatedOrder,
+    updatedBy: userId,
+    itemId: itemId,
+    sellerId: sellerId,
+    status: canceledStatus,
   });
 
   if (fullOrderWasCanceled) {

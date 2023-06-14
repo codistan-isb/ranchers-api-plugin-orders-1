@@ -10,10 +10,10 @@ const itemStatusesThatOrdererCanCancel = ["new"];
 const orderStatusesThatOrdererCanCancel = ["new"];
 
 const inputSchema = new SimpleSchema({
- 
+
   itemId: String,
   orderId: String,
-  status:String
+  status: String
 
 });
 
@@ -32,16 +32,16 @@ const inputSchema = new SimpleSchema({
  * @returns {Promise<Object>} Object with `order` property containing the created order
  */
 export default async function updateOrderItem(context, input) {
-  console.log("input",input)
+  console.log("input", input)
   inputSchema.validate(input);
-
+  let sellerId = null;
   const {
     orderId,
     itemId,
     status,
     reason = null
   } = input;
-  console.log("updateOrderItem",status)
+  console.log("updateOrderItem", status)
   const { accountId, appEvents, collections, userId } = context;
   const { Orders } = collections;
 
@@ -109,7 +109,7 @@ export default async function updateOrderItem(context, input) {
           workflow: [...item.workflow.workflow, status]
         };
       }
-
+      sellerId = updatedItem.sellerId;
       // If we make it this far, then we've found the item that they want to update.
       // We set the status and the update reason if one was provided.
       // This will also decrement the quantity to match the quantity that is being
@@ -176,6 +176,22 @@ export default async function updateOrderItem(context, input) {
     order: updatedOrder,
     updatedBy: userId
   });
+  
+  await appEvents.emit("afterOrderStatusUpdate", {
+    order: updatedOrder,
+    updatedBy: userId,
+    itemId: itemId,
+    sellerId: sellerId,
+    status: status,
+  });
+
+  // await appEvents.emit("afterOrderItemStatusUpdate", {
+  //   order: updatedOrder,
+  //   itemId:itemId,
+  //   sellerId:sellerId,
+  //   status:status,
+  //   updatedBy: userId
+  // });
 
 
   return { order: updatedOrder };
