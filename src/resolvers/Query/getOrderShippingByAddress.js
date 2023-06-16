@@ -42,17 +42,8 @@ export default async function getOrderShippingByAddress(parnet, { input } = {}, 
         // _id:selectedFullfilmentId
       };
     }
-    else if (isSameCity(city)==true) {
-      const selectedMethodId = ShippingMethods?.methods.filter(item => item.name.toLowerCase() == "same-city");
-      selectedFullfilmentId = await encodeFulfillmentGroupOpaqueId(selectedMethodId[0]?._id);
-      
-       return {...selectedMethodId[0],
-        // _id:selectedFullfilmentId
-      };
-
-    }
     else {
-      const selectedMethodId = ShippingMethods?.methods.filter(item => item.name.toLowerCase() == "other-city");
+      const selectedMethodId = ShippingMethods?.methods.filter(item => item.group.toLowerCase() == "ground" && item.enabled);
       selectedFullfilmentId = await encodeFulfillmentGroupOpaqueId(selectedMethodId[0]?._id);
       
       return {...selectedMethodId[0],
