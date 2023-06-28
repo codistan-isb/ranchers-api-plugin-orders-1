@@ -25,9 +25,9 @@ function isSameCity(city) {
 export default async function getOrderShippingByAddress(parnet, { input } = {}, context) {
   console.log("input", input);
   const { address, city, amount } = input;
-  if (!address || !city) {
-    throw new ReactionError("invalid-param", "You must provide address and city arguments");
-  }
+  // if (!address || !city) {
+  //   throw new ReactionError("invalid-param", "You must provide address and city arguments");
+  // }
   const { collections } = context;
   const { Shipping } = collections;
   const ShippingMethodsObj = await Shipping.find({}).toArray();
