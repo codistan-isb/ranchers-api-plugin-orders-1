@@ -7,17 +7,17 @@ const inputSchema = new SimpleSchema({
   customFields: {
     type: Object,
     blackbox: true,
-    optional: true
+    optional: true,
   },
   email: {
     type: String,
-    optional: true
+    optional: true,
   },
   orderId: String,
   status: {
     type: String,
-    optional: true
-  }
+    optional: true,
+  },
 });
 
 /**
@@ -31,12 +31,7 @@ const inputSchema = new SimpleSchema({
 export default async function updateOrder(context, input) {
   inputSchema.validate(input);
 
-  const {
-    customFields,
-    email,
-    orderId,
-    status
-  } = input;
+  const { customFields, email, orderId, status } = input;
 
   const { appEvents, collections, userId } = context;
   const { Orders } = collections;
@@ -56,11 +51,11 @@ export default async function updateOrder(context, input) {
 
   const modifier = {
     $set: {
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   };
-  if (status === 'confirmed') {
-    modifier.$set.confirmationTime = new Date()
+  if (status === "confirmed") {
+    modifier.$set.confirmationTime = new Date();
   }
 
   if (email) modifier.$set.email = email;
@@ -70,17 +65,15 @@ export default async function updateOrder(context, input) {
   if (status && order.workflow.status !== status) {
     modifier.$set["workflow.status"] = status;
     modifier.$push = {
-      "workflow.workflow": status
+      "workflow.workflow": status,
     };
-
   }
-
 
   // Skip updating if we have no updates to make
   if (Object.keys(modifier.$set).length === 1) return { order };
 
   OrderSchema.validate(modifier, { modifier: true });
-  if (status === 'ready' || status === 'completed') {
+  if (status === "ready" || status === "completed") {
     modifier.$set["prepTime"] = 0;
   }
 
@@ -90,27 +83,28 @@ export default async function updateOrder(context, input) {
     { returnOriginal: false }
   );
   const message = `Your order is ${status}`;
-  const appTypecustomer = 'customer';
-  const Customerid = order.accountId;
-  const CustomeruserId = order.accountId;
-  const CustomerOrderID = order._id
+  const appTypecustomer = "customer";
+  const Customerid = order?.accountId;
+  const CustomeruserId = order?.accountId;
+  const CustomerOrderID = order?._id;
   const paymentIntentClientSecret =
-    await context.mutations.oneSignalCreateNotification(context, {
+    context.mutations.oneSignalCreateNotification(context, {
       message,
       id: Customerid,
       appType: appTypecustomer,
       userId: CustomeruserId,
-      OrderID: CustomerOrderID
+      OrderID: CustomerOrderID,
     });
-  if (modifiedCount === 0 || !updatedOrder) throw new ReactionError("server-error", "Unable to update order");
-  if (modifiedCount === 1 && status === 'confirmed') {
+  if (modifiedCount === 0 || !updatedOrder)
+    throw new ReactionError("server-error", "Unable to update order");
+  if (modifiedCount === 1 && status === "confirmed") {
     // console.log("confirmed");
     // Send email to notify customer of a refund
     sendOrderEmail(context, updatedOrder, "confirmed");
   }
   await appEvents.emit("afterOrderUpdate", {
     order: updatedOrder,
-    updatedBy: userId
+    updatedBy: userId,
   });
 
   return { order: updatedOrder };

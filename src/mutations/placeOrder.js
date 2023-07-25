@@ -198,6 +198,7 @@ export default async function placeOrder(context, input) {
     // deliveryTimeCalculationResponse ;
     if (deliveryTimeCalculationResponse) {
       deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
+      console.log("delivery time ", deliveryTime);
     } else {
       deliveryTime = 25.0;
     }
@@ -215,7 +216,7 @@ export default async function placeOrder(context, input) {
   // Tax Calculation
   // console.log("tax ID ", taxID)
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
-  // console.log(taxData.Cash)
+  console.log("taxData", taxData);
   const taxPercentage = taxData.Cash;
 
   const shop = await context.queries.shopById(context, shopId);
@@ -249,7 +250,7 @@ export default async function placeOrder(context, input) {
     ({ discounts } = discountsResult);
     discountTotal = discountsResult.total;
   }
-
+  // console.log("taxPercentage ", taxPercentage);
   // Create array for surcharges to apply to order, if applicable
   // Array is populated inside `fulfillmentGroups.map()`
   const orderSurcharges = [];
@@ -405,13 +406,13 @@ export default async function placeOrder(context, input) {
   // console.log("Order input ", order)
   await Orders.insertOne(order);
   sendOrderEmail(context, order, "new");
-
+  console.log("userId ", userId);
   const message = "Your order has been placed";
   const appType = "customer";
   const id = userId;
   const orderID = orderId;
   const paymentIntentClientSecret =
-    await context.mutations.oneSignalCreateNotification(context, {
+    context.mutations.oneSignalCreateNotification(context, {
       message,
       id,
       appType,
@@ -424,7 +425,7 @@ export default async function placeOrder(context, input) {
   const appType1 = "admin";
   const id1 = userId;
   const paymentIntentClientSecret1 =
-    await context.mutations.oneSignalCreateNotification(context, {
+    context.mutations.oneSignalCreateNotification(context, {
       message: message1,
       id: id1,
       appType: appType1,
