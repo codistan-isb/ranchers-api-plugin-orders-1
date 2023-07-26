@@ -87,14 +87,14 @@ export default async function updateOrder(context, input) {
   const Customerid = order?.accountId;
   const CustomeruserId = order?.accountId;
   const CustomerOrderID = order?._id;
-  // const paymentIntentClientSecret =
-  //   context.mutations.oneSignalCreateNotification(context, {
-  //     message,
-  //     id: Customerid,
-  //     appType: appTypecustomer,
-  //     userId: CustomeruserId,
-  //     OrderID: CustomerOrderID,
-  //   });
+  const paymentIntentClientSecret =
+    context.mutations.oneSignalCreateNotification(context, {
+      message,
+      id: Customerid,
+      appType: appTypecustomer,
+      userId: CustomeruserId,
+      OrderID: CustomerOrderID,
+    });
   if (modifiedCount === 0 || !updatedOrder)
     throw new ReactionError("server-error", "Unable to update order");
   if (modifiedCount === 1 && status === "confirmed") {

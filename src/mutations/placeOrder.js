@@ -411,26 +411,26 @@ export default async function placeOrder(context, input) {
   const appType = "customer";
   const id = userId;
   const orderID = orderId;
-  // const paymentIntentClientSecret =
-  //   context.mutations.oneSignalCreateNotification(context, {
-  //     message,
-  //     id,
-  //     appType,
-  //     userId,
-  //     orderID,
-  //   });
+  const paymentIntentClientSecret =
+    context.mutations.oneSignalCreateNotification(context, {
+      message,
+      id,
+      appType,
+      userId,
+      orderID,
+    });
   // console.log("context Mutation: ", paymentIntentClientSecret);
 
   const message1 = "New Order is placed";
   const appType1 = "admin";
   const id1 = userId;
-  // const paymentIntentClientSecret1 =
-  //   context.mutations.oneSignalCreateNotification(context, {
-  //     message: message1,
-  //     id: id1,
-  //     appType: appType1,
-  //     userId: userId,
-  //   });
+  const paymentIntentClientSecret1 =
+    context.mutations.oneSignalCreateNotification(context, {
+      message: message1,
+      id: id1,
+      appType: appType1,
+      userId: userId,
+    });
   // console.log("context Mutation: ", paymentIntentClientSecret1);
 
   await appEvents.emit("afterOrderCreate", { createdBy: userId, order });
