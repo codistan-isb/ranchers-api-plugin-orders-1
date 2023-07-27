@@ -1,5 +1,5 @@
 import _ from "lodash";
-import formatMoney from "@reactioncommerce/api-utils/formatMoney.js";
+import formatMoney from "./formatMoney/formatMoney.js";
 import xformOrderItems from "../xforms/xformOrderItems.js";
 import { addAnonymousOrderToken } from "./anonymousToken.js";
 
@@ -44,41 +44,70 @@ export default async function getDataForOrderEmailDefault(context, { order }) {
   }
 
   // TODO need to make this fully support multiple fulfillment groups. Now it's just collapsing into one
-  const amount = order.shipping.reduce((sum, group) => sum + group.invoice.total, 0);
-  const discounts = order.shipping.reduce((sum, group) => sum + group.invoice.discounts, 0);
-  const subtotal = order.shipping.reduce((sum, group) => sum + group.invoice.subtotal, 0);
-  const taxes = order.shipping.reduce((sum, group) => sum + group.invoice.taxes, 0);
-  const shippingCost = order.shipping.reduce((sum, group) => sum + group.invoice.shipping, 0);
+  const amount = order.shipping.reduce(
+    (sum, group) => sum + group.invoice.total,
+    0
+  );
+  const discounts = order.shipping.reduce(
+    (sum, group) => sum + group.invoice.discounts,
+    0
+  );
+  const subtotal = order.shipping.reduce(
+    (sum, group) => sum + group.invoice.subtotal,
+    0
+  );
+  const taxes = order.shipping.reduce(
+    (sum, group) => sum + group.invoice.taxes,
+    0
+  );
+  const shippingCost = order.shipping.reduce(
+    (sum, group) => sum + group.invoice.shipping,
+    0
+  );
 
-  const { address: shippingAddress, shipmentMethod, tracking } = order.shipping[0];
+  const {
+    address: shippingAddress,
+    shipmentMethod,
+    tracking,
+  } = order.shipping[0];
   const { carrier } = shipmentMethod;
-  const [firstPayment] = (order.payments || []);
+  const [firstPayment] = order.payments || [];
   const { address: paymentBillingAddress, currency } = firstPayment || {};
 
-  const shippingAddressForEmail = shippingAddress ? {
-    address: `${shippingAddress.address1}${shippingAddress.address2 ? ` ${shippingAddress.address2}` : ""}`,
-    city: shippingAddress.city,
-    fullName: shippingAddress.fullName,
-    postal: shippingAddress.postal,
-    region: shippingAddress.region
-  } : null;
+  const shippingAddressForEmail = shippingAddress
+    ? {
+        address: `${shippingAddress.address1}${
+          shippingAddress.address2 ? ` ${shippingAddress.address2}` : ""
+        }`,
+        city: shippingAddress.city,
+        fullName: shippingAddress.fullName,
+        postal: shippingAddress.postal,
+        region: shippingAddress.region,
+      }
+    : null;
 
   let billingAddressForEmail = null;
   if (order.billingAddress) {
     billingAddressForEmail = {
-      address: `${order.billingAddress.address1}${order.billingAddress.address2 ? ` ${order.billingAddress.address2}` : ""}`,
+      address: `${order.billingAddress.address1}${
+        order.billingAddress.address2 ? ` ${order.billingAddress.address2}` : ""
+      }`,
       city: order.billingAddress.city,
       fullName: order.billingAddress.fullName,
       postal: order.billingAddress.postal,
-      region: order.billingAddress.region
+      region: order.billingAddress.region,
     };
   } else if (paymentBillingAddress) {
     billingAddressForEmail = {
-      address: `${paymentBillingAddress.address1}${paymentBillingAddress.address2 ? ` ${paymentBillingAddress.address2}` : ""}`,
+      address: `${paymentBillingAddress.address1}${
+        paymentBillingAddress.address2
+          ? ` ${paymentBillingAddress.address2}`
+          : ""
+      }`,
       city: paymentBillingAddress.city,
       fullName: paymentBillingAddress.fullName,
       postal: paymentBillingAddress.postal,
-      region: paymentBillingAddress.region
+      region: paymentBillingAddress.region,
     };
   }
 
@@ -86,8 +115,13 @@ export default async function getDataForOrderEmailDefault(context, { order }) {
 
   if (Array.isArray(order.payments)) {
     const promises = order.payments.map(async (payment) => {
-      const shopRefunds = await context.queries.getPaymentMethodConfigByName(payment.name).functions.listRefunds(context, payment);
-      const shopRefundsWithPaymentId = shopRefunds.map((shopRefund) => ({ ...shopRefund, paymentId: payment._id }));
+      const shopRefunds = await context.queries
+        .getPaymentMethodConfigByName(payment.name)
+        .functions.listRefunds(context, payment);
+      const shopRefundsWithPaymentId = shopRefunds.map((shopRefund) => ({
+        ...shopRefund,
+        paymentId: payment._id,
+      }));
       refunds.push(...shopRefundsWithPaymentId);
     });
     await Promise.all(promises);
@@ -104,36 +138,49 @@ export default async function getDataForOrderEmailDefault(context, { order }) {
   const combinedItems = [];
 
   // Transform all order items to add images, etc.
-  const adjustedOrderGroups = await Promise.all(order.shipping.map(async (group) => {
-    let items = await xformOrderItems(context, group.items);
+  const adjustedOrderGroups = await Promise.all(
+    order.shipping.map(async (group) => {
+      let items = await xformOrderItems(context, group.items);
 
-    items = items.map((item) => ({
-      ...item,
-      placeholderImage: getAbsoluteUrl("/resources/placeholder.gif"),
-      price: {
-        ...item.price,
-        // Add displayAmount to match user currency settings
-        displayAmount: formatMoney(item.price.amount * userCurrencyExchangeRate, userCurrency)
-      },
-      subtotal: {
-        ...item.subtotal,
-        // Add displayAmount to match user currency settings
-        displayAmount: formatMoney(item.subtotal.amount * userCurrencyExchangeRate, userCurrency)
-      },
-      // These next two are for backward compatibility with existing email templates.
-      // New templates should use `imageURLs` instead.
-      productImage: item.imageURLs && item.imageURLs.large,
-      variantImage: item.imageURLs && item.imageURLs.large
-    }));
+      items = items.map((item) => ({
+        ...item,
+        placeholderImage: getAbsoluteUrl("/resources/placeholder.gif"),
+        price: {
+          ...item.price,
+          // Add displayAmount to match user currency settings
+          displayAmount: formatMoney(
+            item.price.amount * userCurrencyExchangeRate,
+            userCurrency
+          ),
+        },
+        subtotal: {
+          ...item.subtotal,
+          // Add displayAmount to match user currency settings
+          displayAmount: formatMoney(
+            item.subtotal.amount * userCurrencyExchangeRate,
+            userCurrency
+          ),
+        },
+        // These next two are for backward compatibility with existing email templates.
+        // New templates should use `imageURLs` instead.
+        productImage: item.imageURLs && item.imageURLs.large,
+        variantImage: item.imageURLs && item.imageURLs.large,
+      }));
 
-    return { ...group, items };
-  }));
+      return { ...group, items };
+    })
+  );
 
   // Loop through all items in the order. The items are split into individual items
-  const orderItems = adjustedOrderGroups.reduce((list, group) => [...list, ...group.items], []);
+  const orderItems = adjustedOrderGroups.reduce(
+    (list, group) => [...list, ...group.items],
+    []
+  );
   for (const orderItem of orderItems) {
     // Find an existing item in the combinedItems array
-    const foundItem = combinedItems.find((combinedItem) => combinedItem.variantId === orderItem.variantId);
+    const foundItem = combinedItems.find(
+      (combinedItem) => combinedItem.variantId === orderItem.variantId
+    );
 
     // Increment the quantity count for the duplicate product variants
     if (foundItem) {
@@ -152,7 +199,10 @@ export default async function getDataForOrderEmailDefault(context, { order }) {
   let orderUrl = _.get(shop, "storefrontUrls.storefrontOrderUrl", null);
   if (orderUrl) {
     let token = "";
-    orderUrl = orderUrl.replace(":orderId", encodeURIComponent(order.referenceId));
+    orderUrl = orderUrl.replace(
+      ":orderId",
+      encodeURIComponent(order.referenceId)
+    );
     const isAnonymous = !order.accountId;
     const wantsToken = orderUrl.includes(":token");
     if (isAnonymous && wantsToken) {
@@ -164,7 +214,9 @@ export default async function getDataForOrderEmailDefault(context, { order }) {
 
   const physicalAddress = (shop.addressBook && shop.addressBook[0]) || null;
   if (physicalAddress) {
-    physicalAddress.address = `${physicalAddress.address1}${physicalAddress.address2 ? ` ${physicalAddress.address2}` : ""}`;
+    physicalAddress.address = `${physicalAddress.address1}${
+      physicalAddress.address2 ? ` ${physicalAddress.address2}` : ""
+    }`;
   }
 
   // Merge data into single object to pass to email template
@@ -174,21 +226,34 @@ export default async function getDataForOrderEmailDefault(context, { order }) {
       address: billingAddressForEmail,
       payments: (order.payments || []).map((payment) => ({
         displayName: payment.displayName,
-        displayAmount: formatMoney(payment.amount * userCurrencyExchangeRate, userCurrency)
+        displayAmount: formatMoney(
+          payment.amount * userCurrencyExchangeRate,
+          userCurrency
+        ),
       })),
       subtotal: formatMoney(subtotal * userCurrencyExchangeRate, userCurrency),
-      shipping: formatMoney(shippingCost * userCurrencyExchangeRate, userCurrency),
+      shipping: formatMoney(
+        shippingCost * userCurrencyExchangeRate,
+        userCurrency
+      ),
       taxes: formatMoney(taxes * userCurrencyExchangeRate, userCurrency),
-      discounts: formatMoney(discounts * userCurrencyExchangeRate, userCurrency),
-      refunds: formatMoney(refundTotal * userCurrencyExchangeRate, userCurrency),
+      discounts: formatMoney(
+        discounts * userCurrencyExchangeRate,
+        userCurrency
+      ),
+      refunds: formatMoney(
+        refundTotal * userCurrencyExchangeRate,
+        userCurrency
+      ),
       total: formatMoney(
-        (subtotal + shippingCost + taxes - discounts) * userCurrencyExchangeRate,
+        (subtotal + shippingCost + taxes - discounts) *
+          userCurrencyExchangeRate,
         userCurrency
       ),
       adjustedTotal: formatMoney(
         (amount - refundTotal) * userCurrencyExchangeRate,
         userCurrency
-      )
+      ),
     },
     combinedItems,
     contactEmail: shop.emails[0].address,
@@ -197,7 +262,7 @@ export default async function getDataForOrderEmailDefault(context, { order }) {
     legalName: _.get(shop, "addressBook[0].company"),
     order: {
       ...order,
-      shipping: adjustedOrderGroups
+      shipping: adjustedOrderGroups,
     },
     orderDate: formatDateForEmail(order.createdAt),
     orderUrl,
@@ -205,12 +270,12 @@ export default async function getDataForOrderEmailDefault(context, { order }) {
     shipping: {
       address: shippingAddressForEmail,
       carrier,
-      tracking
+      tracking,
     },
     shop,
     shopName: shop.name,
     socialLinks: {
-      display: false
-    }
+      display: false,
+    },
   };
 }
