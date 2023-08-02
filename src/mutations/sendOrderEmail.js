@@ -3,23 +3,23 @@ import SimpleSchema from "simpl-schema";
 const inputSchema = new SimpleSchema({
   action: {
     type: String,
-    optional: true
+    optional: true,
   },
   fromShop: {
     type: Object,
-    blackbox: true
+    blackbox: true,
   },
   to: {
-    type: String
+    type: String,
   },
   language: {
     type: String,
-    optional: true
+    optional: true,
   },
   dataForEmail: {
     type: Object,
-    blackbox: true
-  }
+    blackbox: true,
+  },
 });
 
 /**
@@ -34,38 +34,36 @@ export default async function sendOrderEmail(context, input) {
   // console.log(input)
   const { action, dataForEmail, fromShop, language, to } = input;
   console.log("2", action);
-  console.log("dataForEmail.order.workflow.status", dataForEmail.order.workflow.status)
+  console.log(
+    "dataForEmail.order.workflow.status",
+    dataForEmail.order.workflow.status
+  );
   // Compile email
   let templateName;
 
   if (action === "shipped") {
     templateName = "orders/shipped";
-  } else if (action === "refunded") {
+  }
+  if (action === "refunded") {
     templateName = "orders/refunded";
-  } else if (action === "itemRefund") {
+  }
+  if (action === "itemRefund") {
     templateName = "orders/itemRefund";
-  } else if (action === "confirmed") {
+  }
+  if (action === "confirmed") {
     templateName = "orders/confirmed";
   } else if (action === "new") {
     templateName = "orders/new";
-  }
-  else {
+  } else {
     templateName = `orders/${dataForEmail.order.workflow.status}`;
   }
-  // console.log(templateName)
-  const Emailresp = await context.mutations.sendEmail(context, {
-    data: dataForEmail,
-    fromShop,
-    templateName,
-    language,
-    to
-  })
-  console.log(Emailresp)
+  // console.log(templateName);
+
   await context.mutations.sendEmail(context, {
     data: dataForEmail,
     fromShop,
     templateName,
     language,
-    to
+    to,
   });
 }
