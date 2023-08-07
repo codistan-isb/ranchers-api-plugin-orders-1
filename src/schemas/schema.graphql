@@ -148,6 +148,9 @@ extend type Mutation {
     input: CancelOrderItemInput!
   ): CancelOrderItemPayload!
 
+  cancelCustomerOrder(
+    input: cancelCustomerOrderInput!
+  ): cancelCustomerOrderPayload
   "Use this mutation to create a refund on a payment method used to make the order"
   createRefund("Mutation input" input: CreateRefundInput!): CreateRefundPayload!
 
@@ -867,7 +870,13 @@ input CancelOrderItemInput {
   """
   reason: String
 }
+input cancelCustomerOrderInput {
+  clientMutationId: String
 
+  orderID: ID!
+
+  cancelOrderReason: String!
+}
 "Input for the cancelOrderItem mutation"
 input CreateRefundInput {
   "Amount to cancel. Must be equal to or less than the remaining non-refunded payment amount for this payment method."
@@ -996,6 +1005,13 @@ type AddOrderFulfillmentGroupPayload {
 
 "Response payload for the cancelOrderItem mutation"
 type CancelOrderItemPayload {
+  "The same string you sent with the mutation params, for matching mutation calls with their responses"
+  clientMutationId: String
+
+  "The updated order"
+  order: Order!
+}
+type cancelCustomerOrderPayload {
   "The same string you sent with the mutation params, for matching mutation calls with their responses"
   clientMutationId: String
 

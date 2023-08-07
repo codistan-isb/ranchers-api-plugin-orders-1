@@ -7,6 +7,7 @@ import sendOrderEmail from "./sendOrderEmail.js";
 import splitOrderItem from "./splitOrderItem.js";
 import updateOrder from "./updateOrder.js";
 import updateOrderFulfillmentGroup from "./updateOrderFulfillmentGroup.js";
+import cancelCustomerOrder from "./cancelCustomerOrder.js";
 
 export default {
   addOrderFulfillmentGroup,
@@ -18,5 +19,5 @@ export default {
   splitOrderItem,
   updateOrder,
   updateOrderFulfillmentGroup,
-
+  cancelCustomerOrder,
 };
