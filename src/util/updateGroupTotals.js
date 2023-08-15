@@ -72,6 +72,9 @@ export default async function updateGroupTotals(
     surcharges: groupSurcharges,
   });
 
+  console.log("group is ", group);
+  // discountTotal = group.subTotal - discountTotal;
+
   // Build and set the group invoice
   addInvoiceToGroup({
     currencyCode,
@@ -96,6 +99,8 @@ export default async function updateGroupTotals(
     // Compare expected and actual totals to make sure client sees correct calculated price
     // Error if we calculate total price differently from what the client has shown as the preview.
     // It's important to keep this after adding and verifying the shipmentMethod and order item prices.
+    console.log("group invoice ttotal", group.invoice);
+
     compareExpectedAndActualTotals(group.invoice.total, expectedTotal);
   }
 
