@@ -39,7 +39,6 @@ export default async function updateOrder(context, input) {
   // First verify that this order actually exists
   const order = await Orders.findOne({ _id: orderId });
   if (!order) throw new ReactionError("not-found", "Order not found");
-  // console.log("Update Order : ", order.accountId)
   // At this point, this mutation only updates the workflow status, which should not be allowed
   // for the order creator. In the future, if this mutation does more, we should revisit these
   // permissions to see if order owner should be allowed.

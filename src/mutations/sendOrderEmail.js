@@ -31,9 +31,7 @@ const inputSchema = new SimpleSchema({
  */
 export default async function sendOrderEmail(context, input) {
   inputSchema.validate(input);
-  // console.log(input)
   const { action, dataForEmail, fromShop, language, to } = input;
-  console.log("2", action);
   console.log(
     "dataForEmail.order.workflow.status",
     dataForEmail.order.workflow.status
@@ -57,7 +55,6 @@ export default async function sendOrderEmail(context, input) {
   } else {
     templateName = `orders/${dataForEmail.order.workflow.status}`;
   }
-  // console.log(templateName);
 
   await context.mutations.sendEmail(context, {
     data: dataForEmail,

@@ -32,7 +32,6 @@ export default async function deliveryTimeCalculation(
                 return duration;
             })
             .catch(error => console.error('Error fetching API:- ', error));
-        // console.log("APIResp :- ", APIResp)
         if (APIResp !== undefined || APIResp !== null || APIResp !== NaN) {
             return APIResp;
         }

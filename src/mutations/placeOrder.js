@@ -111,7 +111,6 @@ async function createPayments({
         }, // optional, object, blackbox
       }
     );
-    // console.log("Payment : ", payment)
     const paymentWithCurrency = {
       ...payment,
       // This is from previous support for exchange rates, which was removed in v3.0.0
@@ -176,9 +175,7 @@ export default async function placeOrder(context, input) {
     kitchenOrderID: { $exists: true },
   };
   const generatedID = await generateKitchenOrderID(query, Orders, branchID);
-  // console.log("generatedID ", generatedID);
   const kitchenOrderID = generatedID;
-  // console.log("kitchenOrderID ", kitchenOrderID);
   const todayDate = today;
   const branchData = await BranchData.findOne({
     _id: ObjectID.ObjectId(branchID),
@@ -187,38 +184,18 @@ export default async function placeOrder(context, input) {
     prepTime = branchData.prepTime;
     taxID = branchData.taxID;
   }
-  // console.log("branchID ", branchID)
-  // console.log("branchData ", branchData)
   if (branchData) {
     const deliveryTimeCalculationResponse = await deliveryTimeCalculation(
       branchData,
       fulfillmentGroups[0].data.shippingAddress
     );
-    // console.log(deliveryTimeCalculationResponse)
-    // deliveryTimeCalculationResponse ;
     if (deliveryTimeCalculationResponse) {
       deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
-      console.log("delivery time ", deliveryTime);
-    } else {
-      deliveryTime = 25.0;
-    }
-  } else {
-    deliveryTime = 25.0;
-  }
-
-  // console.log(" Test Delivery Time ", deliveryTimeCalculationResponse / 60);
-  // const deliveryTime = 35;
+    } 
+  } 
   prepTime = prepTime || 20;
-  // console.log("deliveryTime:- ", deliveryTime);
-  // if (!deliveryTime) {
-  //   deliveryTime = 20
-  // }
-  // Tax Calculation
-  // console.log("tax ID ", taxID)
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
-  console.log("taxData", taxData);
   const taxPercentage = taxData.Cash;
-
   const shop = await context.queries.shopById(context, shopId);
   if (!shop) throw new ReactionError("not-found", "Shop not found");
 
@@ -250,7 +227,6 @@ export default async function placeOrder(context, input) {
     ({ discounts } = discountsResult);
     discountTotal = discountsResult.total;
   }
-  // console.log("taxPercentage ", taxPercentage);
   // Create array for surcharges to apply to order, if applicable
   // Array is populated inside `fulfillmentGroups.map()`
   const orderSurcharges = [];
@@ -403,10 +379,8 @@ export default async function placeOrder(context, input) {
   }
   // Validate and save
   OrderSchema.validate(order);
-  // console.log("Order input ", order)
   await Orders.insertOne(order);
   sendOrderEmail(context, order, "new");
-  console.log("userId ", userId);
   const message = "Your order has been placed";
   const appType = "customer";
   const id = userId;
@@ -419,8 +393,6 @@ export default async function placeOrder(context, input) {
       userId,
       orderID,
     });
-  // console.log("context Mutation: ", paymentIntentClientSecret);
-
   const message1 = "New Order is placed";
   const appType1 = "admin";
   const id1 = userId;
@@ -431,10 +403,7 @@ export default async function placeOrder(context, input) {
       appType: appType1,
       userId: userId,
     });
-  // console.log("context Mutation: ", paymentIntentClientSecret1);
-
   await appEvents.emit("afterOrderCreate", { createdBy: userId, order });
-
   return {
     orders: [order],
     // GraphQL response gets the raw token

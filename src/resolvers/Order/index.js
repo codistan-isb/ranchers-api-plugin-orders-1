@@ -34,8 +34,7 @@ export default {
   branchID: (node) => node.branchID,
   deliveryTime: (node) => {
     if (node.OrderStatus === "pickedUp") {
-      // console.log("node ", node.OrderStatus);
-      return 25.0;
+      return node?.deliveryTime ;
     } else {
       return node.deliveryTime + node.prepTime || node.deliveryTime + 20.0;
     }

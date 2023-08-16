@@ -13,8 +13,6 @@ export default async function cancelCustomerOrder(
       "Unauthorized access. Please Login First"
     );
   }
-  console.log("decodeOrderOpaqueId(orderID) ", decodeOrderOpaqueId(orderID));
-  // console.log("orderID ", orderID);
   const { order } = await context.mutations.cancelCustomerOrder(context, {
     orderID: decodeOrderOpaqueId(orderID),
     cancelOrderReason,
