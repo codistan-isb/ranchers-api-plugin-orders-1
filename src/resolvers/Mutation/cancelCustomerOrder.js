@@ -13,13 +13,17 @@ export default async function cancelCustomerOrder(
       "Unauthorized access. Please Login First"
     );
   }
-  const { order } = await context.mutations.cancelCustomerOrder(context, {
-    orderID: decodeOrderOpaqueId(orderID),
-    cancelOrderReason,
-  });
+  try {
+    const { order } = await context.mutations.cancelCustomerOrder(context, {
+      orderID: decodeOrderOpaqueId(orderID),
+      cancelOrderReason,
+    });
 
-  return {
-    clientMutationId,
-    order,
-  };
+    return {
+      clientMutationId,
+      order,
+    };
+  } catch (error) {
+    console.log("error ", error);
+  }
 }
