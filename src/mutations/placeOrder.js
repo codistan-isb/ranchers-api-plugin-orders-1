@@ -166,7 +166,7 @@ export default async function placeOrder(context, input) {
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } =
     context;
-  const { TaxRate, Orders, Cart, BranchData } = collections;
+  const { TaxRate, Orders, Cart, BranchData, CartHistory } = collections;
   // const query = { todayDate: today, branchID };
   // const query = { todayDate: { $eq: today }, branchID: { $eq: branchID } };
   const query = {
@@ -191,8 +191,8 @@ export default async function placeOrder(context, input) {
     );
     if (deliveryTimeCalculationResponse) {
       deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
-    } 
-  } 
+    }
+  }
   prepTime = prepTime || 20;
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
   const taxPercentage = taxData.Cash;
@@ -206,6 +206,7 @@ export default async function placeOrder(context, input) {
   let cart;
   if (cartId) {
     cart = await Cart.findOne({ _id: cartId });
+    // await
     if (!cart) {
       throw new ReactionError(
         "not-found",
@@ -213,7 +214,7 @@ export default async function placeOrder(context, input) {
       );
     }
   }
-
+  CartHistory.insertOne(cart);
   // We are mixing concerns a bit here for now. This is for backwards compatibility with current
   // discount codes feature. We are planning to revamp discounts soon, but until then, we'll look up
   // any discounts on the related cart here.
@@ -404,6 +405,7 @@ export default async function placeOrder(context, input) {
       userId: userId,
     });
   await appEvents.emit("afterOrderCreate", { createdBy: userId, order });
+
   return {
     orders: [order],
     // GraphQL response gets the raw token
