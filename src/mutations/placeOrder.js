@@ -214,7 +214,6 @@ export default async function placeOrder(context, input) {
       );
     }
   }
-  CartHistory.insertOne(cart);
   // We are mixing concerns a bit here for now. This is for backwards compatibility with current
   // discount codes feature. We are planning to revamp discounts soon, but until then, we'll look up
   // any discounts on the related cart here.
@@ -404,6 +403,8 @@ export default async function placeOrder(context, input) {
       appType: appType1,
       userId: userId,
     });
+  CartHistory.insertOne(cart);
+
   await appEvents.emit("afterOrderCreate", { createdBy: userId, order });
 
   return {
