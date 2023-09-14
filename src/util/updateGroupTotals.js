@@ -20,17 +20,20 @@ import getSurchargesForGroup from "./getSurchargesForGroup.js";
  * @param {String} selectedFulfillmentMethodId ID of the fulfillment method option chosen by the user
  * @returns {Promise<Object>} Object with surcharge and tax info on it
  */
-export default async function updateGroupTotals(context, {
-  accountId,
-  billingAddress = null,
-  cartId = null,
-  currencyCode,
-  discountTotal = 0,
-  expectedGroupTotal,
-  group,
-  orderId,
-  selectedFulfillmentMethodId
-}) {
+export default async function updateGroupTotals(
+  context,
+  {
+    accountId,
+    billingAddress = null,
+    cartId = null,
+    currencyCode,
+    discountTotal = 0,
+    expectedGroupTotal,
+    group,
+    orderId,
+    selectedFulfillmentMethodId,
+  }
+) {
   // Apply shipment method
   await addShipmentMethodToGroup(context, {
     accountId,
@@ -40,22 +43,22 @@ export default async function updateGroupTotals(context, {
     discountTotal,
     group,
     orderId,
-    selectedFulfillmentMethodId
+    selectedFulfillmentMethodId,
   });
 
-  const {
-    groupSurcharges,
-    groupSurchargeTotal
-  } = await getSurchargesForGroup(context, {
-    accountId,
-    billingAddress,
-    cartId,
-    currencyCode,
-    discountTotal,
-    group,
-    orderId,
-    selectedFulfillmentMethodId
-  });
+  const { groupSurcharges, groupSurchargeTotal } = await getSurchargesForGroup(
+    context,
+    {
+      accountId,
+      billingAddress,
+      cartId,
+      currencyCode,
+      discountTotal,
+      group,
+      orderId,
+      selectedFulfillmentMethodId,
+    }
+  );
 
   // Calculate and set taxes. Mutates group object in addition to returning the totals.
   const { taxTotal, taxableAmount } = await addTaxesToGroup(context, {
@@ -66,7 +69,7 @@ export default async function updateGroupTotals(context, {
     discountTotal,
     group,
     orderId,
-    surcharges: groupSurcharges
+    surcharges: groupSurcharges,
   });
 
   // Build and set the group invoice
@@ -76,7 +79,7 @@ export default async function updateGroupTotals(context, {
     groupDiscountTotal: discountTotal,
     groupSurchargeTotal,
     taxableAmount,
-    taxTotal
+    taxTotal,
   });
 
   if (expectedGroupTotal) {
@@ -85,7 +88,7 @@ export default async function updateGroupTotals(context, {
     // This needs to be rewritten soon for discounts to work when there are multiple fulfillment groups.
     // Probably the client should be sending all applied discount IDs and amounts in the order input (by group),
     // and include total discount in `groupInput.totalPrice`, and then we simply verify that they are valid here.
-    
+
     const expectedTotal = Math.max(expectedGroupTotal - discountTotal, 0);
 
     // Compare expected and actual totals to make sure client sees correct calculated price
@@ -98,6 +101,6 @@ export default async function updateGroupTotals(context, {
     groupSurcharges,
     groupSurchargeTotal,
     taxableAmount,
-    taxTotal
+    taxTotal,
   };
 }

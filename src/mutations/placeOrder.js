@@ -193,7 +193,7 @@ export default async function placeOrder(context, input) {
       deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
     }
   }
-  prepTime = prepTime || 20;
+  prepTime = prepTime ? prepTime : 20;
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
   const taxPercentage = taxData.Cash;
   const shop = await context.queries.shopById(context, shopId);
