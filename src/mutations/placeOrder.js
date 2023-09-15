@@ -148,6 +148,7 @@ export default async function placeOrder(context, input) {
   let prepTime = 0;
   let taxID = "";
   let deliveryTime = 0.0;
+  let deliveryCharges;
   const today = new Date().toISOString().substr(0, 10);
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
@@ -183,6 +184,7 @@ export default async function placeOrder(context, input) {
   if (branchData) {
     prepTime = branchData.prepTime;
     taxID = branchData.taxID;
+    deliveryCharges = branchData.deliveryCharges;
   }
   if (branchData) {
     const deliveryTimeCalculationResponse = await deliveryTimeCalculation(
@@ -193,6 +195,7 @@ export default async function placeOrder(context, input) {
       deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
     }
   }
+  console.log("deliveryCharges", deliveryCharges);
   prepTime = prepTime ? prepTime : 20;
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
   const taxPercentage = taxData.Cash;
@@ -266,6 +269,8 @@ export default async function placeOrder(context, input) {
 
       // Add the group total to the order total
       orderTotal += group.invoice.total;
+      console.log("orderTotal", orderTotal);
+      console.log("group", group);
       return group;
     })
   );
@@ -287,7 +292,6 @@ export default async function placeOrder(context, input) {
   const fullToken = accountId ? null : getAnonymousAccessToken();
 
   const now = new Date();
-  // const deliveryTimeCalculation= ""
   const order = {
     _id: orderId,
     accountId,
