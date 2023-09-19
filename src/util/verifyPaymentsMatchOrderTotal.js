@@ -40,14 +40,14 @@ export default function verifyPaymentsMatchOrderTotal(
   // console.log("orderTotalString ", orderTotalString);
   // console.log("paymentTotalString", paymentTotalString);
   // if (paymentTotalString !== orderTotalString) {
-  // if (Math.round(paymentTotalString) !== Math.round(orderTotalString)) {
-  //   Logger.debug(
-  //     "Error creating payments for a new order. " +
-  //       `Order total (${orderTotalString}) does not match total of all payment amounts (${paymentTotalString}).`
-  //   );
-  //   throw new ReactionError(
-  //     "payment-failed",
-  //     "Total of all payments must equal order total"
-  //   );
-  // }
+  if (Math.round(paymentTotalString) !== Math.round(orderTotalString)) {
+    Logger.debug(
+      "Error creating payments for a new order. " +
+        `Order total (${orderTotalString}) does not match total of all payment amounts (${paymentTotalString}).`
+    );
+    throw new ReactionError(
+      "payment-failed",
+      "Total of all payments must equal order total"
+    );
+  }
 }
