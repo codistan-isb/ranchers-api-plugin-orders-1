@@ -7,7 +7,7 @@ export default async function cancelCustomerOrder(
   context
 ) {
   const { clientMutationId = null, orderID, cancelOrderReason } = input;
-  if (context.user === undefined || code.user === null) {
+  if (context.user === undefined || context.user === null) {
     throw new ReactionError(
       "access-denied",
       "Unauthorized access. Please Login First"
