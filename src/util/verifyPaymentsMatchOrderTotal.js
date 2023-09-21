@@ -19,7 +19,7 @@ export default function verifyPaymentsMatchOrderTotal(
   // console.log("orderTotal", orderTotal);
   // console.log("taxPercentage", taxPercentage);
   if (taxPercentage) {
-    var taxAmount = (orderTotal * taxPercentage) / 100;
+    var taxAmount = Math.round((orderTotal * taxPercentage) / 100);
     orderTotal = orderTotal + taxAmount;
   }
   // console.log("taxAmount", taxAmount);
@@ -39,6 +39,8 @@ export default function verifyPaymentsMatchOrderTotal(
   // console.log("paymentTotalString", Math.round(paymentTotalString));
   // console.log("orderTotalString ", orderTotalString);
   // console.log("paymentTotalString", paymentTotalString);
+  // console.log("Math.round(orderTotalString) ", Math.round(orderTotalString));
+  // console.log("Math.round(paymentTotalString)", Math.round(paymentTotalString));
   // if (paymentTotalString !== orderTotalString) {
   if (Math.round(paymentTotalString) !== Math.round(orderTotalString)) {
     Logger.debug(

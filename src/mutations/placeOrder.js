@@ -269,8 +269,8 @@ export default async function placeOrder(context, input) {
 
       // Add the group total to the order total
       orderTotal += group.invoice.total;
-      console.log("orderTotal", orderTotal);
-      console.log("group", group);
+      // console.log("orderTotal", orderTotal);
+      // console.log("group", group);
       return group;
     })
   );
