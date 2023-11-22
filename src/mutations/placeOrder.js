@@ -8,15 +8,14 @@ import getAnonymousAccessToken from "@reactioncommerce/api-utils/getAnonymousAcc
 import buildOrderFulfillmentGroupFromInput from "../util/buildOrderFulfillmentGroupFromInput.js";
 import verifyPaymentsMatchOrderTotal from "../util/verifyPaymentsMatchOrderTotal.js";
 import sendOrderEmail from "../util/sendOrderEmail.js";
-
 import {
   Order as OrderSchema,
   orderInputSchema,
   Payment as PaymentSchema,
   paymentInputSchema,
 } from "../simpleSchemas.js";
-import deliveryTimeCalculation from "../util/deliveryTimeCalculation.js";
-import generateKitchenOrderID from "../util/generateKitchenOrderID.js";
+// import deliveryTimeCalculation from "../util/deliveryTimeCalculation.js";
+// import generateKitchenOrderID from "../util/generateKitchenOrderID.js";
 
 const inputSchema = new SimpleSchema({
   order: orderInputSchema,
@@ -149,7 +148,7 @@ export default async function placeOrder(context, input) {
   let taxID = "";
   let deliveryTime = 0.0;
   let deliveryCharges;
-  const today = new Date().toISOString().substr(0, 10);
+  let today = new Date().toISOString().substr(0, 10);
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
   const { order: orderInput, payments: paymentsInput } = cleanedInput;
@@ -168,17 +167,18 @@ export default async function placeOrder(context, input) {
   const { accountId, appEvents, collections, getFunctionsOfType, userId } =
     context;
   const { TaxRate, Orders, Cart, BranchData, CartHistory } = collections;
+  //this is moved to the app event call
   // const query = { todayDate: today, branchID };
   // const query = { todayDate: { $eq: today }, branchID: { $eq: branchID } };
-  const query = {
-    todayDate: { $eq: today },
-    branchID: { $eq: branchID },
-    kitchenOrderID: { $exists: true },
-  };
-  const generatedID = await generateKitchenOrderID(query, Orders, branchID);
-  const kitchenOrderID = generatedID;
-  const todayDate = today;
-  const branchData = await BranchData.findOne({
+  // let query = {
+  //   todayDate: { $eq: today },
+  //   branchID: { $eq: branchID },
+  //   kitchenOrderID: { $exists: true },
+  // };
+  // let generatedID = await generateKitchenOrderID(query, Orders, branchID);
+  // let kitchenOrderID = generatedID;
+  let todayDate = today;
+  let branchData = await BranchData.findOne({
     _id: ObjectID.ObjectId(branchID),
   });
   if (branchData) {
@@ -186,16 +186,8 @@ export default async function placeOrder(context, input) {
     taxID = branchData.taxID;
     deliveryCharges = branchData.deliveryCharges;
   }
-  if (branchData) {
-    const deliveryTimeCalculationResponse = await deliveryTimeCalculation(
-      branchData,
-      fulfillmentGroups[0].data.shippingAddress
-    );
-    if (deliveryTimeCalculationResponse) {
-      deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
-    }
-  }
-  console.log("deliveryCharges", deliveryCharges);
+
+  // console.log("deliveryCharges", deliveryCharges);
   prepTime = prepTime ? prepTime : 20;
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
   const taxPercentage = taxData.Cash;
@@ -317,7 +309,7 @@ export default async function placeOrder(context, input) {
       status: "new",
       workflow: ["new"],
     },
-    kitchenOrderID,
+    // kitchenOrderID,
     todayDate,
     prepTime,
     deliveryTime,
@@ -384,32 +376,32 @@ export default async function placeOrder(context, input) {
   // Validate and save
   OrderSchema.validate(order);
   await Orders.insertOne(order);
-  sendOrderEmail(context, order, "new");
-  const message = "Your order has been placed";
-  const appType = "customer";
-  const id = userId;
-  const orderID = orderId;
-  const paymentIntentClientSecret =
-    context.mutations.oneSignalCreateNotification(context, {
-      message,
-      id,
-      appType,
-      userId,
-      orderID,
-    });
-  const message1 = "New Order is placed";
-  const appType1 = "admin";
-  const id1 = userId;
-  const paymentIntentClientSecret1 =
-    context.mutations.oneSignalCreateNotification(context, {
-      message: message1,
-      id: id1,
-      appType: appType1,
-      userId: userId,
-    });
-  CartHistory.insertOne(cart);
+  // sendOrderEmail(context, order, "new");
+  // const message = "Your order has been placed";
+  // const appType = "customer";
+  // const id = userId;
+  // const orderID = orderId;
+  // const paymentIntentClientSecret =
+  //   context.mutations.oneSignalCreateNotification(context, {
+  //     message,
+  //     id,
+  //     appType,
+  //     userId,
+  //     orderID,
+  //   });
+  // const message1 = "New Order is placed";
+  // const appType1 = "admin";
+  // const id1 = userId;
+  // const paymentIntentClientSecret1 =
+  //   context.mutations.oneSignalCreateNotification(context, {
+  //     message: message1,
+  //     id: id1,
+  //     appType: appType1,
+  //     userId: userId,
+  //   });
+  // CartHistory.insertOne(cart);
 
-  await appEvents.emit("afterOrderCreate", { createdBy: userId, order });
+  await appEvents.emit("afterOrderCreate", { createdBy: userId, order, orderId, branchID, branchData, fulfillmentGroups });
 
   return {
     orders: [order],

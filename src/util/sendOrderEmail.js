@@ -9,7 +9,7 @@ import Logger from "@reactioncommerce/logger";
  */
 export default async function sendOrderEmail(context, order, action) {
   // anonymous account orders without emails.
-  // console.log("order ", order)
+  // console.log("order discount ", order.discounts);
   // console.log("action ", action)
   const to = order.email;
   if (!to) {
@@ -21,9 +21,21 @@ export default async function sendOrderEmail(context, order, action) {
   const getDataForOrderEmailFns = context.getFunctionsOfType("getDataForOrderEmail");
   for (const getDataForOrderEmailFn of getDataForOrderEmailFns) {
     const someData = await getDataForOrderEmailFn(context, { order }); // eslint-disable-line no-await-in-loop
+    // console.log("someData", someData);
     Object.assign(dataForEmail, someData);
   }
+  // console.log("dataForEmail", dataForEmail);
+  // console.log("dataForEmail  dataForEmail.billing.subtotal", dataForEmail?.billing?.subtotal);
+  // console.log("order?.discounts[0]?.amount", order?.discounts[0]);
+  // console.log("order?.discounts[0]?.amount", order?.discounts[0]?.amount);
+  if (dataForEmail && dataForEmail.order && dataForEmail.order.payments && dataForEmail.order.payments[0]) {
+    dataForEmail.order.payments[0].discountedValue = order?.discounts[0]?.amount ?? 0.0;
+    dataForEmail.order.payments[0].itemsTotal = dataForEmail?.billing?.subtotal ;
+  }
 
+  // dataForEmail?.order?.payments[0]?.discountedValue = order?.discounts[0]?.amount ?? 0.0
+  // console.log("dataForEmail after dataForEmail.order.payments.push", dataForEmail);
+  // console.log("Order Payment after  dataForEmail.order.payments.push ", order.payments);
   const language = await getLanguageForOrder(context, order);
 
   await context.mutations.sendOrderEmail(context, {

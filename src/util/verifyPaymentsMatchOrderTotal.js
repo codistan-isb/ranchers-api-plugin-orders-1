@@ -28,7 +28,7 @@ export default function verifyPaymentsMatchOrderTotal(
     (sum, paymentInput) => sum + paymentInput.amount,
     0
   );
-  // console.log("paymentTotal after adding amount value", paymentTotal);
+  // console.log("paymentTotal after adding/ amount value", paymentTotal);
 
   // In order to prevent mismatch due to rounding, we convert these to strings before comparing. What we really
   // care about is, do these match to the specificity that the shopper will see (i.e. to the scale of the currency)?
@@ -45,11 +45,11 @@ export default function verifyPaymentsMatchOrderTotal(
   if (Math.round(paymentTotalString) !== Math.round(orderTotalString)) {
     Logger.debug(
       "Error creating payments for a new order. " +
-        `Order total (${orderTotalString}) does not match total of all payment amounts (${paymentTotalString}).`
+      `Order total (${orderTotalString}) does not match total of all payment amounts (${paymentTotalString}).`
     );
     throw new ReactionError(
       "payment-failed",
-      "Total of all payments must equal order total"
+      ` Total of all payments must equal order total is (${orderTotalString}) all payment amounts (${paymentTotalString})`
     );
   }
 }
