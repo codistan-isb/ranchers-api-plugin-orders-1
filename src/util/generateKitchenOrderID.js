@@ -5,6 +5,7 @@ const crypto = require("crypto");
 export default async function generateKitchenOrderID(query, Orders, branchID) {
     
     const count = await Orders.countDocuments(query);
+    
     let newKichtenID;
     if (count > 0) {
         newKichtenID = count + 1;

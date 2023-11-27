@@ -168,8 +168,8 @@ export default async function placeOrder(context, input) {
     context;
   const { TaxRate, Orders, Cart, BranchData, CartHistory } = collections;
   //this is moved to the app event call
-  // const query = { todayDate: today, branchID };
-  // const query = { todayDate: { $eq: today }, branchID: { $eq: branchID } };
+ // // const query = { todayDate: today, branchID };
+  // // const query = { todayDate: { $eq: today }, branchID: { $eq: branchID } };
   // let query = {
   //   todayDate: { $eq: today },
   //   branchID: { $eq: branchID },

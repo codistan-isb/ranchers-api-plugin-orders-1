@@ -29,7 +29,7 @@ export default function ordersStartup(context) {
     let generatedID = await generateKitchenOrderID(query, Orders, branchID);
     let kitchenOrderID = generatedID;
 
-    // console.log("generatedID in app event", generatedID);
+    console.log("generatedID in app event", generatedID);
     if (branchData) {
       let deliveryTimeCalculationResponse = await deliveryTimeCalculation(
         branchData,
@@ -47,7 +47,8 @@ export default function ordersStartup(context) {
     order.kitchenOrderID = kitchenOrderID;
     order.deliveryTime = deliveryTime;
 
-    // console.log("Order for email ", order);
+    console.log("Order for email ", order);
+    console.log("orderData", orderData);
     // console.log("Order for email Payment ", order.payments);
 
 

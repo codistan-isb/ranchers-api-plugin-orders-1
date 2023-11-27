@@ -1,11 +1,13 @@
 import fetch from "node-fetch";
-
+const GOOGLE_API_KEY_DISTANCE_CALCULATOR =
+    process.env.GOOGLE_API_KEY_DISTANCE_CALCULATOR;
 export default async function deliveryTimeCalculation(
     branchAddress,
     deliveryAddress
 ) {
+    console.log("GOOGLE_API_KEY_DISTANCE_CALCULATOR", GOOGLE_API_KEY_DISTANCE_CALCULATOR);
     if (branchAddress) {
-        const apiKey = 'AIzaSyAN4uBGLP_KD6UlDkUi2Zbvjn5idqe6abU';
+        let apiKey = GOOGLE_API_KEY_DISTANCE_CALCULATOR;
         // const apiKey = 'AIzaSyDsK8_E12WZ1Wixbh30QPJxc10JJb4ukFI';
         const origin = branchAddress.Latitude + "," + branchAddress.Longitude;
         const units = 'imperial';
