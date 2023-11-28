@@ -17,19 +17,19 @@ export default function ordersStartup(context) {
     let { collections } =
       context;
     const { Orders } = collections;
-    const today = new Date().toISOString().substr(0, 10);
+    // const today = new Date().toISOString().substr(0, 10);
     let deliveryTime = 0.0;
-    let query = {
-      todayDate: { $eq: today },
-      branchID: { $eq: branchID },
-      kitchenOrderID: { $exists: true },
-    };
-    // console.log("order afterOrderCreate", order);
-    // console.log("createdBy afterOrderCreate", createdBy);
-    let generatedID = await generateKitchenOrderID(query, Orders, branchID);
-    let kitchenOrderID = generatedID;
+    // let query = {
+    //   todayDate: { $eq: today },
+    //   branchID: { $eq: branchID },
+    //   kitchenOrderID: { $exists: true },
+    // };
+    // // console.log("order afterOrderCreate", order);
+    // // console.log("createdBy afterOrderCreate", createdBy);
+    // let generatedID = await generateKitchenOrderID(query, Orders, branchID);
+    // let kitchenOrderID = generatedID;
 
-    console.log("generatedID in app event", generatedID);
+    // console.log("generatedID in app event", generatedID);
     if (branchData) {
       let deliveryTimeCalculationResponse = await deliveryTimeCalculation(
         branchData,
@@ -40,11 +40,11 @@ export default function ordersStartup(context) {
       }
     }
     let orderData = {
-      kitchenOrderID,
+      // kitchenOrderID,
       deliveryTime,
       updatedAt: new Date()
     };
-    order.kitchenOrderID = kitchenOrderID;
+    // order.kitchenOrderID = kitchenOrderID;
     order.deliveryTime = deliveryTime;
 
     console.log("Order for email ", order);

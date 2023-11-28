@@ -15,7 +15,7 @@ import {
   paymentInputSchema,
 } from "../simpleSchemas.js";
 // import deliveryTimeCalculation from "../util/deliveryTimeCalculation.js";
-// import generateKitchenOrderID from "../util/generateKitchenOrderID.js";
+import generateKitchenOrderID from "../util/generateKitchenOrderID.js";
 
 const inputSchema = new SimpleSchema({
   order: orderInputSchema,
@@ -168,15 +168,13 @@ export default async function placeOrder(context, input) {
     context;
   const { TaxRate, Orders, Cart, BranchData, CartHistory } = collections;
   //this is moved to the app event call
- // // const query = { todayDate: today, branchID };
-  // // const query = { todayDate: { $eq: today }, branchID: { $eq: branchID } };
-  // let query = {
-  //   todayDate: { $eq: today },
-  //   branchID: { $eq: branchID },
-  //   kitchenOrderID: { $exists: true },
-  // };
-  // let generatedID = await generateKitchenOrderID(query, Orders, branchID);
-  // let kitchenOrderID = generatedID;
+  let query = {
+    todayDate: { $eq: today },
+    branchID: { $eq: branchID },
+    kitchenOrderID: { $exists: true },
+  };
+  let generatedID = await generateKitchenOrderID(query, Orders, branchID);
+  let kitchenOrderID = generatedID;
   let todayDate = today;
   let branchData = await BranchData.findOne({
     _id: ObjectID.ObjectId(branchID),
@@ -309,7 +307,7 @@ export default async function placeOrder(context, input) {
       status: "new",
       workflow: ["new"],
     },
-    // kitchenOrderID,
+    kitchenOrderID,
     todayDate,
     prepTime,
     deliveryTime,
