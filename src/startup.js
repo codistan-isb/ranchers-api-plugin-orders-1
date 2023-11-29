@@ -90,5 +90,22 @@ export default function ordersStartup(context) {
     })
   });
   // appEvents.on("afterOrderCreate", ({ order }) => sendOrderEmail(context, order, "new"));
+  appEvents.on("afterOrderUpdate", async ({ order, updatedBy, status }) => {
+    // console.log("order afterOrderUpdate ", order);
+    // console.log("updatedBy afterOrderUpdate", updatedBy);
+    const message = `Your order is ${status}`;
+    const appTypecustomer = "customer";
+    const Customerid = order?.accountId;
+    const CustomeruserId = order?.accountId;
+    const CustomerOrderID = order?._id;
+    context.mutations.oneSignalCreateNotification(context, {
+      message,
+      id: Customerid,
+      appType: appTypecustomer,
+      userId: CustomeruserId,
+      OrderID: CustomerOrderID,
+    });
+    sendOrderEmail(context, order, "confirmed")
+  });
 
 }

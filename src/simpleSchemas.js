@@ -1340,6 +1340,10 @@ export const Order = new SimpleSchema({
     blackbox: true,
     optional: true,
   },
+  confirmationTime: {
+    type: Date,
+    optional: true,
+  },
   discounts: {
     type: Array,
     optional: true,
