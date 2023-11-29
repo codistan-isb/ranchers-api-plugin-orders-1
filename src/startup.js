@@ -47,8 +47,8 @@ export default function ordersStartup(context) {
     // order.kitchenOrderID = kitchenOrderID;
     order.deliveryTime = deliveryTime;
 
-    console.log("Order for email ", order);
-    console.log("orderData", orderData);
+    // console.log("Order for email ", order);
+    // console.log("orderData", orderData);
     // console.log("Order for email Payment ", order.payments);
 
 
@@ -92,6 +92,7 @@ export default function ordersStartup(context) {
   // appEvents.on("afterOrderCreate", ({ order }) => sendOrderEmail(context, order, "new"));
   appEvents.on("afterOrderUpdate", async ({ order, updatedBy, status }) => {
     // console.log("order afterOrderUpdate ", order);
+    
     // console.log("updatedBy afterOrderUpdate", updatedBy);
     const message = `Your order is ${status}`;
     const appTypecustomer = "customer";
