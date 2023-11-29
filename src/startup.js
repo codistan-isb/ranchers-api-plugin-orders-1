@@ -97,13 +97,13 @@ export default function ordersStartup(context) {
     const appTypecustomer = "customer";
     const Customerid = order?.accountId;
     const CustomeruserId = order?.accountId;
-    const CustomerOrderID = order?._id;
+    const CustomerOrderID = order?.kitchenOrderID;
     context.mutations.oneSignalCreateNotification(context, {
       message,
       id: Customerid,
       appType: appTypecustomer,
       userId: CustomeruserId,
-      OrderID: CustomerOrderID,
+      orderID: CustomerOrderID,
     });
     sendOrderEmail(context, order, "confirmed")
   });
