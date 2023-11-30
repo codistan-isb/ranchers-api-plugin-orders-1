@@ -54,6 +54,9 @@ export default async function sendOrderEmail(context, input) {
   if (action === "new") {
     templateName = "orders/new";
   }
+  if (action === "delivered") {
+    templateName = "orders/delivered";
+  }
   // else {
   //   templateName = `orders/${dataForEmail.order.workflow.status}`;
   // }
