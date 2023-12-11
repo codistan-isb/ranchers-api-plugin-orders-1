@@ -8,7 +8,6 @@ export default async function deliveryTimeCalculation(
     console.log("GOOGLE_API_KEY_DISTANCE_CALCULATOR", GOOGLE_API_KEY_DISTANCE_CALCULATOR);
     if (branchAddress) {
         let apiKey = GOOGLE_API_KEY_DISTANCE_CALCULATOR;
-        // const apiKey = 'AIzaSyDsK8_E12WZ1Wixbh30QPJxc10JJb4ukFI';
         const origin = branchAddress.Latitude + "," + branchAddress.Longitude;
         const units = 'imperial';
         const destination =
