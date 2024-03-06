@@ -3,7 +3,7 @@ import createNotification from "./util/createNotification.js";
 import getProductbyId from "./util/getProductbyId.js";
 import generateKitchenOrderID from "./util/generateKitchenOrderID.js";
 import deliveryTimeCalculation from "./util/deliveryTimeCalculation.js";
-
+import whatsAppMessage from "./util/whatsAppMessage.js";
 /**
  * @summary Called on startup
  * @param {Object} context Startup context
@@ -13,86 +13,103 @@ import deliveryTimeCalculation from "./util/deliveryTimeCalculation.js";
 export default function ordersStartup(context) {
   const { appEvents } = context;
 
-  appEvents.on("afterOrderCreate", async ({ order, createdBy, orderId, branchID, branchData, fulfillmentGroups }) => {
-    let { collections } =
-      context;
-    const { Orders } = collections;
-    // const today = new Date().toISOString().substr(0, 10);
-    let deliveryTime = 0.0;
-    // let query = {
-    //   todayDate: { $eq: today },
-    //   branchID: { $eq: branchID },
-    //   kitchenOrderID: { $exists: true },
-    // };
-    // // console.log("order afterOrderCreate", order);
-    // // console.log("createdBy afterOrderCreate", createdBy);
-    // let generatedID = await generateKitchenOrderID(query, Orders, branchID);
-    // let kitchenOrderID = generatedID;
+  appEvents.on(
+    "afterOrderCreate",
+    async ({
+      order,
+      createdBy,
+      orderId,
+      branchID,
+      branchData,
+      fulfillmentGroups,
+      generatedID,
+    }) => {
+      let { collections } = context;
+      const { Orders } = collections;
+      // const today = new Date().toISOString().substr(0, 10);
+      let deliveryTime = 0.0;
+      // let query = {
+      //   todayDate: { $eq: today },
+      //   branchID: { $eq: branchID },
+      //   kitchenOrderID: { $exists: true },
+      // };
+      // // console.log("order afterOrderCreate", order);
+      // // console.log("createdBy afterOrderCreate", createdBy);
+      // let generatedID = await generateKitchenOrderID(query, Orders, branchID);
+      // let kitchenOrderID = generatedID;
 
-    // console.log("generatedID in app event", generatedID);
-    if (branchData) {
-      let deliveryTimeCalculationResponse = await deliveryTimeCalculation(
-        branchData,
-        fulfillmentGroups[0].data.shippingAddress
-      );
-      if (deliveryTimeCalculationResponse) {
-        deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
+      console.log("generatedID in app event", generatedID);
+      if (branchData) {
+        let deliveryTimeCalculationResponse = await deliveryTimeCalculation(
+          branchData,
+          fulfillmentGroups[0].data.shippingAddress
+        );
+        if (deliveryTimeCalculationResponse) {
+          deliveryTime = Math.ceil(deliveryTimeCalculationResponse / 60);
+        }
       }
+      let orderData = {
+        // kitchenOrderID,
+        deliveryTime,
+        updatedAt: new Date(),
+      };
+      // order.kitchenOrderID = kitchenOrderID;
+      order.deliveryTime = deliveryTime;
+
+      // console.log("Order for email ", order);
+      // console.log("orderData", orderData);
+      // console.log("Order for email Payment ", order.payments);
+
+      await Orders.updateOne({ _id: orderId }, { $set: orderData });
+      let productPurchased = await getProductbyId(context, {
+        productId: order?.shipping[0]?.items[0]?.variantId,
+      });
+      let message = "Your order has been placed";
+      let appType = "customer";
+      let id = createdBy;
+      let orderID = orderId;
+      let userId = createdBy;
+      // console.log("id", id);
+      // console.log("orderID", orderID);
+      context.mutations.oneSignalCreateNotification(context, {
+        message,
+        id,
+        appType,
+        userId,
+        orderID,
+      });
+      const message1 = "New Order is placed";
+      const appType1 = "admin";
+      const id1 = userId;
+      context.mutations.oneSignalCreateNotification(context, {
+        message: message1,
+        id: id1,
+        appType: appType1,
+        userId: userId,
+      });
+      sendOrderEmail(context, order, "new");
+      createNotification(context, {
+        details: null,
+        from: createdBy,
+        hasDetails: false,
+        message: `You have a new order of ${productPurchased.title}`,
+        status: "unread",
+        to: productPurchased?.uploadedBy?.userId,
+        type: "newOrder",
+        url: `/en/profile/address?activeProfile=seller`,
+      });
+      await context.mutations.sendWhatsAppMessage(context, {
+        createdBy,
+        generatedID,
+        OrderStatus: "placed",
+      });
+      // let sendMessage = await whatsAppMessage(context,createdBy,generatedID);
     }
-    let orderData = {
-      // kitchenOrderID,
-      deliveryTime,
-      updatedAt: new Date()
-    };
-    // order.kitchenOrderID = kitchenOrderID;
-    order.deliveryTime = deliveryTime;
-
-    // console.log("Order for email ", order);
-    // console.log("orderData", orderData);
-    // console.log("Order for email Payment ", order.payments);
-
-
-    await Orders.updateOne({ _id: orderId }, { $set: orderData })
-    let productPurchased = await getProductbyId(context, { productId: order?.shipping[0]?.items[0]?.variantId })
-    const message = "Your order has been placed";
-    const appType = "customer";
-    const id = createdBy;
-    const orderID = orderId;
-    let userId = createdBy
-    // console.log("id", id);
-    // console.log("orderID", orderID);
-    context.mutations.oneSignalCreateNotification(context, {
-      message,
-      id,
-      appType,
-      userId,
-      orderID,
-    });
-    const message1 = "New Order is placed";
-    const appType1 = "admin";
-    const id1 = userId;
-    context.mutations.oneSignalCreateNotification(context, {
-      message: message1,
-      id: id1,
-      appType: appType1,
-      userId: userId,
-    });
-    sendOrderEmail(context, order, "new")
-    createNotification(context, {
-      details: null,
-      from: createdBy,
-      hasDetails: false,
-      message: `You have a new order of ${productPurchased.title}`,
-      status: "unread",
-      to: productPurchased?.uploadedBy?.userId,
-      type: "newOrder",
-      url: `/en/profile/address?activeProfile=seller`
-    })
-  });
+  );
   // appEvents.on("afterOrderCreate", ({ order }) => sendOrderEmail(context, order, "new"));
   appEvents.on("afterOrderUpdate", async ({ order, updatedBy, status }) => {
     // console.log("order afterOrderUpdate ", order);
-    
+
     // console.log("updatedBy afterOrderUpdate", updatedBy);
     const message = `Your order is ${status}`;
     const appTypecustomer = "customer";
@@ -106,7 +123,12 @@ export default function ordersStartup(context) {
       userId: CustomeruserId,
       orderID: CustomerOrderID,
     });
-    sendOrderEmail(context, order, "confirmed")
+    sendOrderEmail(context, order, "confirmed");
+    console.log("here in order", order);
+    await context.mutations.sendWhatsAppMessage(context, {
+      createdBy: order?.accountId,
+      generatedID: order?.kitchenOrderID,
+      OrderStatus: status,
+    });
   });
-
 }

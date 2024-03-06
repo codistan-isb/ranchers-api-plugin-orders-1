@@ -33,6 +33,11 @@ export default async function updateOrder(parentResult, { input }, context) {
   if (status === 'confirmed') {
     // Send email to notify customer of a refund
     sendOrderEmail(context, order, "confirmed");
+    await context.mutations.sendWhatsAppMessage(context, {
+      createdBy: order?.accountId,
+      generatedID: order?.kitchenOrderID,
+      OrderStatus: "confirmed",
+    });
   }
   return {
     clientMutationId,

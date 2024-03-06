@@ -398,8 +398,16 @@ export default async function placeOrder(context, input) {
   //     userId: userId,
   //   });
   // CartHistory.insertOne(cart);
-
-  await appEvents.emit("afterOrderCreate", { createdBy: userId, order, orderId, branchID, branchData, fulfillmentGroups });
+console.log("generatedID",generatedID);
+  await appEvents.emit("afterOrderCreate", {
+    createdBy: userId,
+    order,
+    orderId,
+    branchID,
+    branchData,
+    fulfillmentGroups,
+    generatedID,
+  });
 
   return {
     orders: [order],

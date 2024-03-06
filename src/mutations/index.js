@@ -8,6 +8,7 @@ import splitOrderItem from "./splitOrderItem.js";
 import updateOrder from "./updateOrder.js";
 import updateOrderFulfillmentGroup from "./updateOrderFulfillmentGroup.js";
 import cancelCustomerOrder from "./cancelCustomerOrder.js";
+import sendWhatsAppMessage from "./sendWhatsAppMessage.js";
 
 export default {
   addOrderFulfillmentGroup,
@@ -20,4 +21,5 @@ export default {
   updateOrder,
   updateOrderFulfillmentGroup,
   cancelCustomerOrder,
+  sendWhatsAppMessage
 };
