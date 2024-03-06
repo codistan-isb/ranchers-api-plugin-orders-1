@@ -44,7 +44,9 @@ export default async function sendWhatsAppMessage(context, input) {
     . Thank you for your understanding."`;
   }
   if (OrderStatus === "delivered") {
-    
+    message=`Hi  ${
+        firstName + " " + lastName
+      } ,We're excited to announce that your order with the ID ${generatedID} has been delivered successfully! Your satisfaction is paramount to us, so if you have any feedback, please share it with us. Thank you for choosing Ranchers Cafe. We're looking forward to serving you again soon!`
   }
   console.log("message", message);
   let config = {
