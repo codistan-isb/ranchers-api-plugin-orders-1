@@ -18,7 +18,7 @@ export default async function sendWhatsAppMessage(context, input) {
     firstName = ifNotUser?.firstName;
     lastName = ifNotUser?.lastName;
   }
-  console.log("mobileNumber", mobileNumber);
+  console.log("mobileNumber", mobileNumber.substring(1));
   if (OrderStatus === "placed" || OrderStatus === "new") {
     message = `Dear ${
       firstName + " " + lastName
@@ -37,7 +37,7 @@ export default async function sendWhatsAppMessage(context, input) {
   if (OrderStatus === "pickedUp") {
     message = `Hi  ${
       firstName + " " + lastName
-    } , great news! Your order ${generatedID} has been dispatched and is on its way to you. Our dedicated rider is en route to deliver your scrumptious meal. We hope you enjoy it. Thank you for choosing Ranchers Cafe!`;
+    } , great news! Your order ${generatedID} has been dispatched and is on its way to you. Our dedicated rider is on route to deliver your scrumptious meal. We hope you enjoy it. Thank you for choosing Ranchers Cafe!`;
   }
   if (OrderStatus === "canceled" || OrderStatus === "reject") {
     message = `Dear Valued Customer, we regret to inform you that we encountered difficulty reaching the provided contact number for order ${generatedID}. Please ensure the number provided is correct and reachable. If you require any assistance, please contact our customer support team at 051-111577677
@@ -52,7 +52,7 @@ export default async function sendWhatsAppMessage(context, input) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: `https://wa.sabtech.org/api/send.php?api_key=${WHATSAPPAPIKEY}&mobile=92${mobileNumber}&priority=0&message=${message}`,
+    url: `https://wa.sabtech.org/api/send.php?api_key=${WHATSAPPAPIKEY}&mobile=92${mobileNumber.substring(1)}&priority=0&message=${message}`,
     headers: {},
   };
   console.log("config", config);
