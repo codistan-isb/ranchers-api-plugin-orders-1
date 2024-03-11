@@ -34,7 +34,11 @@ export default async function cancelCustomerOrder(context, input) {
       userId: CustomerAccountID,
       orderID: orderID,
     });
-
+    context.mutations.sendWhatsAppMessage(context, {
+      createdBy: CustomerAccountID,
+      generatedID: order?.kitchenOrderID,
+      OrderStatus: "canceled",
+    });
     return { order: updatedOrder };
   } catch (error) {
     console.log("error ", error);

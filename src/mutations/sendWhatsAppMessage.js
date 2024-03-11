@@ -44,15 +44,17 @@ export default async function sendWhatsAppMessage(context, input) {
     . Thank you for your understanding."`;
   }
   if (OrderStatus === "delivered") {
-    message=`Hi  ${
-        firstName + " " + lastName
-      } ,We're excited to announce that your order with the ID ${generatedID} has been delivered successfully! Your satisfaction is paramount to us, so if you have any feedback, please share it with us. Thank you for choosing Ranchers Cafe. We're looking forward to serving you again soon!`
+    message = `Hi  ${
+      firstName + " " + lastName
+    } ,We're excited to announce that your order with the ID ${generatedID} has been delivered successfully! Your satisfaction is paramount to us, so if you have any feedback, please share it with us. Thank you for choosing Ranchers Cafe. We're looking forward to serving you again soon!`;
   }
   console.log("message", message);
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: `https://wa.sabtech.org/api/send.php?api_key=${WHATSAPPAPIKEY}&mobile=92${mobileNumber.substring(1)}&priority=0&message=${message}`,
+    url: `https://wa.sabtech.org/api/send.php?api_key=${WHATSAPPAPIKEY}&mobile=92${mobileNumber.substring(
+      1
+    )}&priority=0&message=${message}`,
     headers: {},
   };
   console.log("config", config);
@@ -72,12 +74,20 @@ export default async function sendWhatsAppMessage(context, input) {
         let messageData = response.data;
         messageData.createdAt = new Date(); // Adding createdAt field with current date
         messageData.userId = createdBy;
+        messageData.kitchenOrderID = generatedID;
         await WhatsAppMessage.insertOne(messageData);
         // console.log("Message saved successfully:", savedMessage);
       } else {
         console.error("Invalid or missing data in the response.");
       }
     } catch (error) {
+      let messageData;
+      messageData.createdAt = new Date(); // Adding createdAt field with current date
+      messageData.userId = createdBy;
+      messageData.kitchenOrderID = generatedID;
+      messageData.errorMessage = error;
+      messageData.status = false;
+      await WhatsAppMessage.insertOne(messageData);
       console.error("Error saving message:", error);
     }
   }
