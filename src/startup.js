@@ -3,7 +3,6 @@ import createNotification from "./util/createNotification.js";
 import getProductbyId from "./util/getProductbyId.js";
 import generateKitchenOrderID from "./util/generateKitchenOrderID.js";
 import deliveryTimeCalculation from "./util/deliveryTimeCalculation.js";
-import whatsAppMessage from "./util/whatsAppMessage.js";
 /**
  * @summary Called on startup
  * @param {Object} context Startup context

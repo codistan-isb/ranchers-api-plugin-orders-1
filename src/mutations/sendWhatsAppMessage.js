@@ -2,7 +2,7 @@ let WHATSAPPAPIKEY = process.env.WHATSAPP_API_KEY;
 import axios from "axios";
 export default async function sendWhatsAppMessage(context, input) {
   console.log("input", input);
-  let { generatedID, createdBy, OrderStatus } = input;
+  let { generatedID, createdBy, OrderStatus, rejectionReason } = input;
   let { collections } = context;
   let { Accounts, WhatsAppMessage } = collections;
   let mobileNumber, firstName, lastName, message;
@@ -40,7 +40,7 @@ export default async function sendWhatsAppMessage(context, input) {
     } , great news! Your order ${generatedID} has been dispatched and is on its way to you. Our dedicated rider is on route to deliver your scrumptious meal. We hope you enjoy it. Thank you for choosing Ranchers Cafe!`;
   }
   if (OrderStatus === "canceled" || OrderStatus === "reject") {
-    message = `Dear Valued Customer, we regret to inform you that we encountered difficulty reaching the provided contact number for order ${generatedID}. Please ensure the number provided is correct and reachable. If you require any assistance, please contact our customer support team at 051-111577677
+    message = `Dear Valued Customer, We regret to inform you that your recent order i.e ${generatedID}. The reason is ${rejectionReason} . If you require any assistance, please contact our customer support team at 051-111-577-677
     . Thank you for your understanding."`;
   }
   if (OrderStatus === "delivered") {

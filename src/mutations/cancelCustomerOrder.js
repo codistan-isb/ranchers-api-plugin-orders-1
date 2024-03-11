@@ -38,6 +38,7 @@ export default async function cancelCustomerOrder(context, input) {
       createdBy: CustomerAccountID,
       generatedID: order?.kitchenOrderID,
       OrderStatus: "canceled",
+      rejectionReason
     });
     return { order: updatedOrder };
   } catch (error) {
