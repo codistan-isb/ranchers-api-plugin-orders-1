@@ -153,7 +153,7 @@ export default async function placeOrder(context, input) {
   inputSchema.validate(cleanedInput);
   const { order: orderInput, payments: paymentsInput } = cleanedInput;
   // console.log("placeOrderInput", paymentsInput);
-  const { branchID, notes, Latitude, Longitude } = input;
+  const { branchID, notes, Latitude, Longitude,placedFrom } = input;
   const {
     billingAddress,
     cartId,
@@ -295,6 +295,7 @@ export default async function placeOrder(context, input) {
     payments,
     shipping: finalFulfillmentGroups,
     shopId,
+    placedFrom,
     branchID,
     notes,
     surcharges: orderSurcharges,

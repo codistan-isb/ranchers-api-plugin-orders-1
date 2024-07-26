@@ -912,7 +912,7 @@ input PlaceOrderInput {
   payments: [PaymentInput]
 
   branchID: String!
-
+  placedFrom: String  = 'app'
   notes: [OrderNoteInput]
 
   Latitude: Float
