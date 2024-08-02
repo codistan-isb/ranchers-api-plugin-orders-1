@@ -323,6 +323,9 @@ export const CommonOrderItem = new SimpleSchema({
   branchID: {
     type: String,
     optional: true,
+  }, placedFrom: {
+    type: String,
+    optional: true,
   },
   Longitude: {
     type: Number,
@@ -449,6 +452,9 @@ export const CommonOrder = new SimpleSchema({
   branchID: {
     type: String,
     optional: true,
+  }, placedFrom: {
+    type: String,
+    optional: true,
   },
   Longitude: {
     type: Number,
@@ -507,6 +513,9 @@ export const orderFulfillmentGroupInputSchema = new SimpleSchema({
   selectedFulfillmentMethodId: String,
   shopId: String,
   branchID: {
+    type: String,
+    optional: true,
+  }, placedFrom: {
     type: String,
     optional: true,
   },
@@ -576,11 +585,11 @@ export const orderInputSchema = new SimpleSchema({
   branchID: {
     type: String,
     optional: true,
-  },
-  placedFrom: {
+  }, placedFrom: {
     type: String,
     optional: true,
   },
+  
   Longitude: {
     type: Number,
     optional: true,
@@ -686,6 +695,9 @@ const ExportHistory = new SimpleSchema({
     type: String,
   },
   branchID: {
+    type: String,
+    optional: true,
+  }, placedFrom: {
     type: String,
     optional: true,
   },
@@ -898,6 +910,9 @@ export const OrderItem = new SimpleSchema({
   branchID: {
     type: String,
     optional: true,
+  }, placedFrom: {
+    type: String,
+    optional: true,
   },
   Longitude: {
     type: Number,
@@ -964,6 +979,9 @@ export const OrderItem = new SimpleSchema({
   },
   shopId: String,
   branchID: {
+    type: String,
+    optional: true,
+  }, placedFrom: {
     type: String,
     optional: true,
   },
@@ -1079,6 +1097,9 @@ export const OrderFulfillmentGroup = new SimpleSchema({
   },
   shopId: String,
   branchID: {
+    type: String,
+    optional: true,
+  }, placedFrom: {
     type: String,
     optional: true,
   },
@@ -1233,6 +1254,9 @@ export const Payment = new SimpleSchema({
   },
   shopId: String,
   branchID: {
+    type: String,
+    optional: true,
+  }, placedFrom: {
     type: String,
     optional: true,
   },
@@ -1401,6 +1425,9 @@ export const Order = new SimpleSchema({
     optional: true,
   },
   branchID: {
+    type: String,
+    optional: true,
+  }, placedFrom: {
     type: String,
     optional: true,
   },
