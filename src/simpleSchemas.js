@@ -577,6 +577,10 @@ export const orderInputSchema = new SimpleSchema({
     type: String,
     optional: true,
   },
+  placedFrom: {
+    type: String,
+    optional: true,
+  },
   Longitude: {
     type: Number,
     optional: true,
