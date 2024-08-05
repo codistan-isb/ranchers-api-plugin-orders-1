@@ -20,9 +20,8 @@ import {
  * @returns {Promise<Object>} PlaceOrderPayload
  */
 export default async function placeOrder(parentResult, { input }, context) {
-  // console.log("input:- ", input)
   const today = new Date().toISOString().substr(0, 10);
-  const { clientMutationId = null, order, payments, branchID, notes, Latitude, Longitude } = input;
+  const { clientMutationId = null, order, payments, branchID, notes, Latitude, Longitude,placedFrom } = input;
   const {
     cartId: opaqueCartId,
     fulfillmentGroups,
@@ -49,6 +48,7 @@ export default async function placeOrder(parentResult, { input }, context) {
     },
     payments,
     branchID,
+    placedFrom,
     notes,
     Latitude,
     Longitude
