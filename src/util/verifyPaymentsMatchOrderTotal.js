@@ -45,7 +45,7 @@ export default function verifyPaymentsMatchOrderTotal(
   if (Math.round(paymentTotalString) !== Math.round(orderTotalString)) {
     Logger.debug(
       "Error creating payments for a new order. " +
-      `Order total (${orderTotalString}) does not match total of all payment amounts (${paymentTotalString}).`
+        `Order total (${orderTotalString}) does not match total of all payment amounts (${paymentTotalString}).`
     );
     throw new ReactionError(
       "payment-failed",

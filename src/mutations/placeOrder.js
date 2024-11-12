@@ -17,6 +17,9 @@ import {
 // import deliveryTimeCalculation from "../util/deliveryTimeCalculation.js";
 import generateKitchenOrderID from "../util/generateKitchenOrderID.js";
 
+const GUEST_TOKEN =
+  "4fca69b380be5f9898f435e548654c063f757562ca32fb9e5d09bb5d38d3295b";
+
 const inputSchema = new SimpleSchema({
   order: orderInputSchema,
   payments: {
@@ -153,7 +156,15 @@ export default async function placeOrder(context, input) {
   inputSchema.validate(cleanedInput);
   const { order: orderInput, payments: paymentsInput } = cleanedInput;
   // console.log("placeOrderInput", paymentsInput);
-  const { branchID, notes, Latitude, Longitude,placedFrom } = input;
+  const {
+    branchID,
+    notes,
+    Latitude,
+    Longitude,
+    placedFrom,
+    isGuestUser,
+    guestToken,
+  } = input;
   const {
     billingAddress,
     cartId,
@@ -167,6 +178,7 @@ export default async function placeOrder(context, input) {
   const { accountId, appEvents, collections, getFunctionsOfType, userId } =
     context;
   const { TaxRate, Orders, Cart, BranchData, CartHistory } = collections;
+
   //this is moved to the app event call
   let query = {
     todayDate: { $eq: today },
@@ -192,8 +204,20 @@ export default async function placeOrder(context, input) {
   const shop = await context.queries.shopById(context, shopId);
   if (!shop) throw new ReactionError("not-found", "Shop not found");
 
-  if (!userId && !shop.allowGuestCheckout) {
-    throw new ReactionError("access-denied", "Guest checkout not allowed");
+  // if (!userId && !shop.allowGuestCheckout) {
+  //   throw new ReactionError("access-denied", "Guest checkout not allowed");
+  // }
+
+  if (!userId) {
+    if (!isGuestUser) {
+      throw new ReactionError("access-denied", "User or guest access required");
+    }
+    if (isGuestUser && (!guestToken || guestToken !== GUEST_TOKEN)) {
+      throw new ReactionError(
+        "access-denied",
+        "Guest token required for guest users"
+      );
+    }
   }
 
   let cart;
@@ -399,7 +423,7 @@ export default async function placeOrder(context, input) {
   //     userId: userId,
   //   });
   // CartHistory.insertOne(cart);
-console.log("generatedID",generatedID);
+  console.log("generatedID", generatedID);
   await appEvents.emit("afterOrderCreate", {
     createdBy: userId,
     order,

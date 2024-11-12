@@ -903,6 +903,10 @@ input PlaceOrderInput {
   "The order to be placed, if payment is accepted"
   order: OrderInput!
 
+  isGuestUser: Boolean
+
+  guestToken: String
+
   """
   The information necessary to pay. Collect this information from the shopper during a checkout flow.
   You need not provide any payment input if the total is zero.
@@ -912,7 +916,7 @@ input PlaceOrderInput {
   payments: [PaymentInput]
 
   branchID: String!
-  placedFrom: String  = "app"
+  placedFrom: String = "app"
   notes: [OrderNoteInput]
 
   Latitude: Float

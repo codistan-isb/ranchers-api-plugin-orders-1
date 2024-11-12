@@ -21,7 +21,18 @@ import {
  */
 export default async function placeOrder(parentResult, { input }, context) {
   const today = new Date().toISOString().substr(0, 10);
-  const { clientMutationId = null, order, payments, branchID, notes, Latitude, Longitude,placedFrom } = input;
+  const {
+    clientMutationId = null,
+    order,
+    payments,
+    branchID,
+    notes,
+    Latitude,
+    Longitude,
+    placedFrom,
+    isGuestUser = false,
+    guestToken = null,
+  } = input;
   const {
     cartId: opaqueCartId,
     fulfillmentGroups,
@@ -51,7 +62,9 @@ export default async function placeOrder(parentResult, { input }, context) {
     placedFrom,
     notes,
     Latitude,
-    Longitude
+    Longitude,
+    isGuestUser,
+    guestToken,
   });
   // console.log("Order Placed ", orders);
   // console.log("Order Placed payments ", orders[0].payments);
