@@ -43,12 +43,14 @@ export default async function placeOrder(parentResult, { input }, context) {
 
   const transformedFulfillmentGroups = fulfillmentGroups.map((group) => ({
     ...group,
+    paymentMethod: group.paymentMethod,
     items: decodeOrderItemsOpaqueIds(group.items),
     selectedFulfillmentMethodId: decodeFulfillmentMethodOpaqueId(
       group.selectedFulfillmentMethodId
     ),
     shopId: decodeShopOpaqueId(group.shopId),
   }));
+  console.log("transformedFulfillmentGroups", transformedFulfillmentGroups);
   const { orders, token } = await context.mutations.placeOrder(context, {
     order: {
       ...order,
