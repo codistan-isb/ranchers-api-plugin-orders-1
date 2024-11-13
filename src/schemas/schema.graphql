@@ -734,6 +734,14 @@ input OrderFulfillmentGroupInput {
   The fulfillment type. Any valid type that has been registered by a fulfillment plugin. Examples: `shipping`, `digital`
   """
   type: FulfillmentType!
+
+  paymentMethod: paymentMethodValues
+}
+
+enum paymentMethodValues {
+  COD
+  CASH
+  CARD
 }
 
 "Similar to `OrderFulfillmentGroupInput` but `items` can be omitted if moving existing items to the new group"
@@ -937,7 +945,7 @@ input MoveOrderItemsInput {
   "The list of item IDs to move. The full quantity must be moved."
   itemIds: [ID]!
 
-  "ID of the order that has the items you want to move"
+  "ID of the order thatas the items you want to move"
   orderId: ID!
 
   "The ID of the order fulfillment group to which all the items are to be moved."

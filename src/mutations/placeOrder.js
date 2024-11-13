@@ -175,6 +175,7 @@ export default async function placeOrder(context, input) {
     ordererPreferredLanguage,
     shopId,
   } = orderInput;
+
   const { accountId, appEvents, collections, getFunctionsOfType, userId } =
     context;
   const { TaxRate, Orders, Cart, BranchData, CartHistory } = collections;
@@ -200,7 +201,14 @@ export default async function placeOrder(context, input) {
   // console.log("deliveryCharges", deliveryCharges);
   prepTime = prepTime ? prepTime : 20;
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
-  const taxPercentage = taxData.Cash;
+  let taxPercentage = taxData.Cash;
+  if (
+    fulfillmentGroups[0]?.type === "pickup" &&
+    fulfillmentGroups[0]?.paymentMethod === "CARD"
+  ) {
+    taxPercentage = taxData.Card;
+  }
+
   const shop = await context.queries.shopById(context, shopId);
   if (!shop) throw new ReactionError("not-found", "Shop not found");
 
@@ -397,8 +405,12 @@ export default async function placeOrder(context, input) {
     order.customFields = customFieldsFromClient;
   }
   // Validate and save
+
   OrderSchema.validate(order);
-  await Orders.insertOne(order);
+  await Orders.insertOne({
+    ...order,
+    paymentMethod: fulfillmentGroups[0]?.paymentMethod || "CASH",
+  });
   // sendOrderEmail(context, order, "new");
   // const message = "Your order has been placed";
   // const appType = "customer";
