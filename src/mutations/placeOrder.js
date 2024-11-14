@@ -203,8 +203,8 @@ export default async function placeOrder(context, input) {
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
   let taxPercentage = taxData.Cash;
   if (
-    fulfillmentGroups[0]?.type === "pickup" &&
-    fulfillmentGroups[0]?.paymentMethod === "CARD"
+    fulfillmentGroups?.[0]?.type === "pickup" &&
+    fulfillmentGroups?.[0]?.paymentMethod === "CARD"
   ) {
     taxPercentage = taxData.Card;
   }
@@ -409,7 +409,7 @@ export default async function placeOrder(context, input) {
   OrderSchema.validate(order);
   await Orders.insertOne({
     ...order,
-    paymentMethod: fulfillmentGroups[0]?.paymentMethod || "CASH",
+    paymentMethod: fulfillmentGroups?.[0]?.paymentMethod || "CASH",
   });
   // sendOrderEmail(context, order, "new");
   // const message = "Your order has been placed";
