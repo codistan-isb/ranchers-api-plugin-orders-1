@@ -43,7 +43,7 @@ export default async function placeOrder(parentResult, { input }, context) {
 
   const transformedFulfillmentGroups = fulfillmentGroups.map((group) => ({
     ...group,
-    paymentMethod: group.paymentMethod,
+    paymentMethod: group?.paymentMethod || "CASH",
     items: decodeOrderItemsOpaqueIds(group.items),
     selectedFulfillmentMethodId: decodeFulfillmentMethodOpaqueId(
       group.selectedFulfillmentMethodId
