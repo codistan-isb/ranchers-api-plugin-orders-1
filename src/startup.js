@@ -3,6 +3,10 @@ import createNotification from "./util/createNotification.js";
 import getProductbyId from "./util/getProductbyId.js";
 import generateKitchenOrderID from "./util/generateKitchenOrderID.js";
 import deliveryTimeCalculation from "./util/deliveryTimeCalculation.js";
+import cors from "cors";
+import bodyParser from "body-parser";
+import morgan from "morgan";
+
 /**
  * @summary Called on startup
  * @param {Object} context Startup context
@@ -10,7 +14,31 @@ import deliveryTimeCalculation from "./util/deliveryTimeCalculation.js";
  * @returns {undefined}
  */
 export default function ordersStartup(context) {
-  const { appEvents } = context;
+  const { app, appEvents } = context;
+  if (app.expressApp) {
+
+    //add other middleware
+    app.expressApp.use(cors());
+    app.expressApp.use(bodyParser.json());
+    app.expressApp.use(bodyParser.urlencoded({ extended: true }));
+    app.expressApp.use(morgan("dev"));
+    app.expressApp.get("/ipn", async (req, res) => {
+
+      try {
+        const ipnData = req.body;
+
+        // Log the incoming IPN data for debugging
+        console.log('Received IPN:', ipnData);
+
+      
+        // Respond with a 200 OK to acknowledge receipt
+        res.status(200).send('IPN received successfully');
+    } catch (error) {
+        console.error('Error processing IPN:', error.message);
+        res.status(500).send('Server error');
+    }
+    })}
+
 
   appEvents.on(
     "afterOrderCreate",
