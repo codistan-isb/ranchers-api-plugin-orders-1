@@ -199,6 +199,7 @@ export default async function placeOrder(context, input) {
   let branchData = await BranchData.findOne({
     _id: ObjectID.ObjectId(branchID),
   });
+  console.log("branchData ",branchData)
   if (branchData) {
     prepTime = branchData.prepTime;
     taxID = branchData.taxID;
@@ -208,12 +209,13 @@ export default async function placeOrder(context, input) {
   // console.log("deliveryCharges", deliveryCharges);
   prepTime = prepTime ? prepTime : 20;
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
-  let taxPercentage = taxData.Cash;
+  console.log("taxData ",taxData)
+  let taxPercentage = taxData?.Cash;
   if (
     fulfillmentGroups?.[0]?.type === "pickup" &&
     fulfillmentGroups?.[0]?.paymentMethod === "CARD"
   ) {
-    taxPercentage = taxData.Card;
+    taxPercentage = taxData?.Card;
   }
   console.log("taxPercentage ", taxPercentage)
 
