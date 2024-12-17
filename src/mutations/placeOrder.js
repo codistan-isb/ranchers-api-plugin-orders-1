@@ -328,7 +328,7 @@ export default async function placeOrder(context, input) {
     easyPaisaResponse=await doEasyPaisaPayment(orderId,null,payments[0].finalAmount,null,easyPaisaNumber, email)
     console.log("easyPaisaResponse ",easyPaisaResponse)
   }
-  if(easyPaisaResponse?.responseCode!="0000"){
+  if(fulfillmentGroups[0].paymentMethod == "EASYPAISA"&&easyPaisaResponse?.responseCode!="0000"){
     throw new ReactionError(
       "transaction-failed",
       "Transaction has been failed"
@@ -386,7 +386,7 @@ export default async function placeOrder(context, input) {
     deliveryTime,
     Latitude,
     Longitude,
-    transactionId: fulfillmentGroups[0].paymentMethod == "EASYPAISA"?easyPaisaResponse?.transactionId:null
+    transactionId: fulfillmentGroups[0].paymentMethod == "EASYPAISA"?easyPaisaResponse?.transactionId:""
   };
   
 
