@@ -50,6 +50,11 @@ export default async function register(app) {
         updatedAt: { type: Date, default: Date.now },
         createdAt: { type: Date, default: Date.now },
       },
+      Transaction: {
+        name: "Transaction",
+        updatedAt: { type: Date, default: Date.now },
+        createdAt: { type: Date, default: Date.now },
+      },
     },
     functionsByType: {
       getDataForOrderEmail: [getDataForOrderEmail],

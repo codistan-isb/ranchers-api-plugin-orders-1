@@ -427,6 +427,7 @@ export const CommonOrder = new SimpleSchema({
     optional: true,
   },
   currencyCode: String,
+  //transactionId: String,
   fulfillmentMethodId: {
     type: String,
     optional: true,
@@ -545,7 +546,7 @@ export const orderFulfillmentGroupInputSchema = new SimpleSchema({
   },
   paymentMethod: {
     type: String,
-    allowedValues: ["COD", "CASH", "CARD"],
+    allowedValues: ["COD", "CASH", "CARD","EASYPAISA"],
   },
   deliveryTime: {
     type: Number,
@@ -615,6 +616,7 @@ export const orderInputSchema = new SimpleSchema({
     type: Number,
     optional: true,
   },
+  
 });
 
 export const paymentInputSchema = new SimpleSchema({
@@ -996,6 +998,7 @@ export const OrderItem = new SimpleSchema({
     type: String,
     optional: true,
   },
+  //transactionId: String,
   notes: {
     type: Array,
     optional: true,
@@ -1273,6 +1276,7 @@ export const Payment = new SimpleSchema({
     type: String,
     optional: true,
   },
+  transactionId: {type:String, optional:true},
   Longitude: {
     type: Number,
     optional: true,
@@ -1287,7 +1291,7 @@ export const Payment = new SimpleSchema({
   },
   "notes.$": notesInputSchema,
   status: String,
-  transactionId: String,
+  //transactionId: String,
   transactions: {
     type: Array,
   },
@@ -1340,6 +1344,7 @@ export const Payment = new SimpleSchema({
  * @property {OrderTransaction[]} transactions optional
  * @property {Date} updatedAt optional
  * @property {Workflow} workflow optional
+ * @property {String} transactionId optional
  */
 export const Order = new SimpleSchema({
   _id: {
@@ -1445,6 +1450,7 @@ export const Order = new SimpleSchema({
     type: String,
     optional: true,
   },
+  transactionId: String,
   Longitude: {
     type: Number,
     optional: true,

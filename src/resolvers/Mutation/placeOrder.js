@@ -26,12 +26,13 @@ export default async function placeOrder(parentResult, { input }, context) {
     order,
     payments,
     branchID,
-    notes,
+    notes,  
     Latitude,
     Longitude,
     placedFrom,
     isGuestUser = false,
     guestToken = null,
+    easyPaisaNumber
   } = input;
   const {
     cartId: opaqueCartId,
@@ -67,8 +68,10 @@ export default async function placeOrder(parentResult, { input }, context) {
     Longitude,
     isGuestUser,
     guestToken,
+    easyPaisaNumber
+    
   });
-  // console.log("Order Placed ", orders);
+  console.log("Order Placed ", orders);
   // console.log("Order Placed payments ", orders[0].payments);
   return {
     clientMutationId,

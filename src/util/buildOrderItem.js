@@ -23,7 +23,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
     quantity
   } = inputItem;
   const { productId, productVariantId } = productConfiguration;
-
+  console.log("currencyCode, inputItem, cart ",currencyCode, inputItem, cart)
   const {
     catalogProduct: chosenProduct,
     parentVariant,
@@ -32,6 +32,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
 
   const variantPriceInfo = await queries.getVariantPrice(context, chosenVariant, currencyCode);
   let finalPrice = (variantPriceInfo || {}).price;
+  console.log("finalPrice ",finalPrice)
 
   // Handle null or undefined price returned. Don't allow sale.
   if (!finalPrice && finalPrice !== 0) {

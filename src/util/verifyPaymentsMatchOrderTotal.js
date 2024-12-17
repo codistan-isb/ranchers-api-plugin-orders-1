@@ -18,10 +18,13 @@ export default function verifyPaymentsMatchOrderTotal(
   // console.log("paymentsInput", paymentsInput);
   // console.log("orderTotal", orderTotal);
   // console.log("taxPercentage", taxPercentage);
+  console.log("taxPercentage ",taxPercentage," orderTotal ",orderTotal)
   if (taxPercentage) {
     var taxAmount = Math.round((orderTotal * taxPercentage) / 100);
     orderTotal = orderTotal + taxAmount;
   }
+  console.log("taxPercentage ",taxPercentage," orderTotal ",orderTotal)
+  
   // console.log("taxAmount", taxAmount);
   // console.log("order after taxAmount", orderTotal);
   let paymentTotal = paymentsInput.reduce(

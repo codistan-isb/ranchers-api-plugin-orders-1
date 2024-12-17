@@ -7,6 +7,7 @@ import ReactionError from "@reactioncommerce/reaction-error";
 import getAnonymousAccessToken from "@reactioncommerce/api-utils/getAnonymousAccessToken.js";
 import buildOrderFulfillmentGroupFromInput from "../util/buildOrderFulfillmentGroupFromInput.js";
 import verifyPaymentsMatchOrderTotal from "../util/verifyPaymentsMatchOrderTotal.js";
+import doEasyPaisaPayment from "../util/easyPaisaPayment.js";
 import sendOrderEmail from "../util/sendOrderEmail.js";
 import {
   Order as OrderSchema,
@@ -42,23 +43,24 @@ const inputSchema = new SimpleSchema({
  * @param {String} shop shop that owns the order
  * @returns {Object[]} Array of created payments
  */
-async function createPayments({
-  accountId,
-  billingAddress,
-  context,
-  currencyCode,
-  email,
-  orderTotal,
-  paymentsInput,
-  shippingAddress,
-  shop,
-  taxPercentage,
-}) {
+async function
+  createPayments({
+    accountId,
+    billingAddress,
+    context,
+    currencyCode,
+    email,
+    orderTotal,
+    paymentsInput,
+    shippingAddress,
+    shop,
+    taxPercentage,
+  }) {
   // console.log("paymentsInput create Payment ", paymentsInput)
 
   // Determining which payment methods are enabled for the shop
   const availablePaymentMethods = shop.availablePaymentMethods || [];
-
+  console.log("orderTotal in createPayments ", orderTotal)
   // Verify that total of payment inputs equals total due. We need to be sure
   // to do this before creating any payment authorizations
   verifyPaymentsMatchOrderTotal(paymentsInput || [], orderTotal, taxPercentage);
@@ -127,10 +129,12 @@ async function createPayments({
 
   let payments;
   try {
+    
     payments = await Promise.all(paymentPromises);
+    console.log("payments ",payments)
     payments = payments.filter((payment) => !!payment); // remove nulls
   } catch (error) {
-    Logger.error("createOrder: error creating payments", error.message);
+    Logger.error("createOrder: error creating payments", error);
     throw new ReactionError(
       "payment-failed",
       `There was a problem authorizing this payment: ${error.message}`
@@ -155,7 +159,7 @@ export default async function placeOrder(context, input) {
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
   const { order: orderInput, payments: paymentsInput } = cleanedInput;
-  // console.log("placeOrderInput", paymentsInput);
+
   const {
     branchID,
     notes,
@@ -164,7 +168,9 @@ export default async function placeOrder(context, input) {
     placedFrom,
     isGuestUser,
     guestToken,
+    easyPaisaNumber
   } = input;
+  console.log("input ", input)
   const {
     billingAddress,
     cartId,
@@ -178,7 +184,8 @@ export default async function placeOrder(context, input) {
 
   const { accountId, appEvents, collections, getFunctionsOfType, userId } =
     context;
-  const { TaxRate, Orders, Cart, BranchData, CartHistory } = collections;
+  // console.log("Collections available:", Object.keys(context.collections));
+  const { TaxRate, Orders, Cart, BranchData, CartHistory, Transaction } = collections;
 
   //this is moved to the app event call
   let query = {
@@ -208,6 +215,7 @@ export default async function placeOrder(context, input) {
   ) {
     taxPercentage = taxData.Card;
   }
+  console.log("taxPercentage ", taxPercentage)
 
   const shop = await context.queries.shopById(context, shopId);
   if (!shop) throw new ReactionError("not-found", "Shop not found");
@@ -230,6 +238,7 @@ export default async function placeOrder(context, input) {
 
   let cart;
   if (cartId) {
+    console.log("cartId ",cartId)
     cart = await Cart.findOne({ _id: cartId });
     // await
     if (!cart) {
@@ -279,6 +288,7 @@ export default async function placeOrder(context, input) {
           Latitude,
           Longitude,
         });
+      console.log("group ", group)
 
       // We save off the first shipping address found, for passing to payment services. They use this
       // for fraud detection.
@@ -296,6 +306,7 @@ export default async function placeOrder(context, input) {
       return group;
     })
   );
+  console.log("orderTotal", orderTotal)
 
   const payments = await createPayments({
     accountId,
@@ -309,6 +320,35 @@ export default async function placeOrder(context, input) {
     shop,
     taxPercentage,
   });
+  console.log("payments ", payments[0].finalAmount)
+  console.log("fulfillmentGroups?.[0]?.paymentMethod ", fulfillmentGroups?.[0]?.paymentMethod)
+  let easyPaisaResponse;
+  if (fulfillmentGroups[0].paymentMethod == "EASYPAISA") {
+    console.log("orderId,null,1,null,easyPaisaNumber, email ",orderId,null,1,null,easyPaisaNumber, email)
+    easyPaisaResponse=await doEasyPaisaPayment(orderId,null,payments[0].finalAmount,null,easyPaisaNumber, email)
+    console.log("easyPaisaResponse ",easyPaisaResponse)
+  }
+  if(easyPaisaResponse?.responseCode!="0000"){
+    throw new ReactionError(
+      "transaction-failed",
+      "Transaction has been failed"
+    );
+  }
+  const transactionRecord={
+    orderId,
+    accountId,
+    email,
+    // transactionId: '32794508224',
+    // transactionDateTime: '17/12/2024 12:24 PM',
+    transactionId: easyPaisaResponse?.transactionId,
+    transactionDateTime: easyPaisaResponse?.transactionDateTime
+  }
+
+  console.log("TRANSACTION REOCRD", transactionRecord)
+  const newTransaction = await Transaction.insertOne(transactionRecord)
+  console.log("newTransaction ", newTransaction)
+
+  console.log("fulfillmentGroups[0].paymentMethod",fulfillmentGroups[0].paymentMethod)
 
   // Create anonymousAccessToken if no account ID
   const fullToken = accountId ? null : getAnonymousAccessToken();
@@ -346,7 +386,11 @@ export default async function placeOrder(context, input) {
     deliveryTime,
     Latitude,
     Longitude,
+    transactionId: fulfillmentGroups[0].paymentMethod == "EASYPAISA"?easyPaisaResponse?.transactionId:null
   };
+  
+
+  console.log("ORDER RECORD", order)
 
   if (fullToken) {
     const dbToken = { ...fullToken };
@@ -380,6 +424,7 @@ export default async function placeOrder(context, input) {
       );
     }
   }
+  console.log("referenceId ",referenceId)
 
   order.referenceId = referenceId;
 

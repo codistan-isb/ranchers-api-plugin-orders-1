@@ -615,6 +615,8 @@ type Order implements Node {
 
   Longitude: Float
 
+  transactionId: String
+
   taxInfo: taxInfoPayload
 }
 
@@ -742,6 +744,7 @@ enum paymentMethodValues {
   COD
   CASH
   CARD
+  EASYPAISA
 }
 
 "Similar to `OrderFulfillmentGroupInput` but `items` can be omitted if moving existing items to the new group"
@@ -914,6 +917,8 @@ input PlaceOrderInput {
   isGuestUser: Boolean
 
   guestToken: String
+
+  easyPaisaNumber: String
 
   """
   The information necessary to pay. Collect this information from the shopper during a checkout flow.
