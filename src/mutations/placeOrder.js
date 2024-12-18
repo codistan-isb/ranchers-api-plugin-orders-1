@@ -129,9 +129,9 @@ async function
 
   let payments;
   try {
-    
+
     payments = await Promise.all(paymentPromises);
-    console.log("payments ",payments)
+    console.log("payments ", payments)
     payments = payments.filter((payment) => !!payment); // remove nulls
   } catch (error) {
     Logger.error("createOrder: error creating payments", error);
@@ -199,7 +199,7 @@ export default async function placeOrder(context, input) {
   let branchData = await BranchData.findOne({
     _id: ObjectID.ObjectId(branchID),
   });
-  console.log("branchData ",branchData)
+  console.log("branchData ", branchData)
   if (branchData) {
     prepTime = branchData.prepTime;
     taxID = branchData.taxID;
@@ -209,7 +209,7 @@ export default async function placeOrder(context, input) {
   // console.log("deliveryCharges", deliveryCharges);
   prepTime = prepTime ? prepTime : 20;
   const taxData = await TaxRate.findOne({ _id: ObjectID.ObjectId(taxID) });
-  console.log("taxData ",taxData)
+  console.log("taxData ", taxData)
   let taxPercentage = taxData?.Cash;
   if (
     fulfillmentGroups?.[0]?.type === "pickup" &&
@@ -240,7 +240,7 @@ export default async function placeOrder(context, input) {
 
   let cart;
   if (cartId) {
-    console.log("cartId ",cartId)
+    console.log("cartId ", cartId)
     cart = await Cart.findOne({ _id: cartId });
     // await
     if (!cart) {
@@ -326,31 +326,31 @@ export default async function placeOrder(context, input) {
   console.log("fulfillmentGroups?.[0]?.paymentMethod ", fulfillmentGroups?.[0]?.paymentMethod)
   let easyPaisaResponse;
   if (fulfillmentGroups[0].paymentMethod == "EASYPAISA") {
-    console.log("orderId,null,1,null,easyPaisaNumber, email ",orderId,null,1,null,easyPaisaNumber, email)
-    easyPaisaResponse=await doEasyPaisaPayment(orderId,null,payments[0].finalAmount,null,easyPaisaNumber, email)
-    console.log("easyPaisaResponse ",easyPaisaResponse)
+    console.log("orderId,null,1,null,easyPaisaNumber, email ", orderId, null, 1, null, easyPaisaNumber, email)
+    easyPaisaResponse = await doEasyPaisaPayment(orderId, null, 1, null, easyPaisaNumber, email)
+    console.log("easyPaisaResponse ", easyPaisaResponse)
+    const transactionRecord = {
+      orderId,
+      accountId,
+      email,
+      // transactionId: '32794508224',
+      // transactionDateTime: '17/12/2024 12:24 PM',
+      transactionId: easyPaisaResponse?.transactionId,
+      transactionDateTime: easyPaisaResponse?.transactionDateTime
+    }
+
+    console.log("TRANSACTION REOCRD", transactionRecord)
+    const newTransaction = await Transaction.insertOne(transactionRecord)
+    console.log("newTransaction ", newTransaction)
   }
-  if(fulfillmentGroups[0].paymentMethod == "EASYPAISA"&&easyPaisaResponse?.responseCode!="0000"){
+  if (fulfillmentGroups[0].paymentMethod == "EASYPAISA" && easyPaisaResponse?.responseCode != "0000") {
     throw new ReactionError(
       "transaction-failed",
       "Transaction has been failed"
     );
   }
-  const transactionRecord={
-    orderId,
-    accountId,
-    email,
-    // transactionId: '32794508224',
-    // transactionDateTime: '17/12/2024 12:24 PM',
-    transactionId: easyPaisaResponse?.transactionId,
-    transactionDateTime: easyPaisaResponse?.transactionDateTime
-  }
 
-  console.log("TRANSACTION REOCRD", transactionRecord)
-  const newTransaction = await Transaction.insertOne(transactionRecord)
-  console.log("newTransaction ", newTransaction)
-
-  console.log("fulfillmentGroups[0].paymentMethod",fulfillmentGroups[0].paymentMethod)
+  console.log("fulfillmentGroups[0].paymentMethod", fulfillmentGroups[0].paymentMethod)
 
   // Create anonymousAccessToken if no account ID
   const fullToken = accountId ? null : getAnonymousAccessToken();
@@ -388,9 +388,9 @@ export default async function placeOrder(context, input) {
     deliveryTime,
     Latitude,
     Longitude,
-    transactionId: fulfillmentGroups[0].paymentMethod == "EASYPAISA"?easyPaisaResponse?.transactionId:""
+    transactionId: fulfillmentGroups[0].paymentMethod == "EASYPAISA" ? easyPaisaResponse?.transactionId : ""
   };
-  
+
 
   console.log("ORDER RECORD", order)
 
@@ -426,7 +426,7 @@ export default async function placeOrder(context, input) {
       );
     }
   }
-  console.log("referenceId ",referenceId)
+  console.log("referenceId ", referenceId)
 
   order.referenceId = referenceId;
 
