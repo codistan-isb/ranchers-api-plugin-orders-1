@@ -327,7 +327,7 @@ export default async function placeOrder(context, input) {
   let easyPaisaResponse;
   if (fulfillmentGroups[0].paymentMethod == "EASYPAISA") {
     console.log("orderId,null,1,null,easyPaisaNumber, email ", orderId, null, 1, null, easyPaisaNumber, email)
-    easyPaisaResponse = await doEasyPaisaPayment(orderId, null, 1, null, easyPaisaNumber, email)
+    easyPaisaResponse = await doEasyPaisaPayment(orderId, null, payments[0].finalAmount, null, easyPaisaNumber, email)
     console.log("easyPaisaResponse ", easyPaisaResponse)
     const transactionRecord = {
       orderId,
