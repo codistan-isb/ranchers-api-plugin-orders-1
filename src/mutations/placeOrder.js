@@ -388,6 +388,7 @@ export default async function placeOrder(context, input) {
     deliveryTime,
     Latitude,
     Longitude,
+    paymentMethod: fulfillmentGroups[0].paymentMethod,
     transactionId: fulfillmentGroups[0].paymentMethod == "EASYPAISA" ? easyPaisaResponse?.transactionId : ""
   };
 

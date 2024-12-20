@@ -185,6 +185,11 @@ extend type Mutation {
   updateOrder("Mutation input" input: UpdateOrderInput!): UpdateOrderPayload!
 
   """
+  Use this mutation to update order details after the order has been placed.
+  """
+  updateReviewsRatings: UpdateOrderPayload!
+
+  """
   Use this mutation to update an order fulfillment group status and tracking information.
   """
   updateOrderFulfillmentGroup(

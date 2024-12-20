@@ -1277,6 +1277,7 @@ export const Payment = new SimpleSchema({
     optional: true,
   },
   transactionId: {type:String, optional:true},
+  paymentMethod: {type:String, optional:true},
   Longitude: {
     type: Number,
     optional: true,
@@ -1345,6 +1346,7 @@ export const Payment = new SimpleSchema({
  * @property {Date} updatedAt optional
  * @property {Workflow} workflow optional
  * @property {String} transactionId optional
+ * @property {String} paymentMethod optional
  */
 export const Order = new SimpleSchema({
   _id: {
@@ -1451,6 +1453,7 @@ export const Order = new SimpleSchema({
     optional: true,
   },
   transactionId: String,
+  paymentMethod: String,
   Longitude: {
     type: Number,
     optional: true,

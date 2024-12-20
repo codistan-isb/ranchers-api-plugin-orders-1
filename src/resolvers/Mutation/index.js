@@ -8,6 +8,7 @@ import updateOrder from "./updateOrder.js";
 import updateOrderFulfillmentGroup from "./updateOrderFulfillmentGroup.js";
 import updateOrderTime from "./updateOrderTime.js";
 import cancelCustomerOrder from "./cancelCustomerOrder.js";
+import updateReviewsRatings from "./updateReviewsRatings.js";
 export default {
   addOrderFulfillmentGroup,
   cancelOrderItem,
@@ -19,4 +20,5 @@ export default {
   updateOrderFulfillmentGroup,
   updateOrderTime,
   cancelCustomerOrder,
+  updateReviewsRatings
 };
