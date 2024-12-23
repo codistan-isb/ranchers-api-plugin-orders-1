@@ -187,7 +187,7 @@ extend type Mutation {
   """
   Use this mutation to update order details after the order has been placed.
   """
-  updateReviewsRatings: UpdateOrderPayload!
+  updateReviewsRatings: Boolean
 
   """
   Use this mutation to update an order fulfillment group status and tracking information.

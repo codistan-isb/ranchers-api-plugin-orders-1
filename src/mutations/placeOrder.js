@@ -323,8 +323,16 @@ export default async function placeOrder(context, input) {
     taxPercentage,
   });
   console.log("payments ", payments[0].finalAmount)
+  console.log("totalAmount ", payments[0].totalAmount)
+  if (payments[0].totalAmount < 500) {
+    throw new ReactionError(
+      "invalid-order",
+      "Order amount must be greater than 500"
+    );
+  }
   console.log("fulfillmentGroups?.[0]?.paymentMethod ", fulfillmentGroups?.[0]?.paymentMethod)
   let easyPaisaResponse;
+
   if (fulfillmentGroups[0].paymentMethod == "EASYPAISA") {
     console.log("orderId,null,1,null,easyPaisaNumber, email ", orderId, null, payments[0].finalAmount, null, easyPaisaNumber, email)
     easyPaisaResponse = await doEasyPaisaPayment(orderId, null, payments[0].finalAmount, null, easyPaisaNumber, email)
