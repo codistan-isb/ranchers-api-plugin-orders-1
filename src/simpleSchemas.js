@@ -165,6 +165,7 @@ export const OrderAddress = new SimpleSchema({
   address1: {
     label: "Address 1",
     type: String,
+    optional: true
   },
   address2: {
     label: "Address 2",
