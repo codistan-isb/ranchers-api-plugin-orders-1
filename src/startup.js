@@ -6,6 +6,19 @@ import deliveryTimeCalculation from "./util/deliveryTimeCalculation.js";
 import cors from "cors";
 import bodyParser from "body-parser";
 import morgan from "morgan";
+import cron from 'node-cron';
+import nodemailer from "nodemailer";
+import fs from "fs";
+const transporter = nodemailer.createTransport({
+  host: process.env.BREVOHOST,
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.BREVOUSER,
+    pass: process.env.BREVOPASS
+  }
+}
+);
 
 /**
  * @summary Called on startup
@@ -15,6 +28,8 @@ import morgan from "morgan";
  */
 export default function ordersStartup(context) {
   const { app, appEvents } = context;
+  let { collections } = context;
+  const { Orders } = collections;
   if (app.expressApp) {
 
     //add other middleware
@@ -30,14 +45,179 @@ export default function ordersStartup(context) {
         // Log the incoming IPN data for debugging
         console.log('Received IPN:', ipnData);
 
-      
+
         // Respond with a 200 OK to acknowledge receipt
         res.status(200).send('IPN received successfully');
-    } catch (error) {
+      } catch (error) {
         console.error('Error processing IPN:', error.message);
         res.status(500).send('Server error');
-    }
-    })}
+      }
+    })
+  }
+  function convertJsonToCsv(items, fields) {
+    const hdr = fields
+
+    const hadrString = hdr.join(",");
+
+    // nned to handle null or undefined values here..
+    const replacer = (key, val) => val ?? '';
+
+    const rowItems = items.map((row) =>
+      hdr.map((fieldNameVal) => JSON.stringify(row[fieldNameVal], replacer))
+        .join(",")
+    );
+
+    // join hdr and body, and break into separate lines ..
+    const csvFile = [hadrString, ...rowItems].join('\r\n');
+
+    return csvFile;
+  }
+  if (process.env.ENVIRONMENT == "production") {
+    cron.schedule('0 16 * * *', async () => {
+    // cron.schedule('*/60 * * * * *', async () => {
+      try {
+        console.log("process.env.ENVIRONMENT", process.env.ENVIRONMENT)
+        console.log("running pipeline")
+        // Get the current time and calculate the time 24 hours ago
+        const now = new Date();
+        console.log("now ", now)
+        const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        console.log("last24Hours ", last24Hours)
+        const aggregationPipeline = [
+          {
+            $match: {
+              createdAt: {
+                $gte: last24Hours,
+                $lte: now
+              },
+            },
+          },
+          {
+            $addFields: {
+              branchID: {
+                $toObjectId: "$branchID",
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: "BranchData",
+              // The collection for branch data
+              localField: "branchID",
+              // The branches field in RiderOrder
+              foreignField: "_id",
+              // The _id field in BranchData
+              as: "branchData", // Store the branch data
+            },
+          },
+          {
+            $addFields: {
+              branchID: "$_id",
+              branchInfo: {
+                $arrayElemAt: ["$branchData", 0],
+              },
+            },
+          },
+          {
+            $addFields: {
+              branchName: "$branchData.name",
+              // Extract name from branchData
+              branchAddress: "$branchData.address", // Extract address from branchData
+            },
+          },
+          {
+            $unwind: "$branchName",
+          },
+          {
+            $unwind: "$branchAddress",
+          },
+          {
+            $addFields: {
+              amount: "$payments.amount",
+              tax: "$payments.tax",
+              finalAmount: "$payments.finalAmount",
+            },
+          },
+          {
+            $addFields: {
+              currencyCode: {
+                $cond: {
+                  if: {
+                    $eq: ["$currencyCode", "USD"],
+                  },
+                  // Check if currencyCode is USD
+                  then: "PKR",
+                  // Set to PKR if USD
+                  else: "$currencyCode", // Otherwise, keep original currencyCode
+                },
+              },
+            },
+          },
+          {
+            $unwind: "$tax",
+          },
+          {
+            $unwind: "$amount",
+          },
+          {
+            $unwind: "$finalAmount",
+          },
+          {
+            $project: {
+              branchName: -1,
+              branchAddress: -1,
+              email: -1,
+              paymentMethod: -1,
+              currencyCode: -1,
+              tax: -1,
+              amount: -1,
+              finalAmount: -1,
+              createdAt: -1,
+            },
+          },
+        ]
+        const todayOrders = await Orders.aggregate(aggregationPipeline).toArray();
+        console.log("todayOrders ", todayOrders.length)
+        const fields = [
+          '_id', 'createdAt', 'currencyCode', 'email', 'paymentMethod', 'branchName', 'branchAddress', 'amount', 'tax', 'finalAmount'
+        ];
+        const opts = { fields };
+        const csv = convertJsonToCsv(todayOrders, fields)
+        //console.log("csv ", csv)
+        // console.log(csv);
+        // Save CSV to a file
+        const filePath = './todayOrders.csv';
+        fs.writeFileSync(filePath, csv);
+        const email = {
+          from: "muhammad.usama@ranchercafe.com",
+          to: [
+            "haris.ghumman46@gmail.com",
+            "aliasadwarraich29@gmail.com",
+            "stasawfi787@gmail.com",
+            "harisbakhabarpk@gmail.com"
+          ].join(","),
+          subject: "Daily Orders Report",
+          text: "This is the daily orders report",
+          attachments: [
+            {   // stream as an attachment
+              filename: 'todayOrders.csv',
+              content: fs.createReadStream('todayOrders.csv')
+            }
+          ]
+        };
+        console.log("email ", email)
+        const info = await transporter.sendMail(email);
+        console.log('info:', info);
+
+      } catch (err) {
+        console.log("err ", err)
+      }
+    }, {
+      scheduled: true,
+      timezone: "America/Sao_Paulo"
+    });
+  }
+
 
 
   appEvents.on(
