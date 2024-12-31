@@ -72,7 +72,9 @@ export default function ordersStartup(context) {
 
     return csvFile;
   }
+  console.log("America/New_York ",)
   if (process.env.ENVIRONMENT == "production") {
+    
     cron.schedule('0 16 * * *', async () => {
     // cron.schedule('*/60 * * * * *', async () => {
       try {
@@ -214,7 +216,7 @@ export default function ordersStartup(context) {
       }
     }, {
       scheduled: true,
-      timezone: "America/Sao_Paulo"
+      timezone: "America/New_York"
     });
   }
 
