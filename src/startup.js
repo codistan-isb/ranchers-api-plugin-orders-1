@@ -74,7 +74,7 @@ export default function ordersStartup(context) {
   }
   console.log("America/New_York ",)
   if (process.env.ENVIRONMENT == "production") {
-    
+
     cron.schedule('0 16 * * *', async () => {
     // cron.schedule('*/60 * * * * *', async () => {
       try {
@@ -175,35 +175,61 @@ export default function ordersStartup(context) {
               amount: -1,
               finalAmount: -1,
               createdAt: -1,
+              placedFrom: -1
             },
           },
         ]
         const todayOrders = await Orders.aggregate(aggregationPipeline).toArray();
-        console.log("todayOrders ", todayOrders.length)
+        console.log("todayOrders ", todayOrders)
         const fields = [
-          '_id', 'createdAt', 'currencyCode', 'email', 'paymentMethod', 'branchName', 'branchAddress', 'amount', 'tax', 'finalAmount'
+          '_id', 'createdAt', 'currencyCode', 'email', 'paymentMethod','placedFrom', 'branchName', 'branchAddress', 'amount', 'tax', 'finalAmount'
         ];
         const opts = { fields };
-        const csv = convertJsonToCsv(todayOrders, fields)
+        // Filter orders for web and app
+        const webOrders = todayOrders.filter(order => order.placedFrom === 'web');
+        const appOrders = todayOrders.filter(order => order.placedFrom === 'app');
+
+        // Convert to CSV
+        const todayOrdersCsv = convertJsonToCsv(todayOrders, fields);
+        const webOrdersCsv = convertJsonToCsv(webOrders, fields);
+        const appOrdersCsv = convertJsonToCsv(appOrders, fields);
+
+        // Save CSV to files
+        fs.writeFileSync('./todayOrders.csv', todayOrdersCsv);
+        fs.writeFileSync('./webOrders.csv', webOrdersCsv);
+        fs.writeFileSync('./appOrders.csv', appOrdersCsv);
         //console.log("csv ", csv)
         // console.log(csv);
         // Save CSV to a file
         const filePath = './todayOrders.csv';
-        fs.writeFileSync(filePath, csv);
+        fs.writeFileSync(filePath, todayOrdersCsv);
+        const webFilePath = './todayWebOrders.csv';
+        fs.writeFileSync(webFilePath, webOrdersCsv);
+        const appFilePath = './todayAppOrders.csv';
+        fs.writeFileSync(appFilePath, appOrdersCsv);
         const email = {
           from: "muhammad.usama@ranchercafe.com",
           to: [
             "haris.ghumman46@gmail.com",
             "aliasadwarraich29@gmail.com",
             "stasawfi787@gmail.com",
-            "harisbakhabarpk@gmail.com"
+            "harisbakhabarpk@gmail.com",
+            "mwaseemkha@gmail.com"
           ].join(","),
           subject: "Daily Orders Report",
           text: "This is the daily orders report",
           attachments: [
-            {   // stream as an attachment
+            {
               filename: 'todayOrders.csv',
-              content: fs.createReadStream('todayOrders.csv')
+              content: fs.createReadStream('./todayOrders.csv')
+            },
+            {
+              filename: 'todayWebOrders.csv',
+              content: fs.createReadStream('./todayWebOrders.csv')
+            },
+            {
+              filename: 'todayAppOrders.csv',
+              content: fs.createReadStream('./todayAppOrders.csv')
             }
           ]
         };
