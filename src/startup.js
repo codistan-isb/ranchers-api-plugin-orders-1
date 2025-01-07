@@ -76,7 +76,7 @@ export default function ordersStartup(context) {
   if (process.env.ENVIRONMENT == "production") {
 
     cron.schedule('0 16 * * *', async () => {
-    // cron.schedule('*/60 * * * * *', async () => {
+      // cron.schedule('*/60 * * * * *', async () => {
       try {
         console.log("process.env.ENVIRONMENT", process.env.ENVIRONMENT)
         console.log("running pipeline")
@@ -104,12 +104,9 @@ export default function ordersStartup(context) {
           {
             $lookup: {
               from: "BranchData",
-              // The collection for branch data
               localField: "branchID",
-              // The branches field in RiderOrder
               foreignField: "_id",
-              // The _id field in BranchData
-              as: "branchData", // Store the branch data
+              as: "branchData",
             },
           },
           {
@@ -123,8 +120,7 @@ export default function ordersStartup(context) {
           {
             $addFields: {
               branchName: "$branchData.name",
-              // Extract name from branchData
-              branchAddress: "$branchData.address", // Extract address from branchData
+              branchAddress: "$branchData.address",
             },
           },
           {
@@ -147,10 +143,8 @@ export default function ordersStartup(context) {
                   if: {
                     $eq: ["$currencyCode", "USD"],
                   },
-                  // Check if currencyCode is USD
                   then: "PKR",
-                  // Set to PKR if USD
-                  else: "$currencyCode", // Otherwise, keep original currencyCode
+                  else: "$currencyCode",
                 },
               },
             },
@@ -164,6 +158,14 @@ export default function ordersStartup(context) {
           {
             $unwind: "$finalAmount",
           },
+          { $sort: { createdAt: -1 } },
+          {
+            $addFields: {
+              orderTime: {
+                $add: ["$createdAt", 5 * 60 * 60000] // Add 5 hours in milliseconds to createdAt
+              }
+            }
+          },
           {
             $project: {
               branchName: -1,
@@ -174,15 +176,15 @@ export default function ordersStartup(context) {
               tax: -1,
               amount: -1,
               finalAmount: -1,
-              createdAt: -1,
-              placedFrom: -1
+              placedFrom: -1,
+              orderTime: 1 // Add this field to output to show the adjusted time
             },
           },
         ]
         const todayOrders = await Orders.aggregate(aggregationPipeline).toArray();
         console.log("todayOrders ", todayOrders)
         const fields = [
-          '_id', 'createdAt', 'currencyCode', 'email', 'paymentMethod','placedFrom', 'branchName', 'branchAddress', 'amount', 'tax', 'finalAmount'
+          '_id', 'orderTime', 'currencyCode', 'email', 'paymentMethod', 'placedFrom', 'branchName', 'branchAddress', 'amount', 'tax', 'finalAmount'
         ];
         const opts = { fields };
         // Filter orders for web and app
