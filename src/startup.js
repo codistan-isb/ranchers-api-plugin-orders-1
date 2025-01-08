@@ -75,7 +75,7 @@ export default function ordersStartup(context) {
   console.log("America/New_York ",)
   if (process.env.ENVIRONMENT == "production") {
 
-    cron.schedule('0 16 * * *', async () => {
+    cron.schedule('0 4 * * *', async () => {
       // cron.schedule('*/60 * * * * *', async () => {
       try {
         console.log("process.env.ENVIRONMENT", process.env.ENVIRONMENT)
@@ -242,9 +242,6 @@ export default function ordersStartup(context) {
       } catch (err) {
         console.log("err ", err)
       }
-    }, {
-      scheduled: true,
-      timezone: "America/New_York"
     });
   }
 
