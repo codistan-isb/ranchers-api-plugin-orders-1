@@ -75,8 +75,8 @@ export default function ordersStartup(context) {
   console.log("America/New_York ",)
   if (process.env.ENVIRONMENT == "production") {
 
-    cron.schedule('0 4 * * *', async () => {
-      // cron.schedule('*/60 * * * * *', async () => {
+    // cron.schedule('0 22 * * *', async () => {
+      cron.schedule('*/60 * * * * *', async () => {
       try {
         console.log("process.env.ENVIRONMENT", process.env.ENVIRONMENT)
         console.log("running pipeline")
@@ -134,6 +134,7 @@ export default function ordersStartup(context) {
               amount: "$payments.amount",
               tax: "$payments.tax",
               finalAmount: "$payments.finalAmount",
+              "status": "$workflow.status",
             },
           },
           {
@@ -162,9 +163,9 @@ export default function ordersStartup(context) {
           {
             $addFields: {
               orderTime: {
-                $add: ["$createdAt", 5 * 60 * 60000] // Add 5 hours in milliseconds to createdAt
-              }
-            }
+                $add: ["$createdAt", 5 * 60 * 60000], // Add 5 hours in milliseconds to createdAt
+              },
+            },
           },
           {
             $project: {
@@ -177,29 +178,37 @@ export default function ordersStartup(context) {
               amount: -1,
               finalAmount: -1,
               placedFrom: -1,
-              orderTime: 1 // Add this field to output to show the adjusted time
+              rejectionReason: -1,
+              status: -1,
+              orderTime: 1, // Add this field to output to show the adjusted time
             },
           },
         ]
         const todayOrders = await Orders.aggregate(aggregationPipeline).toArray();
         console.log("todayOrders ", todayOrders)
         const fields = [
-          '_id', 'orderTime', 'currencyCode', 'email', 'paymentMethod', 'placedFrom', 'branchName', 'branchAddress', 'amount', 'tax', 'finalAmount'
+          '_id', 'orderTime', 'currencyCode', 'email', 'paymentMethod', 'placedFrom', 'branchName', 'branchAddress', 'amount', 'tax', 'finalAmount',
+        ];
+        const canceledOrderFields = [
+          '_id', 'orderTime', 'currencyCode', 'email', 'paymentMethod', 'placedFrom','rejectionReason', 'branchName', 'branchAddress', 'amount', 'tax', 'finalAmount',
         ];
         const opts = { fields };
         // Filter orders for web and app
         const webOrders = todayOrders.filter(order => order.placedFrom === 'web');
         const appOrders = todayOrders.filter(order => order.placedFrom === 'app');
+        const canceledOrders = todayOrders.filter(order => order.status === 'canceled');
 
         // Convert to CSV
         const todayOrdersCsv = convertJsonToCsv(todayOrders, fields);
         const webOrdersCsv = convertJsonToCsv(webOrders, fields);
         const appOrdersCsv = convertJsonToCsv(appOrders, fields);
+        const canceledOrdersCsv = convertJsonToCsv(canceledOrders, canceledOrderFields);
 
         // Save CSV to files
         fs.writeFileSync('./todayOrders.csv', todayOrdersCsv);
         fs.writeFileSync('./webOrders.csv', webOrdersCsv);
         fs.writeFileSync('./appOrders.csv', appOrdersCsv);
+        fs.writeFileSync('./canceledOrders.csv', canceledOrdersCsv);
         //console.log("csv ", csv)
         // console.log(csv);
         // Save CSV to a file
@@ -209,14 +218,16 @@ export default function ordersStartup(context) {
         fs.writeFileSync(webFilePath, webOrdersCsv);
         const appFilePath = './todayAppOrders.csv';
         fs.writeFileSync(appFilePath, appOrdersCsv);
+        const canceledFilePath = './canceledOrders.csv';
+        fs.writeFileSync(canceledFilePath, canceledOrdersCsv);
         const email = {
           from: "muhammad.usama@ranchercafe.com",
           to: [
-            "haris.ghumman46@gmail.com",
-            "aliasadwarraich29@gmail.com",
-            "stasawfi787@gmail.com",
+            // "haris.ghumman46@gmail.com",
+            // "aliasadwarraich29@gmail.com",
+            // "stasawfi787@gmail.com",
             "harisbakhabarpk@gmail.com",
-            "mwaseemkha@gmail.com"
+            // "mwaseemkha@gmail.com"
           ].join(","),
           subject: "Daily Orders Report",
           text: "This is the daily orders report",
@@ -232,6 +243,10 @@ export default function ordersStartup(context) {
             {
               filename: 'todayAppOrders.csv',
               content: fs.createReadStream('./todayAppOrders.csv')
+            },
+            {
+              filename: 'canceledOrders.csv',
+              content: fs.createReadStream('./canceledOrders.csv')
             }
           ]
         };
