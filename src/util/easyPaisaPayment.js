@@ -38,11 +38,11 @@ export default async function doEasyPaisaPayment(
       
       const response=await axios.request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
+        console.log("response of easypaisa",JSON.stringify(response.data));
         return response.data;
       })
       .catch((error) => {
-        console.log(error);
+        console.log("error of easypaisa ",error);
         return false
       });
       return response
