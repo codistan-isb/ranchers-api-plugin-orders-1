@@ -17,6 +17,7 @@ import {
 } from "../simpleSchemas.js";
 // import deliveryTimeCalculation from "../util/deliveryTimeCalculation.js";
 import generateKitchenOrderID from "../util/generateKitchenOrderID.js";
+import checkIfTime from "../util/checkIfTime.js";
 
 const GUEST_TOKEN =
   "4fca69b380be5f9898f435e548654c063f757562ca32fb9e5d09bb5d38d3295b";
@@ -200,6 +201,14 @@ export default async function placeOrder(context, input) {
     _id: ObjectID.ObjectId(branchID),
   });
   console.log("branchData ", branchData)
+  const [startTime, endTime] = branchData.Timing.split(" - ").map((time) => time.trim());
+  // Call the checkIfTime function
+  const isOpen = await checkIfTime(startTime, endTime);
+
+  console.log("Is branch open?", isOpen, "branch.name ", branchData.name);
+  if(!isOpen){
+    throw new ReactionError("access-denied", `${branchData.name} Branch is closed for now. Please try between ${branchData.Timing}`);
+  }
   if (branchData) {
     prepTime = branchData.prepTime;
     taxID = branchData.taxID;
