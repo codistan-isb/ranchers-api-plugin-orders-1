@@ -201,16 +201,16 @@ export default async function placeOrder(context, input) {
     _id: ObjectID.ObjectId(branchID),
   });
   console.log("branchData ", branchData)
-  if (branchData?.Timing) {
-    const [startTime, endTime] = branchData.Timing.split(" - ").map((time) => time.trim());
-    // Call the checkIfTime function
-    const isOpen = await checkIfTime(startTime, endTime);
+  // if (branchData?.Timing) {
+  //   const [startTime, endTime] = branchData.Timing.split(" - ").map((time) => time.trim());
+  //   // Call the checkIfTime function
+  //   const isOpen = await checkIfTime(startTime, endTime);
 
-    console.log("Is branch open?", isOpen, "branch.name ", branchData.name);
-    if (!isOpen) {
-      throw new ReactionError("access-denied", `${branchData.name} Branch is closed for now. Please try between ${branchData.Timing}`);
-    }
-  }
+  //   console.log("Is branch open?", isOpen, "branch.name ", branchData.name);
+  //   if (!isOpen) {
+  //     throw new ReactionError("access-denied", `${branchData.name} Branch is closed for now. Please try between ${branchData.Timing}`);
+  //   }
+  // }
   if (branchData) {
     prepTime = branchData.prepTime;
     taxID = branchData.taxID;
