@@ -227,7 +227,9 @@ export default function ordersStartup(context) {
             "aliasadwarraich29@gmail.com",
             "stasawfi787@gmail.com",
             "harisbakhabarpk@gmail.com",
-            "mwaseemkha@gmail.com"
+            "mwaseemkha@gmail.com",
+            "nadirw70@gmail.com",
+            "ZoahibKahlid575@gmail.com"
           ].join(","),
           subject: "Daily Orders Report",
           text: "This is the daily orders report",
