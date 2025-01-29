@@ -3,6 +3,8 @@ import cancelOrderItem from "./cancelOrderItem.js";
 import createRefund from "./createRefund.js";
 import moveOrderItems from "./moveOrderItems.js";
 import placeOrder from "./placeOrder.js";
+import favoriteOrder from "./favoriteOrder.js";
+import removeFavoriteOrder from "./removeFavoriteOrder.js";
 import sendOrderEmail from "./sendOrderEmail.js";
 import splitOrderItem from "./splitOrderItem.js";
 import updateOrder from "./updateOrder.js";
@@ -21,5 +23,7 @@ export default {
   updateOrder,
   updateOrderFulfillmentGroup,
   cancelCustomerOrder,
-  sendWhatsAppMessage
+  sendWhatsAppMessage,
+  favoriteOrder,
+  removeFavoriteOrder
 };

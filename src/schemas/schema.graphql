@@ -43,6 +43,11 @@ extend type Query {
     sortBy: OrdersSortByField = createdAt
   ): OrderConnection!
 
+
+  "Get all orders for a single account, optionally limited to certain shop IDs and certain orderStatus"
+  getFavoriteOrders: [getFavoriteOrdersResponse]
+
+
   "Get all orders for a single account, optionally limited to certain shop IDs and certain orderStatus"
   ordersByAccountId(
     "Limit to orders placed by this account"
@@ -196,6 +201,9 @@ extend type Mutation {
     "Mutation input"
     input: UpdateOrderFulfillmentGroupInput!
   ): UpdateOrderFulfillmentGroupPayload!
+
+  favoriteOrder("Mutation input" input: favoriteOrderInput!): FavoriteOrderPayload!
+  removeFavoriteOrder("Mutation input" input: favoriteOrderInput!): removeFavoriteOrderPayload!
 }
 "Allowed values for the `OrderFulfillmentGroupItems` sortBy parameter"
 enum OrderFulfillmentGroupItemsSortByField {
@@ -336,6 +344,53 @@ type OrderItemAttribute {
 
   "The attribute value, e.g., Blue"
   value: String
+}
+type OrderNew {
+  _id: ID
+  id: ID
+  accountId: String
+  cartId: String
+  startTime: DateTime
+  endTime: DateTime
+  OrderStatus: OrderStatusValue
+  deliveryTime: Float
+  OrderID: String
+  username: String
+  branches: String
+  riderID: String
+  # deliveryTime: Float
+  "branch Info Displayed"
+  branchInfo: Branch
+  transferFromBranchInfo: Branch
+  Notes: String
+  riderInfo: AccountNew
+  customerInfo: customerInfoPayload
+  rejectionReason: String
+  customerOrderTime: customerOrderTimePayload
+  branchTimePickup: branchTimePickupPayload
+  kitchenOrderIDInfo: kitchenOrderIDPayload
+  riderOrderInfo: riderOrderInfoPayload
+  orderIdResolver: orderIdResolverPayload
+  summary: OrderSummary!
+  payments: [Payment]
+  notes: [OrderNote]
+  fulfillmentGroups: [OrderFulfillmentGroupNew]
+  branchID: ID
+  email: String
+  kitchenOrderID: String
+  status: String!
+  Latitude: Float
+  Longitude: Float
+  riderOrderAmount: Float
+  riderOrderNotes: String
+  isManual: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  paymentMethod: String
+  placedFrom: String
+  isPaid: Boolean
+  isGuestUser: Boolean
+  # customerOrderInfo:customerOrderInfoPayload
 }
 
 "A summary of the totals for this order"
@@ -623,6 +678,15 @@ type Order implements Node {
   transactionId: String
 
   taxInfo: taxInfoPayload
+}
+type getFavoriteOrdersResponse {
+  _id: String
+
+  accountId: String
+
+  orderId: String
+
+  orderDetails: Order
 }
 
 type taxInfoPayload {
@@ -941,6 +1005,11 @@ input PlaceOrderInput {
 
   Longitude: Float
 }
+
+"Input for the favoriteOrder mutation"
+input favoriteOrderInput {
+  orderId: String
+}
 # extend enum OrderStatusValue {
 #   new
 # }
@@ -1078,6 +1147,18 @@ type PlaceOrderPayload {
 
   Longitude: Float
   # notes: [OrderNoteInput]
+}
+
+"Response payload for the placeOrder mutation"
+type FavoriteOrderPayload {
+  "The same string you sent with the mutation params, for matching mutation calls with their responses"
+  isUpdated: Boolean
+}
+
+"Response payload for the placeOrder mutation"
+type removeFavoriteOrderPayload {
+  "The same string you sent with the mutation params, for matching mutation calls with their responses"
+  isRemoved: Boolean
 }
 
 "Response payload for the splitOrderItem mutation"

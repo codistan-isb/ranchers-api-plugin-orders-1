@@ -55,6 +55,11 @@ export default async function register(app) {
         updatedAt: { type: Date, default: Date.now },
         createdAt: { type: Date, default: Date.now },
       },
+      FavoriteOrder: {
+        name: "FavoriteOrder",
+        updatedAt: { type: Date, default: Date.now },
+        createdAt: { type: Date, default: Date.now },
+      },
     },
     functionsByType: {
       getDataForOrderEmail: [getDataForOrderEmail],
