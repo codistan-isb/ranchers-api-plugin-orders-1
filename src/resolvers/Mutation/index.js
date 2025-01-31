@@ -11,6 +11,7 @@ import updateOrderFulfillmentGroup from "./updateOrderFulfillmentGroup.js";
 import updateOrderTime from "./updateOrderTime.js";
 import cancelCustomerOrder from "./cancelCustomerOrder.js";
 import updateReviewsRatings from "./updateReviewsRatings.js";
+import testNewOrderEvent from "./testNewOrderEvent.js";
 export default {
   addOrderFulfillmentGroup,
   cancelOrderItem,
@@ -24,5 +25,6 @@ export default {
   updateOrderFulfillmentGroup,
   updateOrderTime,
   cancelCustomerOrder,
-  updateReviewsRatings
+  updateReviewsRatings,
+  testNewOrderEvent
 };

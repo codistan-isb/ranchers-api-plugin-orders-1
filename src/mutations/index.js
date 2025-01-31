@@ -11,7 +11,7 @@ import updateOrder from "./updateOrder.js";
 import updateOrderFulfillmentGroup from "./updateOrderFulfillmentGroup.js";
 import cancelCustomerOrder from "./cancelCustomerOrder.js";
 import sendWhatsAppMessage from "./sendWhatsAppMessage.js";
-
+import testNewOrderEvent from "./testNewOrderEvent.js";
 export default {
   addOrderFulfillmentGroup,
   cancelOrderItem,
@@ -25,5 +25,6 @@ export default {
   cancelCustomerOrder,
   sendWhatsAppMessage,
   favoriteOrder,
-  removeFavoriteOrder
+  removeFavoriteOrder,
+  testNewOrderEvent
 };

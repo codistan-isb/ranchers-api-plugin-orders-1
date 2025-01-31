@@ -6,7 +6,9 @@ import OrderFulfillmentGroup from "./OrderFulfillmentGroup/index.js";
 import OrderItem from "./OrderItem/index.js";
 import Query from "./Query/index.js";
 import Refund from "./Refund/index.js";
-
+import pubSub from "../util/pubSubIntance.js";
+// import { PubSub } from "graphql-subscriptions";
+// const pubSub = new PubSub();
 export default {
   AddOrderFulfillmentGroupPayload: {
     newFulfillmentGroupId: (node) => encodeOrderFulfillmentGroupOpaqueId(node.newFulfillmentGroupId)
@@ -22,6 +24,11 @@ export default {
   OrderItem,
   Query,
   Refund,
+  Subscription: {
+    newOrder: {
+      subscribe: () => pubSub.asyncIterator(["ORDER_CREATED"]),
+    },
+  },
   SplitOrderItemPayload: {
     newItemId: (node) => encodeOrderItemOpaqueId(node.newItemId)
   },

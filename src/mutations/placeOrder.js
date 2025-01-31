@@ -18,6 +18,9 @@ import {
 // import deliveryTimeCalculation from "../util/deliveryTimeCalculation.js";
 import generateKitchenOrderID from "../util/generateKitchenOrderID.js";
 import checkIfTime from "../util/checkIfTime.js";
+import pubSub from "../util/pubSubIntance.js";
+// import { PubSub } from "graphql-subscriptions";
+// const pubSub = new PubSub();
 
 const GUEST_TOKEN =
   "4fca69b380be5f9898f435e548654c063f757562ca32fb9e5d09bb5d38d3295b";
@@ -253,6 +256,7 @@ export default async function placeOrder(context, input) {
   if (cartId) {
     console.log("cartId ", cartId)
     cart = await Cart.findOne({ _id: cartId });
+    console.log("cart ",cart)
     // await
     if (!cart) {
       throw new ReactionError(
@@ -475,10 +479,239 @@ export default async function placeOrder(context, input) {
   // Validate and save
 
   OrderSchema.validate(order);
-  await Orders.insertOne({
+  const newOrder=await Orders.insertOne({
     ...order,
     paymentMethod: fulfillmentGroups?.[0]?.paymentMethod || "CASH",
   });
+  console.log("newOrder ",newOrder)
+  console.log("newOrder.ops[0] ",newOrder.ops[0])
+  //Getting data for real time event
+  const ordersResp = await Orders.aggregate([
+    { $match: {
+      _id:newOrder.ops[0]?._id
+    } },
+    { $sort: { createdAt: -1 } },
+    {
+      $lookup: {
+        from: "RiderOrder",
+        localField: "_id",
+        foreignField: "OrderID",
+        as: "riderOrderInfo",
+      },
+    },
+    {
+      $unwind: {
+        path: "$riderOrderInfo",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "Accounts",
+        localField: "riderOrderInfo.riderID",
+        foreignField: "_id",
+        as: "riderInfo",
+      },
+    },
+    { $unwind: { path: "$riderInfo", preserveNullAndEmptyArrays: true } },
+    {
+      $addFields: {
+        branchObjectId: { $toObjectId: "$branchID" },
+        transferFromBranchObjectId: {
+          $cond: {
+            if: { $ne: ["$transferFrom", null] },
+            then: { $toObjectId: "$transferFrom" },
+            else: "$$REMOVE",
+          },
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "BranchData",
+        localField: "branchObjectId",
+        foreignField: "_id",
+        as: "branchDetails",
+      },
+    },
+    {
+      $unwind: {
+        path: "$branchDetails",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "BranchData",
+        localField: "transferFromBranchObjectId",
+        foreignField: "_id",
+        as: "transferFromBranchDetails",
+      },
+    },
+    {
+      $addFields: {
+        transferFromBranchDetails: {
+          $cond: {
+            if: { $eq: [{ $size: "$transferFromBranchDetails" }, 0] },
+            then: null,
+            else: { $arrayElemAt: ["$transferFromBranchDetails", 0] }
+          }
+        }
+      }
+    },
+    {
+      $addFields: {
+        transferFromBranchInfo: {
+          $cond: {
+            if: { $ne: ["$transferFromBranchDetails", null] },
+            then: {
+              _id: "$transferFromBranchDetails._id",
+              name: "$transferFromBranchDetails.name",
+              __typename: "TransferFromBranchInfo"
+            },
+            else: null
+          }
+        }
+      }
+    },
+    {
+      $addFields: {
+        isPaid: { $cond: [{ $eq: ["$paymentMethod", "EASYPAISA"] }, true, false] },
+        isGuestUser: { $cond: [{ $eq: ["$accountId", null] }, true, false] },
+      },
+    },
+    {
+      $project: {
+        id: "$_id",
+        _id: 1,
+        startTime: "$riderOrderInfo.startTime",
+        endTime: "$riderOrderInfo.endTime",
+        createdAt: 1,
+        updatedAt: 1,
+        branchID: 1,
+        placedFrom: 1,
+        isPaid: 1,
+        isGuestUser: 1,
+        summary: {
+          discountTotal: {
+            amount: { $sum: "$discounts.amount" },
+            __typename: "DiscountTotal",
+          },
+          __typename: "Summary",
+        },
+        payments: {
+          $map: {
+            input: "$payments",
+            as: "payment",
+            in: {
+              finalAmount: "$$payment.finalAmount",
+              tax: "$$payment.tax",
+              totalAmount: "$$payment.totalAmount",
+              billingAddress: {
+                fullName: "$$payment.address.fullName",
+                phone: "$$payment.address.phone",
+                address1: "$$payment.address.address1",
+                city: "$$payment.address.city",
+                country: "$$payment.address.country",
+                postal: "$$payment.address.postal",
+                region: "$$payment.address.region",
+              },
+              __typename: "Payments",
+            },
+          },
+        },
+        email: 1,
+        kitchenOrderID: 1,
+        paymentMethod: 1,
+        status: "$workflow.status",
+        branches: "$riderOrderInfo.branches",
+        username: "$riderInfo.name",
+        OrderStatus: "$riderOrderInfo.OrderStatus",
+        transferFromBranchDetails: 1,
+        riderOrderInfo: {
+          _id: "$riderOrderInfo._id",
+          startTime: "$riderOrderInfo.startTime",
+          endTime: "$riderOrderInfo.endTime",
+          __typename: "RiderOrderInfo",
+        },
+        riderInfo: {
+          userId: "$riderInfo.userId",
+          _id: "$riderInfo._id",
+          firstName: "$riderInfo.profile.firstName",
+          lastName: "$riderInfo.profile.lastName",
+          phone: "$riderInfo.profile.phone",
+          __typename: "RiderInfo",
+        },
+        fulfillmentGroups: {
+          $map: {
+            input: "$shipping",
+            as: "shippingItem",
+            in: {
+              selectedFulfillmentOption: {
+                fulfillmentMethod: {
+                  fulfillmentTypes: ["$$shippingItem.type"],
+                  __typename: "FulfillmentMethod",
+                },
+                __typename: "FulfillmentOption",
+              },
+              items: {
+                nodes: {
+                  $map: {
+                    input: "$$shippingItem.items",
+                    as: "item",
+                    in: {
+                      _id: "$$item._id",
+                      quantity: "$$item.quantity",
+                      optionTitle: "$$item.optionTitle",
+                      title: "$$item.title",
+                      variantTitle: "$$item.variantTitle",
+                      price: "$$item.price",
+                      attributes: {
+                        $map: {
+                          input: "$$item.attributes",
+                          as: "attribute",
+                          in: {
+                            label: "$$attribute.label",
+                            value: "$$attribute.value",
+                            __typename: "OrderItemAttribute",
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        notes: {
+          content: { $arrayElemAt: ["$notes.content", 0] },
+          createdAt: { $arrayElemAt: ["$notes.createdAt", 0] },
+          __typename: "Notes",
+        },
+        deliveryTime: 1,
+        branchTimePickup: {
+          branchOrderTime: "$riderOrderInfo.startTime",
+          __typename: "BranchTimePickup",
+        },
+        customerInfo: {
+          address1: { $arrayElemAt: ["$shipping.address.address1", 0] },
+          __typename: "CustomerInfo",
+        },
+        branchInfo: {
+          _id: "$branchID",
+          name: "$branchDetails.name",
+          __typename: "BranchInfo",
+        },
+        transferFromBranchInfo: 1
+      },
+    }
+  ]).toArray();
+  console.log("ordersResp[0] ",ordersResp[0])
+  const newEvent=await pubSub.publish("ORDER_CREATED", {
+    newOrder: ordersResp[0]
+  });
+  console.log("newEvent ",newEvent)
   // sendOrderEmail(context, order, "new");
   // const message = "Your order has been placed";
   // const appType = "customer";

@@ -204,6 +204,7 @@ extend type Mutation {
 
   favoriteOrder("Mutation input" input: favoriteOrderInput!): FavoriteOrderPayload!
   removeFavoriteOrder("Mutation input" input: favoriteOrderInput!): removeFavoriteOrderPayload!
+  testNewOrderEvent: Boolean!
 }
 "Allowed values for the `OrderFulfillmentGroupItems` sortBy parameter"
 enum OrderFulfillmentGroupItemsSortByField {
@@ -1237,4 +1238,7 @@ input OrderFilterInput {
 
   "The order's status to filter by"
   status: OrderStatusValue
+}
+type Subscription {
+  newOrder: OrderNew
 }
