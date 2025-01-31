@@ -38,21 +38,21 @@ export default function verifyPaymentsMatchOrderTotal(
   // No currencies have greater than 3 decimal places, so we'll use 3.
   const paymentTotalString = accounting.toFixed(paymentTotal, 3);
   const orderTotalString = accounting.toFixed(orderTotal, 3);
-  console.log("orderTotalString ", Math.round(orderTotalString));
-  console.log("paymentTotalString", Math.round(paymentTotalString));
-  console.log("orderTotalString ", orderTotalString);
-  console.log("paymentTotalString", paymentTotalString);
-  console.log("Math.round(orderTotalString) ", Math.round(orderTotalString));
-  console.log("Math.round(paymentTotalString)", Math.round(paymentTotalString));
+  // console.log("orderTotalString ", Math.round(orderTotalString));
+  // console.log("paymentTotalString", Math.round(paymentTotalString));
+  // console.log("orderTotalString ", orderTotalString);
+  // console.log("paymentTotalString", paymentTotalString);
+  // console.log("Math.round(orderTotalString) ", Math.round(orderTotalString));
+  // console.log("Math.round(paymentTotalString)", Math.round(paymentTotalString));
   // if (paymentTotalString !== orderTotalString) {
   if (Math.round(paymentTotalString) !== Math.round(orderTotalString)) {
     Logger.debug(
       "Error creating payments for a new order. " +
         `Order total (${orderTotalString}) does not match total of all payment amounts (${paymentTotalString}).`
     );
-    // throw new ReactionError(
-    //   "payment-failed",
-    //   ` Total of all payments must equal order total is (${orderTotalString}) all payment amounts (${paymentTotalString})`
-    // );
+    throw new ReactionError(
+      "payment-failed",
+      ` Total of all payments must equal order total is (${orderTotalString}) all payment amounts (${paymentTotalString})`
+    );
   }
 }
