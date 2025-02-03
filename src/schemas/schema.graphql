@@ -679,6 +679,8 @@ type Order implements Node {
   transactionId: String
 
   taxInfo: taxInfoPayload
+
+  isFavorite: Boolean
 }
 type getFavoriteOrdersResponse {
   _id: String

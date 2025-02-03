@@ -3,6 +3,7 @@ import {
   decodeCartOpaqueId,
   decodeFulfillmentMethodOpaqueId,
   decodeOrderItemsOpaqueIds,
+  decodeOrderOpaqueId,
   decodeShopOpaqueId,
 } from "../../xforms/id.js";
 
@@ -20,10 +21,13 @@ import {
  * @returns {Promise<Object>} favoriteOrderPayload
  */
 export default async function favoriteOrder(parentResult, { input }, context) {
-  const {
+  let {
     orderId
   } = input;
   console.log("input ",input)
+  console.log(decodeOrderOpaqueId(orderId))
+  orderId=decodeOrderOpaqueId(orderId)
+  console.log("orderId ",orderId)
   const response = await context.mutations.favoriteOrder(context, {
     orderId:orderId
   });

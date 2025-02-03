@@ -165,7 +165,7 @@ export default async function removeFavoriteOrder(context, input) {
   const { accountId, appEvents, collections, getFunctionsOfType, userId } =
     context;
   // console.log("Collections available:", Object.keys(context.collections));
-  const { FavoriteOrder } = collections;
+  const { FavoriteOrder,Orders } = collections;
 
   // Create anonymousAccessToken if no account ID
   const fullToken = accountId ? null : getAnonymousAccessToken();
@@ -189,6 +189,17 @@ export default async function removeFavoriteOrder(context, input) {
     }
   );
   console.log("deletedFavoriteOrder ", deletedFavoriteOrder)
+  const updateFavoriteOrder = await Orders.findOneAndUpdate(
+    {
+      _id: orderId,
+    },
+    {
+      $set: {
+        isFavorite: false
+      }
+    }
+  );
+  console.log("updateFavoriteOrder ", updateFavoriteOrder)
   if (deletedFavoriteOrder?.ok > 0) {
     return {
         isRemoved: true

@@ -26,6 +26,7 @@ export default async function ordersByAccountId(parentResult, args, context, inf
     orderStatus,
     shopIds
   });
+  console.log("query ",query)
 
   return getPaginatedResponse(query, connectionArgs, {
     includeHasNextPage: wasFieldRequested("pageInfo.hasNextPage", info),
